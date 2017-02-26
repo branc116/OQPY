@@ -17,7 +17,7 @@ namespace BucketApp.ViewModels
 
 		public ItemsViewModel()
 		{
-			Title = "Browse";
+			Title = "Objekti";
 			Items = new ObservableRangeCollection<Item>();
 			LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
