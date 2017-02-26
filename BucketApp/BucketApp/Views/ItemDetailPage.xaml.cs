@@ -20,6 +20,7 @@ namespace BucketApp.Views
 			InitializeComponent();
 
 			BindingContext = this.viewModel = viewModel;
+            
 		}
 	}
 }
