@@ -21,7 +21,7 @@ namespace BucketApp.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new $safeprojectrootname$.App());
+            LoadApplication(new BucketApp.App());
         }
     }
 }
