@@ -6,3 +6,9 @@ services:
     build:
       context: ./OQPYManager
       dockerfile: Dockerfile
+
+  oqpybot:
+    image: oqpybot
+    build:
+      context: .\OQPYBot
+      dockerfile: DockerfileBot
