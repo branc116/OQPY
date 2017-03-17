@@ -6,3 +6,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "80"
+
+  oqpybot:
+    ports:
+      - "81"
