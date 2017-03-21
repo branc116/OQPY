@@ -32,7 +32,8 @@ namespace OQPYManager.Data
             builder.Entity<Venue>().HasKey(v => v.Id);
             builder.Entity<Venue>().HasMany(v => v.Resources).WithOne(r => r.Venue);
             builder.Entity<Venue>().HasMany(v => v.Reviews).WithOne(r => r.Venue);
-            builder.Entity<Venue>().HasMany(v => v.PriceList).WithOne(p => p.Venue);
+            builder.Entity<Venue>().HasMany(v => v.PriceTags).WithOne(p => p.Venue);
+            builder.Entity<Venue>().HasMany(v => v.Employees).WithOne();
 
             //Many-to-many relationship between venues and tags
             builder.Entity<VenueTag>().HasKey(vt => new {vt.VenueId, vt.TagId});

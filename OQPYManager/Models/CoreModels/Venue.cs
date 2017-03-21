@@ -48,7 +48,7 @@ namespace OQPYManager.Models.CoreModels
         /// <summary>
         /// List of prices or various merchandises and services of a venue.
         /// </summary>
-        public List<PriceTag> PriceList { get; set; }
+        public List<PriceTag> PriceTags { get; set; }
 
         /// <summary>
         /// Property which will define when a venue works.
