@@ -7,11 +7,6 @@ namespace OQPYManager.Models.CoreModels
         public string Id { get; set; }
 
         /// <summary>
-        /// Get one-to-many relationship with Venue
-        /// </summary>
-        public Venue Venue { get; set; }
-
-        /// <summary>
         /// Is it a billiards table, dining table, dartboard etc.
         /// </summary>
         public string Category { get; set; }

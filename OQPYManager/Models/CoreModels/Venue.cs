@@ -7,8 +7,6 @@ namespace OQPYManager.Models.CoreModels
 {
     public class Venue
     {
-        public string Id { get; set; }
-
         public string Name { get; set; }
 
         /// <summary>
@@ -25,7 +23,7 @@ namespace OQPYManager.Models.CoreModels
         /// <summary>
         ///All the occupable objects inside hospitality venues 
         /// </summary>
-        public List<Resource> Resources{ get; set; }
+        public List<Resource> ListOfStuff { get; set; }
 
         /// <summary>
         ///List of tags define which features a venue has
@@ -48,7 +46,7 @@ namespace OQPYManager.Models.CoreModels
         /// <summary>
         /// List of prices or various merchandises and services of a venue.
         /// </summary>
-        public List<PriceTag> PriceTags { get; set; }
+        public List<Price> PriceList { get; set; }
 
         /// <summary>
         /// Property which will define when a venue works.
@@ -61,11 +59,6 @@ namespace OQPYManager.Models.CoreModels
         /// List of employees working in a venue, excluding owner.
         /// </summary>
         public List<ApplicationUser> Employees { get; set; }
-
-        /// <summary>
-        /// Enables many-to-many relationship with tags.
-        /// </summary>
-        public List<VenueTag> VenueTags { get; set; }
 
     }
 }
