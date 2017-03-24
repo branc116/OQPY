@@ -4,6 +4,8 @@ namespace OQPYManager.Models.CoreModels
 {
     public class Reservation
     {
+        public string Id { get; set; }
+
         public DateTime StartReservationTime { get; set; }
 
         public DateTime EndReservationTime { get; set; }

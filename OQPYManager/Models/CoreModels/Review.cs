@@ -2,13 +2,24 @@
 {
     public class Review
     {
-        
+        /// <summary>
+        /// Text of a review
+        /// </summary>
         public string Comment { get; set; }
 
         public string Id { get; set; }
 
         private int _rating;
 
+        /// <summary>
+        /// Venue to be reviewed
+        /// </summary>
+        public Venue Venue { get; set; }
+
+        /// <summary>
+        /// Somewhat a numerical representation of a review, a summary
+        /// Ensuring the rating wont go below minimum or exceed maximum.
+        /// </summary>
         public int Rating
         {
             get { return _rating; }
