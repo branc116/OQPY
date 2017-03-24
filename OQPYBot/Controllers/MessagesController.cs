@@ -25,7 +25,6 @@ namespace OQPYBot1
                 
                 // calculate something for us to return
                 int length = (activity.Text ?? string.Empty).Length;
-                connector.Conversations.
                 // return our reply to the user
                 Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
                 await connector.Conversations.ReplyToActivityAsync(reply);
