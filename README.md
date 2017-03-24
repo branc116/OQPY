@@ -25,5 +25,4 @@
 
 ![alt text](Docs/HighLevelOverview.jpg)
 
-      
-      
+![alt text](Docs/IMG_20170318_220102.jpg) 

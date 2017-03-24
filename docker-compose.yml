@@ -1,8 +1,0 @@
-version: '2'
-
-services:
-  oqpymanager:
-    image: oqpymanager
-    build:
-      context: ./OQPYManager
-      dockerfile: Dockerfile

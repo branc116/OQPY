@@ -1,0 +1,39 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                @{
+                    var ass = System.Configuration.ConfigurationManager.AppSettings;
+                    foreach (var AppS in ass)
+                    {
+                        <tr class="table-active">
+                            <td class="d-table-cell">@AppS</td>
+                            @*<td class="d-table-cell">@ass[AppS.ToString()]</td>*@
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</body>
+</html>
