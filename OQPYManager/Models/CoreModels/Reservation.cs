@@ -10,7 +10,7 @@ namespace OQPYManager.Models.CoreModels
 
         public DateTime EndReservationTime { get; set; }
 
-        public Resource ResourceReserved { get; set; }
+        public Resource Resource { get; set; }
 
         /// <summary>
         /// Could be just a name and/or surname

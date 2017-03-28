@@ -6,11 +6,14 @@ namespace OQPYManager.Models.CoreModels
     public class WorkHours
     {
         public string Id { get; set; }
+
+        public string VenueId { get; set; }
         public Venue Venue { get; set; }
+
         /// <summary>
-        /// When the venue works, must be nullable.
+        /// When the venue works.
         /// </summary>
-        public List<DateTime> WorkTimes { get; set; } = new List<DateTime>(7);
+        public List<WorkTime> WorkTimes { get; set; }
         public bool IsWorking { get; set; }
     }
 }

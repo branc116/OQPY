@@ -18,7 +18,7 @@ namespace OQPYManager.Data
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<WorkHours> WorkHourses { get; set; }
+        public DbSet<WorkHours> VenueWorkHours { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Employee> Employees { get; set; }
 
@@ -31,12 +31,35 @@ namespace OQPYManager.Data
         {
             base.OnModelCreating(builder);
 
+           
+
             builder.Entity<Venue>().HasKey(v => v.Id);
             builder.Entity<Venue>().HasMany(v => v.Resources).WithOne(r => r.Venue);
             builder.Entity<Venue>().HasMany(v => v.Reviews).WithOne(r => r.Venue);
             builder.Entity<Venue>().HasMany(v => v.PriceTags).WithOne(p => p.Venue);
             builder.Entity<Venue>().HasMany(v => v.Employees).WithOne(e => e.Venue);
             builder.Entity<Venue>().HasOne(v => v.Owner).WithMany(o => o.Venues);
+            builder.Entity<Venue>().HasOne(v => v.WorkHours)
+                .WithOne(wh => wh.Venue)
+                .HasForeignKey<WorkHours>(wh => wh.VenueId);
+
+            builder.Entity<Location>().HasKey(l => l.Id);
+
+            builder.Entity<PriceTag>().HasKey(pt => pt.Id);
+
+            builder.Entity<Reservation>().HasKey(r => r.Id);
+
+            builder.Entity<Resource>().HasKey(r => r.Id);
+            builder.Entity<Resource>().HasMany(r => r.Reservations).WithOne(r => r.Resource);
+
+            builder.Entity<Review>().HasKey(r => r.Id);
+
+            builder.Entity<Tag>().HasKey(t => t.Id);
+
+            builder.Entity<WorkHours>().HasKey(wh => wh.Id);
+            
+            builder.Entity<WorkHours>().HasMany(wh => wh.WorkTimes).WithOne(wt => wt.WorkHours);
+
 
             //Many-to-many relationship between venues and tags
             builder.Entity<VenueTag>().HasKey(vt => new { vt.VenueId, vt.TagId });

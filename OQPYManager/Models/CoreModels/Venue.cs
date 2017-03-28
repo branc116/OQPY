@@ -15,8 +15,12 @@ namespace OQPYManager.Models.CoreModels
         ///Connect the venue to its owner
         /// </summary>
         public Owner Owner { get; set; }
-        public string OwnerId { get; set; }
+        
 
+        /// <summary>
+        /// Always useful to know when the venue was signed up on our service.
+        /// </summary>
+        public DateTime VenueCreationDate { get; set; }
 
         /// <summary>
         ///Data essential for locating a venue
