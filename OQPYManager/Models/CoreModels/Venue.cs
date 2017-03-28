@@ -14,7 +14,9 @@ namespace OQPYManager.Models.CoreModels
         /// <summary>
         ///Connect the venue to its owner
         /// </summary>
-        public ApplicationUser Owner { get; set; }
+        public Owner Owner { get; set; }
+        public string OwnerId { get; set; }
+
 
         /// <summary>
         ///Data essential for locating a venue
@@ -60,7 +62,7 @@ namespace OQPYManager.Models.CoreModels
         /// <summary>
         /// List of employees working in a venue, excluding owner.
         /// </summary>
-        public List<ApplicationUser> Employees { get; set; }
+        public List<Employee> Employees { get; set; }
 
         /// <summary>
         /// Enables many-to-many relationship with tags.
