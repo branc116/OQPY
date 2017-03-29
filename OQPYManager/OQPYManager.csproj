@@ -39,6 +39,9 @@
     <None Include="Data\VenuesDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OQPYModels\OQPYModels.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
   <ItemGroup>

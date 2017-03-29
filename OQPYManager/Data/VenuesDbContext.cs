@@ -21,12 +21,14 @@ namespace OQPYManager.Data
         {
             
         }
+        public VenuesDbContext() : base()
+        {
+
+        }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            
-
         }
     }
 }

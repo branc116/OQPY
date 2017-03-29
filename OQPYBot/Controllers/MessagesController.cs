@@ -1,18 +1,24 @@
-﻿using System;
-using System.Linq;
+﻿//#define DEBUG
+using LuisBot.Services;
+using Microsoft.ApplicationInsights.DataContracts;
+
+//using Microsoft.Cognitive.LUIS;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Description;
-using Microsoft.Bot.Connector;
-using Newtonsoft.Json;
 
-namespace OQPYBot1
+namespace OQPYBot
 {
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        private BingSpellCheckService BingSpelling = new BingSpellCheckService();
+
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
@@ -22,12 +28,16 @@ namespace OQPYBot1
             if (activity.Type == ActivityTypes.Message)
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text;
+                try
+                {
+                    await Conversation.SendAsync(activity, () => new LuisDialogOQPY());
+                }
+                catch (Exception ex)
+                {
+                    var telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
+                    telemetry.TrackTrace("ExceptionInPost", SeverityLevel.Critical, new Dictionary<string, string> { { "Exceptions", ex.ToString() } });
+                }
             }
             else
             {
@@ -36,7 +46,7 @@ namespace OQPYBot1
             var response = Request.CreateResponse(HttpStatusCode.OK);
             return response;
         }
-        
+
         private Activity HandleSystemMessage(Activity message)
         {
             if (message.Type == ActivityTypes.DeleteUserData)

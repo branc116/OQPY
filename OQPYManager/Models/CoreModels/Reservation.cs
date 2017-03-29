@@ -1,8 +1,9 @@
-﻿using System;
+﻿using OQPYModels.Models.CoreModels;
+using System;
 
 namespace OQPYManager.Models.CoreModels
 {
-    public class Reservation
+    public class Reservation : BaseReservation
     {
         public string Id { get; set; }
 
