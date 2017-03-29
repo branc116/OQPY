@@ -24,24 +24,28 @@ namespace OQPYManager.Data
         {
             
         }
+        public VenuesDbContext() : base()
+        {
+
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<Venue>().HasKey(v => v.Id);
-            builder.Entity<Venue>().HasMany(v => v.Resources).WithOne(r => r.Venue);
-            builder.Entity<Venue>().HasMany(v => v.Reviews).WithOne(r => r.Venue);
-            builder.Entity<Venue>().HasMany(v => v.PriceTags).WithOne(p => p.Venue);
+            builder.Entity<Venue>().HasMany(v => v.Resources).WithOne(r => r.Venue as Venue);
+            builder.Entity<Venue>().HasMany(v => v.Reviews).WithOne(r => r.Venue as Venue);
+            builder.Entity<Venue>().HasMany(v => v.PriceTags).WithOne(p => p.Venue as Venue);
             builder.Entity<Venue>().HasMany(v => v.Employees).WithOne();
 
             //Many-to-many relationship between venues and tags
             builder.Entity<VenueTag>().HasKey(vt => new {vt.VenueId, vt.TagId});
             builder.Entity<VenueTag>().HasOne(vt => vt.Venue)
-                .WithMany(v => v.VenueTags)
+                .WithMany(v => v.VenueTags.Select((i) => i as VenueTag))
                 .HasForeignKey(vt => vt.VenueId);
             builder.Entity<VenueTag>().HasOne(vt => vt.Tag)
-                .WithMany(t => t.VenueTags)
+                .WithMany(t => t.VenueTags.Select((i) => i as VenueTag))
                 .HasForeignKey(vt => vt.TagId);
 
         }
