@@ -1,15 +1,8 @@
-﻿namespace OQPYManager.Models.CoreModels
+﻿using OQPYModels.Models.CoreModels;
+
+namespace OQPYManager.Models.CoreModels
 {
-    public class PriceTag
+    public class PriceTag : BasePriceTag
     {
-        public string Id { get; set; }
-
-        public string ItemName { get; set; }
-
-        public decimal Price { get; set; }
-
-        public Venue Venue { get; set; }
-
-
     }
 }

@@ -1,10 +1,11 @@
-﻿namespace OQPYManager.Models.CoreModels
+﻿using OQPYModels.Models.CoreModels;
+using System.ComponentModel.DataAnnotations;
+
+namespace OQPYManager.Models.CoreModels
 {
-    public class Location
+    public class Location : BaseLocation
     {
-        public string Id { get; set; }
-        public double Longditude { get; set; }
-        public double Latitude { get; set; }
-        public string Adress { get; set; }
+        [Required]
+        public override string Id { get => base.Id; set => base.Id = value; }
     }
 }

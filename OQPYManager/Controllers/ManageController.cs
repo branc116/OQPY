@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,6 +6,8 @@ using Microsoft.Extensions.Options;
 using OQPYManager.Models;
 using OQPYManager.Models.ManageViewModels;
 using OQPYManager.Services;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OQPYManager.Controllers
 {
@@ -368,6 +366,6 @@ namespace OQPYManager.Controllers
             return _userManager.GetUserAsync(HttpContext.User);
         }
 
-        #endregion
+        #endregion Helpers
     }
 }

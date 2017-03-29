@@ -4,7 +4,7 @@
     *  ``` Type ``` - Venue type (e.g. Bar, ...)
     *  ``` Name ``` - Name of the Venue 
     *  ``` Location ``` - Location of Venue
-    *  ``` lossy ``` - search parametars must match exacly to the real values (e.g. if Name is "Havana" and lossy is "false" the item named "Havanna" will not be returned)
+    *  ``` Lossy ``` - search parametars must match exacly to the real values (e.g. if Name is "Havana" and lossy is "false" the item named "Havanna" will not be returned)
     *  ``` GeneralSearch ``` - if you want to search by any parametar (e.g. by owner name, location, ..)
     *  ``` NumberOfResults ``` - max number of items to return (deff = 40, for now)
     *  ``` SortBy ``` - sort by parametar(e.g. "Name", "Type", ...)
