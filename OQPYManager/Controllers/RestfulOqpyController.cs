@@ -25,7 +25,7 @@ namespace OQPYManager.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
         private readonly string _externalCookieScheme;
-        private readonly VenuesDbContext _venusDb;
+        private readonly ApplicationDbContext _venusDb;
         public RestfulOqpyController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -33,7 +33,7 @@ namespace OQPYManager.Controllers
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
-            VenuesDbContext venusDb
+            ApplicationDbContext venusDb
 
             )
         {

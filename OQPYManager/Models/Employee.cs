@@ -12,6 +12,7 @@ namespace OQPYManager.Models
         /// Venue where worker works.
         /// Should we put multiple venues if he works in multiple venues?
         /// note : very unlikely situation altough possible
+        /// Better List<Venue>, what if he is a manager, but not the owner and he is managing more venues
         /// </summary>
         public Venue Venue { get; set; }
     }

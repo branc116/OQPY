@@ -34,13 +34,13 @@ namespace OQPYManager.Data
            
 
             builder.Entity<Venue>().HasKey(v => v.Id);
-            builder.Entity<Venue>().HasMany(v => v.Resources).WithOne(r => r.Venue);
-            builder.Entity<Venue>().HasMany(v => v.Reviews).WithOne(r => r.Venue);
-            builder.Entity<Venue>().HasMany(v => v.PriceTags).WithOne(p => p.Venue);
-            builder.Entity<Venue>().HasMany(v => v.Employees).WithOne(e => e.Venue);
-            builder.Entity<Venue>().HasOne(v => v.Owner).WithMany(o => o.Venues);
+            builder.Entity<Venue>().HasMany(v => v.Resources).WithOne(r => r.Venue as Venue);
+            builder.Entity<Venue>().HasMany(v => v.Reviews).WithOne(r => r.Venue as Venue);
+            builder.Entity<Venue>().HasMany(v => v.PriceTags).WithOne(p => p.Venue as Venue);
+            builder.Entity<Venue>().HasMany(v => v.Employees).WithOne((e) => e.GetType() == typeof(Employee) ? (e as Employee).Venue as Venue : null );
+            builder.Entity<Venue>().HasOne(v => v.Owner).WithMany((e) => e.GetType() == typeof(Owner) ? (e as Owner).Venues.Select(i => i as Venue) : null);
             builder.Entity<Venue>().HasOne(v => v.WorkHours)
-                .WithOne(wh => wh.Venue)
+                .WithOne(wh => wh.Venue as Venue)
                 .HasForeignKey<WorkHours>(wh => wh.VenueId);
 
             builder.Entity<Location>().HasKey(l => l.Id);
@@ -50,7 +50,7 @@ namespace OQPYManager.Data
             builder.Entity<Reservation>().HasKey(r => r.Id);
 
             builder.Entity<Resource>().HasKey(r => r.Id);
-            builder.Entity<Resource>().HasMany(r => r.Reservations).WithOne(r => r.Resource);
+            builder.Entity<Resource>().HasMany(r => r.Reservations).WithOne(r => r.Resource as Resource);
 
             builder.Entity<Review>().HasKey(r => r.Id);
 
@@ -58,16 +58,16 @@ namespace OQPYManager.Data
 
             builder.Entity<WorkHours>().HasKey(wh => wh.Id);
             
-            builder.Entity<WorkHours>().HasMany(wh => wh.WorkTimes).WithOne(wt => wt.WorkHours);
+            builder.Entity<WorkHours>().HasMany(wh => wh.WorkTimes).WithOne(wt => wt.WorkHours as WorkHours);
 
 
             //Many-to-many relationship between venues and tags
             builder.Entity<VenueTag>().HasKey(vt => new { vt.VenueId, vt.TagId });
             builder.Entity<VenueTag>().HasOne(vt => vt.Venue)
-                .WithMany(v => v.VenueTags)
+                .WithMany(v => v.VenueTags.Select(i => i as VenueTag))
                 .HasForeignKey(vt => vt.VenueId);
             builder.Entity<VenueTag>().HasOne(vt => vt.Tag)
-                .WithMany(t => t.VenueTags)
+                .WithMany(t => t.VenueTags.Select(i => i as VenueTag))
                 .HasForeignKey(vt => vt.TagId);
         }
     }
