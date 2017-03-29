@@ -1,7 +1,6 @@
-﻿using System;
+﻿using OQPYModels.Models.CoreModels;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using OQPYModels.Models.CoreModels;
 using System.Linq;
 
 namespace OQPYModels.Extensions

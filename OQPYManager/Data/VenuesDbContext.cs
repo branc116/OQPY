@@ -7,7 +7,6 @@ namespace OQPYManager.Data
         //everything was moved into applivcationDbContext
         public VenuesDbContext(DbContextOptions<VenuesDbContext> options) : base(options)
         {
-            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

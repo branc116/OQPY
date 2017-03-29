@@ -9,7 +9,5 @@
         public virtual decimal Price { get; set; }
 
         public virtual BaseVenue Venue { get; set; }
-
-
     }
 }

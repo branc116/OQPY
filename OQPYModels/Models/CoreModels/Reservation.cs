@@ -10,6 +10,7 @@ namespace OQPYModels.Models.CoreModels
 
         public virtual DateTime EndReservationTime { get; set; }
         public virtual BaseResource Resource { get; set; }
+
         /// <summary>
         /// Could be just a name and/or surname
         /// </summary>

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace OQPYModels.TestObjects
 {
@@ -15,7 +14,6 @@ namespace OQPYModels.TestObjects
             "http://www.theplaceaparthotel.com/uploads/PageImage/328.jpg"
         };
 
-
         public static List<string> VenueImagesTest
         {
             get
@@ -23,6 +21,7 @@ namespace OQPYModels.TestObjects
                 return _allImages;
             }
         }
+
         public static List<BaseTag> TagsTest
         {
             get
@@ -35,6 +34,7 @@ namespace OQPYModels.TestObjects
                         select new BaseTag() { Id = id, TagName = name }).ToList();
             }
         }
+
         public static List<string> NamesTest
         {
             get
@@ -46,6 +46,7 @@ namespace OQPYModels.TestObjects
                         select name).ToList();
             }
         }
+
         public static List<BaseVenue> VenuesTest
         {
             get

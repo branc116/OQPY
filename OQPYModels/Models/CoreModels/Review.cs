@@ -33,7 +33,5 @@
                     _rating = value;
             }
         }
-
-
     }
 }

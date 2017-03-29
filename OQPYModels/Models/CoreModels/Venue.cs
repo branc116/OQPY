@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OQPYModels.Models.CoreModels
 {
@@ -28,20 +26,20 @@ namespace OQPYModels.Models.CoreModels
         public virtual BaseLocation Location { get; set; }
 
         /// <summary>
-        ///All the occupable objects inside hospitality venues 
+        ///All the occupable objects inside hospitality venues
         /// </summary>
-        public virtual List<BaseResource> Resources{ get; set; }
+        public virtual List<BaseResource> Resources { get; set; }
 
         /// <summary>
         ///List of tags define which features a venue has
-        ///e.g. pool table 
+        ///e.g. pool table
         /// </summary>
         public virtual List<BaseTag> Tags { get; set; }
 
         /// <summary>
         ///Users share their opinion about a particular venue
         ///e.g. 5/5 a great venue!
-        /// </summary> 
+        /// </summary>
         // Better name than rating
         public virtual List<BaseReview> Reviews { get; set; }
 
@@ -60,7 +58,7 @@ namespace OQPYModels.Models.CoreModels
         /// The type will also support changing status of working manually
         /// if e.g. sudden inspection, deratization etc.
         /// </summary>
-        public virtual BaseWorkHours WorkHours{ get; set; }
+        public virtual BaseWorkHours WorkHours { get; set; }
 
         /// <summary>
         /// List of employees working in a venue, excluding owner.

@@ -1,9 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using OQPYManager.Data;
+using System;
 
 namespace OQPYManager.Data.Migrations
 {
@@ -376,7 +374,6 @@ namespace OQPYManager.Data.Migrations
             modelBuilder.Entity("OQPYManager.Models.Owner", b =>
                 {
                     b.HasBaseType("OQPYManager.Models.ApplicationUser");
-
 
                     b.ToTable("Owner");
 

@@ -1,5 +1,4 @@
-﻿using OQPYModels.Models.CoreModels;
-namespace OQPYModels
+﻿namespace OQPYModels
 {
     public interface IApplicationUser
     {

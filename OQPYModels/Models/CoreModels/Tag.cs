@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace OQPYModels.Models.CoreModels
 {
     public class BaseTag : IComparer<BaseTag>
     {
-        public virtual string Id  { get; set; }
+        public virtual string Id { get; set; }
 
         public virtual string TagName { get; set; }
 
@@ -19,5 +18,4 @@ namespace OQPYModels.Models.CoreModels
             return x.Id.CompareTo(y.Id);
         }
     }
-
 }

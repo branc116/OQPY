@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using OQPYManager.Models.CoreModels;
+﻿using OQPYManager.Models.CoreModels;
 
 namespace OQPYManager.Models
 {
