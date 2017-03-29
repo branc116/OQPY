@@ -4,14 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using OQPYManager.Models.CoreModels;
+using OQPYModels;
+using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser, IApplicationUser
     {
         public string Name { get; set; }
         public string Surname { get; set; }
-        public Venue Venue { get; set; }
+        public BaseVenue Venue { get; set; }
     }
 }
