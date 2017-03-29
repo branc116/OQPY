@@ -1,18 +1,19 @@
 ﻿//#define DEBUG1
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.Bot.Builder.Dialogs;
+
+//using Microsoft.Cognitive.LUIS;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
+using OQPYModels.Extensions;
+using OQPYModels.Models.CoreModels;
+using OQPYModels.TestObjects;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Bot.Connector;
-//using Microsoft.Cognitive.LUIS;
-using Microsoft.Bot.Builder.Luis;
-using Microsoft.Bot.Builder.Dialogs;
-using System.Collections.Generic;
-using Microsoft.Bot.Builder.Luis.Models;
-using Microsoft.ApplicationInsights.DataContracts;
-using OQPYModels.Models.CoreModels;
-using OQPYModels.Extensions;
-using OQPYModels.TestObjects;
 
 namespace OQPYBot
 {
@@ -27,7 +28,7 @@ namespace OQPYBot
         private const string _sublocation = "SubLocation";
         private const string _subsublocation = "SubSubLocation";
         private readonly List<string> _propertyKeys = new List<string> { "name", "email", "location" };
-        private readonly List<string> _cardActions1 = new List<string> { "Info", "Comments", "Reservate", "See list of reservations"};
+        private readonly List<string> _cardActions1 = new List<string> { "Info", "Comments", "Reservate", "See list of reservations" };
         private readonly List<string> _cardActions2 = new List<string> { "yes", "no" };
 
         [LuisIntent("")]
@@ -55,6 +56,7 @@ namespace OQPYBot
             await context.PostAsync(message);
             context.Wait(this.MessageReceived);
         }
+
         [LuisIntent("self.info")]
         public async Task SelfInfo(IDialogContext context, LuisResult result)
         {
@@ -63,6 +65,7 @@ namespace OQPYBot
 #endif
             await ApplyProperty(context, result, _name);
         }
+
         [LuisIntent("self.info.email")]
         public async Task SelfInfoEmail(IDialogContext context, LuisResult result)
         {
@@ -71,6 +74,7 @@ namespace OQPYBot
 #endif
             await ApplyProperty(context, result, _email);
         }
+
         [LuisIntent("self.info.location")]
         public async Task SelfInfoLocation(IDialogContext context, LuisResult result)
         {
@@ -79,6 +83,7 @@ namespace OQPYBot
 #endif
             await ApplyProperty(context, result, _location);
         }
+
         [LuisIntent("self.info.get")]
         public async Task SelfInfoGet(IDialogContext context, LuisResult result)
         {
@@ -92,6 +97,7 @@ namespace OQPYBot
                              select $"{_}|{context.UserData.Get<string>(_)}").Aggregate((i, j) => $"{i}{Environment.NewLine}{j}");
             await context.PostAsync(message);
         }
+
         [LuisIntent("venue.search")]
         public async Task VenueSearch(IDialogContext context, LuisResult result)
         {
@@ -101,32 +107,36 @@ namespace OQPYBot
             var message = context.MakeMessage();
             message.Attachments = MakeACard(TestObjects.VenuesTest).ToList();
             message.AttachmentLayout = "carousel";
-            
+
             await context.PostAsync(message);
         }
+
         public IEnumerable<Attachment> MakeACard(IEnumerable<BaseVenue> venue)
         {
             var comonTags = venue.IntersectionTags();
             var subtitle = comonTags.TagsToString((i) => $"{i.TagName} ");
             return from _ in venue
                    select new HeroCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions().ToList()).ToAttachment();
-
         }
+
         public IEnumerable<CardImage> MakeListOfImages(IEnumerable<BaseVenue> venue)
         {
             var images = from _ in venue
                          select new CardImage(_.ImageUrl);
             return images;
         }
+
         public List<CardImage> MakeImage(BaseVenue venue)
         {
             return new List<CardImage>() { new CardImage(venue.ImageUrl) };
         }
+
         public IEnumerable<CardAction> MakeCardActions()
         {
             return from _ in _cardActions1
-                   select new CardAction() { Title = _, Value = _, Type ="imBack"};
+                   select new CardAction() { Title = _, Value = _, Type = "imBack" };
         }
+
         private async Task ApplyProperty(IDialogContext context, LuisResult result, params string[] propertyName)
         {
             for (int i = 0; i < result.Entities.Count; i++)
@@ -153,6 +163,7 @@ namespace OQPYBot
                 await None(context, result);
             }
         }
+
         private async Task ConfirmPropertyAboutUser(IDialogContext conx, IAwaitable<bool> args)
         {
             var res = await args;
@@ -165,7 +176,6 @@ namespace OQPYBot
             {
                 if (conx.PrivateConversationData.TryGetValue(pro, out string prop))
                 {
-
                     if (res)
                     {
                         conx.UserData.SetValue(pro, prop);
@@ -183,6 +193,7 @@ namespace OQPYBot
             }
             conx.Wait(this.MessageReceived);
         }
+
         //private async Task ConfirmPropertyChange(IDialogContext context, IAwaitable<bool> result)
         //{
         //    var rez = await result;
@@ -209,6 +220,7 @@ namespace OQPYBot
 #endif
             await base.StartAsync(context);
         }
+
         protected override async Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
 #if DEBUG1
@@ -216,6 +228,7 @@ namespace OQPYBot
 #endif
             await base.MessageReceived(context, item);
         }
+
         private async Task DebugOut(IDialogContext context, string methode)
         {
             await context.PostAsync($"DEBUG from methode: {methode} ");

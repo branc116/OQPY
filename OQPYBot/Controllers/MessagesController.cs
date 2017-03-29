@@ -1,31 +1,30 @@
 ﻿//#define DEBUG
+using LuisBot.Services;
+using Microsoft.ApplicationInsights.DataContracts;
+
+//using Microsoft.Cognitive.LUIS;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Description;
-using Microsoft.Bot.Connector;
-using Newtonsoft.Json;
-//using Microsoft.Cognitive.LUIS;
-using Microsoft.Bot.Builder.Dialogs;
-using System.Collections.Generic;
-using LuisBot.Services;
-using Microsoft.ApplicationInsights.DataContracts;
 
 namespace OQPYBot
 {
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        BingSpellCheckService BingSpelling = new BingSpellCheckService();
+        private BingSpellCheckService BingSpelling = new BingSpellCheckService();
+
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
-
             if (activity.Type == ActivityTypes.Message)
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
@@ -33,9 +32,8 @@ namespace OQPYBot
                 try
                 {
                     await Conversation.SendAsync(activity, () => new LuisDialogOQPY());
-                    
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     var telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
                     telemetry.TrackTrace("ExceptionInPost", SeverityLevel.Critical, new Dictionary<string, string> { { "Exceptions", ex.ToString() } });
