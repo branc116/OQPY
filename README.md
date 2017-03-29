@@ -23,6 +23,6 @@
     * Josip - RestApi and db
     * Branimir - RestApi and Bots
 
-![alt text](Docs/HighLevelOverview.jpg)
+![alt text](Docs/HighLevelOverviewV2.jpg)
 
 ![alt text](Docs/IMG_20170318_220102.jpg) 
