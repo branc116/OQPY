@@ -9,9 +9,7 @@ namespace OQPYModels.Models.CoreModels
         public virtual DateTime StartReservationTime { get; set; }
 
         public virtual DateTime EndReservationTime { get; set; }
-
-        public virtual BaseResource ResourceReserved { get; set; }
-
+        public virtual BaseResource Resource { get; set; }
         /// <summary>
         /// Could be just a name and/or surname
         /// </summary>

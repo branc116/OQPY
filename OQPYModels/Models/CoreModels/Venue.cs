@@ -17,6 +17,11 @@ namespace OQPYModels.Models.CoreModels
         public virtual IApplicationUser Owner { get; set; }
 
         /// <summary>
+        /// Always useful to know when the venue was signed up on our service.
+        /// </summary>
+        public DateTime VenueCreationDate { get; set; }
+
+        /// <summary>
         ///Data essential for locating a venue
         ///Possibly compactible with Google Maps, get its data directly from Google.
         /// </summary>
