@@ -12,7 +12,7 @@ namespace OQPYModels.Models.CoreModels
         /// <summary>
         ///Connect the venue to its owner
         /// </summary>
-        public virtual IApplicationUser Owner { get; set; }
+        public virtual BaseOwner Owner { get; set; }
 
         /// <summary>
         /// Always useful to know when the venue was signed up on our service.
@@ -63,7 +63,7 @@ namespace OQPYModels.Models.CoreModels
         /// <summary>
         /// List of employees working in a venue, excluding owner.
         /// </summary>
-        public virtual List<IApplicationUser> Employees { get; set; }
+        public virtual List<BaseEmployee> Employees { get; set; }
 
         /// <summary>
         /// Enables many-to-many relationship with tags.

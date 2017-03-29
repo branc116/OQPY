@@ -7,6 +7,7 @@ using OQPYManager.Data;
 using OQPYManager.Models;
 using OQPYManager.Models.CoreModels;
 using OQPYManager.Services;
+using OQPYModels.Models.CoreModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace OQPYManager.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IEnumerable<Venue>> FindVenues(string Type, string Name, string Location, string GeneralSearch, string SortBy, bool Lossy = true, int NumberOfResults = 40)
+        public async Task<IEnumerable<BaseVenue>> FindVenues(string Type, string Name, string Location, string GeneralSearch, string SortBy, bool Lossy = true, int NumberOfResults = 40)
         {
             var ret = (from _ in _venusDb.Venues
                        where string.IsNullOrEmpty(Type) ? true : _.Tags.Any((i) => i.TagName == Type)
