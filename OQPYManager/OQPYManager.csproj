@@ -28,14 +28,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" PrivateAssets="All" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0-rc3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="1.0.0-rc3" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0-msbuild3-final" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0-msbuild3-final" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Data\VenuesDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OQPYModels\OQPYModels.csproj" />

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Swagger;
 using OQPYManager.Data;
 using OQPYManager.Models;
 using OQPYManager.Services;
@@ -74,7 +75,7 @@ namespace OQPYManager
             }
 
             app.UseStaticFiles();
-
+            app.UseSwaggerUI((i)=> { i.SwaggerEndpoint("/swaag/v0/", "v0"); });
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
