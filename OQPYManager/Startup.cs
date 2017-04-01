@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Swagger;
 using OQPYManager.Data;
 using OQPYManager.Models;
 using OQPYManager.Services;
@@ -47,7 +48,10 @@ namespace OQPYManager
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
-
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
@@ -74,7 +78,8 @@ namespace OQPYManager
             }
 
             app.UseStaticFiles();
-
+            app.UseSwagger((i) => { });
+            app.UseSwaggerUI((i) => { i.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715

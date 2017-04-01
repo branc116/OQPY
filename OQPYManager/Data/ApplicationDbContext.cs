@@ -70,5 +70,7 @@ namespace OQPYManager.Data
                 .WithMany(t => t.VenueTags)
                 .HasForeignKey(vt => vt.TagId);
         }
+
+        //public DbSet<OQPYManager.Models.CoreModels.Venue> Venue { get; set; }
     }
 }

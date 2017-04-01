@@ -2,7 +2,7 @@
 
 namespace OQPYManager.Models.CoreModels
 {
-    public class Resource : BaseResource
-    {
-    }
+    //public class Resource : BaseResource
+    //{
+    //}
 }
