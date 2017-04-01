@@ -37,7 +37,7 @@ namespace OQPYManager.Controllers
         // GET: api/Venue
         [HttpGet]
         [Route("Specific")]
-        public async Task<IActionResult> GetVenue([FromBody] string id)
+        public async Task<IActionResult> GetVenue([FromHeader] string id)
         {
             if (!ModelState.IsValid)
             {
