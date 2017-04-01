@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using static OQPYModels.Helper.Helper;
 namespace OQPYModels.Models.CoreModels
 {
     public class BaseVenue
     {
+
         public virtual string Id { get; set; }
 
         public virtual string Name { get; set; }
@@ -71,5 +73,43 @@ namespace OQPYModels.Models.CoreModels
         public virtual List<BaseVenueTag> VenueTags { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public BaseVenue(string name, string ownerUsername, string imageUrl, string location)
+        {
+            Id = Guid.NewGuid().ToString();
+            this.Name = name;
+            Owner = new BaseOwner(ownerUsername, this);
+            ImageUrl = imageUrl;
+            VenueCreationDate = DateTime.Now;
+            this.Location = new BaseLocation() { Id = Guid.NewGuid().ToString(), Adress = location };
+        }
+        public BaseVenue()
+        {
+
+        }
+
+        public static IEnumerable<BaseVenue> CreateRandomVenues(int n)
+        {
+            return from _ in new string(' ', n)
+                   let rand = new Random()
+                   let names = RandomName()
+                   let images = RandomUriOfVenue()
+                   let location = RandomName()
+                   let ownerUserName = RandomName()
+                   let discription = RandomText(40, 50)
+                   let venue = new BaseVenue(names, ownerUserName, images, location)
+                   {
+                       Description = discription,
+
+
+                   }
+                   let empleys = venue.Employees = BaseEmployee.RandomEmployees(rand.Next(1, 4), venue).ToList()
+                   let pricetags = venue.PriceTags = BasePriceTag.RandomPriceTags(rand.Next(10, 20), venue).ToList()
+                   let resouces = venue.Resources = BaseResource.RandomResources(rand.Next(5, 10), venue).ToList()
+                   let reviews = venue.Reviews = BaseReview.RandomReviews(rand.Next(5, 10), venue).ToList()
+                   let tags = venue.Tags = BaseTag.RandomTags(rand.Next(5, 10), venue).ToList()
+                   let workHours = venue.WorkHours = BaseWorkHours.RandomWorkHours(1, venue).FirstOrDefault()
+                   select venue;
+        }
     }
 }

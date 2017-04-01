@@ -12,5 +12,12 @@
 
         public virtual string TagId { get; set; }
         public virtual BaseTag Tag { get; set; }
+        public BaseVenueTag(BaseTag tag, BaseVenue venue)
+        {
+            this.Tag = tag;
+            this.Venue = venue;
+            this.TagId = tag.Id;
+            this.VenueId = venue.Id;
+        }
     }
 }

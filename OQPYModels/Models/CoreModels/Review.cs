@@ -1,4 +1,8 @@
-﻿namespace OQPYModels.Models.CoreModels
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using static OQPYModels.Helper.Helper;
+namespace OQPYModels.Models.CoreModels
 {
     public class BaseReview
     {
@@ -32,6 +36,28 @@
                 else
                     _rating = value;
             }
+        }
+
+        public BaseReview(int rating, string comment)
+        {
+            Id = Guid.NewGuid().ToString();
+            this.Rating = rating;
+            this.Comment = comment;
+        }
+        public BaseReview(int rating, string comment, BaseVenue venue)
+        {
+            Id = Guid.NewGuid().ToString();
+            this.Rating = rating;
+            this.Comment = comment;
+            this.Venue = venue;
+        }
+
+        public static IEnumerable<BaseReview> RandomReviews(int n, BaseVenue venue)
+        {
+            return from _ in new string('a', n)
+                   let text = RandomText(50, 100)
+                   let review = RandomInt(Constants.MinimumRating, Constants.MaximumRating)
+                   select new BaseReview(review, text, venue);
         }
     }
 }

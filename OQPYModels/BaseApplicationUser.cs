@@ -6,5 +6,14 @@ namespace OQPYModels
     {
         public virtual string Name { get; set; }
         public virtual string Surname { get; set; }
+
+        public BaseApplicationUser(string userName) : base(userName)
+        {
+
+        }
+        public BaseApplicationUser() : base()
+        {
+
+        }
     }
 }
