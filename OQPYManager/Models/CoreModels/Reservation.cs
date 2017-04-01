@@ -2,7 +2,7 @@
 
 namespace OQPYManager.Models.CoreModels
 {
-    public class Reservation : BaseReservation
-    {
-    }
+    //public class Reservation : BaseReservation
+    //{
+    //}
 }

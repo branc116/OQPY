@@ -2,7 +2,7 @@
 
 namespace OQPYManager.Models.CoreModels
 {
-    public class Review : BaseReview
-    {
-    }
+    //public class Review : BaseReview
+    //{
+    //}
 }

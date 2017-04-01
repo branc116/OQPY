@@ -7,7 +7,7 @@ namespace OQPYManager.Models.CoreModels
     /// Check here:
     /// https://docs.microsoft.com/en-us/ef/core/modeling/relationships
     /// </summary>
-    public class VenueTag : BaseVenueTag
-    {
-    }
+    //public class VenueTag : BaseVenueTag
+    //{
+    //}
 }

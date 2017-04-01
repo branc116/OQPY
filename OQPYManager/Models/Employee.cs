@@ -4,7 +4,7 @@ using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Models
 {
-    public class Employee : BaseEmployee
-    {
-    }
+    //public class Employee : BaseEmployee
+    //{
+    //}
 }
