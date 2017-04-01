@@ -30,8 +30,7 @@ namespace OQPYManager.Controllers
         {
             return from _ in _context.Venues
                    let OwnerName = _.Owner
-                   let location = _.Location
-                   join ownername in _ on 
+                   let location = _.Location 
                    select _;
         }
 
