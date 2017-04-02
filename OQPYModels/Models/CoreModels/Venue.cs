@@ -73,7 +73,11 @@ namespace OQPYModels.Models.CoreModels
         public virtual List<BaseVenueTag> VenueTags { get; set; }
 
         public string ImageUrl { get; set; }
+        public decimal AverageReview => Reviews.Select(i => i.Rating).Sum() / (decimal)(Reviews.Count);
+        public BaseVenue()
+        {
 
+        }
         public BaseVenue(string name, string ownerUsername, string imageUrl, string location)
         {
             Id = Guid.NewGuid().ToString();
@@ -83,10 +87,7 @@ namespace OQPYModels.Models.CoreModels
             VenueCreationDate = DateTime.Now;
             this.Location = new BaseLocation() { Id = Guid.NewGuid().ToString(), Adress = location };
         }
-        public BaseVenue()
-        {
 
-        }
 
         public static IEnumerable<BaseVenue> CreateRandomVenues(int n)
         {

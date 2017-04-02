@@ -24,7 +24,10 @@ namespace OQPYModels.Models.CoreModels
         public virtual string StuffName { get; set; }
 
         public virtual List<BaseReservation> Reservations { get; set; }
+        public BaseResource()
+        {
 
+        }
         public BaseResource(string suffName, string category)
         {
             this.StuffName = StuffName;

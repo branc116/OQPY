@@ -24,6 +24,20 @@ namespace OQPYModels.Models.CoreModels
         public BaseWorkTime Friday => WorkTimes?[4] ?? null;
         public BaseWorkTime Saturday => WorkTimes?[5] ?? null;
         public BaseWorkTime Sunday => WorkTimes?[6] ?? null;
+        public Dictionary<DayOfWeek, BaseWorkTime> WholeWeek => new Dictionary<DayOfWeek, BaseWorkTime>()
+        {
+            {DayOfWeek.Monday, WorkTimes?[0] ?? null },
+            {DayOfWeek.Tuesday, WorkTimes?[1] ?? null },
+            {DayOfWeek.Wednesday, WorkTimes?[2] ?? null },
+            {DayOfWeek.Thursday, WorkTimes?[3] ?? null },
+            {DayOfWeek.Friday, WorkTimes?[4] ?? null },
+            {DayOfWeek.Saturday, WorkTimes?[5] ?? null },
+            {DayOfWeek.Sunday, WorkTimes?[6] ?? null },
+        };
+        public BaseWorkHours()
+        {
+
+        }
         public BaseWorkHours(IEnumerable<BaseWorkTime> workTimes, bool isWorking)
         {
             this.Id = Guid.NewGuid().ToString();

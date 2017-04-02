@@ -34,5 +34,28 @@ namespace OQPYModels.Extensions
             }
             return retString;
         }
+        public static bool Working(this BaseWorkHours obj, DateTime from, DateTime to)
+        {
+            var working = true;
+            if (obj != null)
+            {
+                var today = obj?.WholeWeek?[from.DayOfWeek];
+                if (today != null)
+                {
+                    working = today.StartTime.Hour < from.Hour && today.EndTime.Hour > from.Hour;
+                }
+            }
+            return obj.IsWorking && working;
+        }
+        public static bool Working(this BaseWorkHours obj, DateTime dateTime)
+        {
+            return obj.Working(dateTime, dateTime);
+        }
+        public static bool Reservable(this BaseResource obj, DateTime from, DateTime to)
+        {
+            return obj.Reservations
+                .Any(i => i.StartReservationTime < from && i.EndReservationTime > from ||
+                          i.StartReservationTime < to && i.EndReservationTime > to);
+        }
     }
 }

@@ -14,6 +14,10 @@ namespace OQPYModels.Models.CoreModels
 
         public virtual BaseVenue Venue { get; set; }
 
+        public BasePriceTag()
+        {
+
+        }
         public BasePriceTag(string itemName, decimal price)
         {
             this.ItemName = itemName;
