@@ -13,11 +13,11 @@ namespace OQPYModels.Extensions
         /// </summary>
         /// <param name="venues">Set of venues</param>
         /// <returns>Set of common tags</returns>
-        public static IEnumerable<BaseTag> IntersectionTags(this IEnumerable<BaseVenue> venues)
+        public static IEnumerable<Tag> IntersectionTags(this IEnumerable<Venue> venues)
         {
             if (venues == null || !venues.Any())
                 return null;
-            IEnumerable<BaseTag> tags = venues.First().Tags;
+            IEnumerable<Tag> tags = venues.First().Tags;
             foreach (var _ in venues)
             {
                 tags = tags.Intersect(_.Tags);
@@ -25,7 +25,7 @@ namespace OQPYModels.Extensions
             return tags;
         }
 
-        public static string TagsToString(this IEnumerable<BaseTag> tags, Func<BaseTag, string> Stringify)
+        public static string TagsToString(this IEnumerable<Tag> tags, Func<Tag, string> Stringify)
         {
             string retString = string.Empty;
             foreach (var _ in tags)
@@ -34,7 +34,8 @@ namespace OQPYModels.Extensions
             }
             return retString;
         }
-        public static bool Working(this BaseWorkHours obj, DateTime from, DateTime to)
+
+        public static bool Working(this WorkHours obj, DateTime from, DateTime to)
         {
             var working = true;
             if (obj != null)
@@ -47,11 +48,13 @@ namespace OQPYModels.Extensions
             }
             return obj.IsWorking && working;
         }
-        public static bool Working(this BaseWorkHours obj, DateTime dateTime)
+
+        public static bool Working(this WorkHours obj, DateTime dateTime)
         {
             return obj.Working(dateTime, dateTime);
         }
-        public static bool Reservable(this BaseResource obj, DateTime from, DateTime to)
+
+        public static bool Reservable(this Resource obj, DateTime from, DateTime to)
         {
             return obj.Reservations
                 .Any(i => i.StartReservationTime < from && i.EndReservationTime > from ||

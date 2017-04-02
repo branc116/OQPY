@@ -5,18 +5,19 @@
     /// Check here:
     /// https://docs.microsoft.com/en-us/ef/core/modeling/relationships
     /// </summary>
-    public class BaseVenueTag
+    public class VenueTag
     {
         public virtual string VenueId { get; set; }
-        public virtual BaseVenue Venue { get; set; }
+        public virtual Venue Venue { get; set; }
 
         public virtual string TagId { get; set; }
-        public virtual BaseTag Tag { get; set; }
-        public BaseVenueTag()
-        {
+        public virtual Tag Tag { get; set; }
 
+        public VenueTag()
+        {
         }
-        public BaseVenueTag(BaseTag tag, BaseVenue venue)
+
+        public VenueTag(Tag tag, Venue venue)
         {
             this.Tag = tag;
             this.Venue = venue;

@@ -1,6 +1,6 @@
 ﻿namespace OQPYModels.Models.CoreModels
 {
-    public class BaseLocation
+    public class Location
     {
         public virtual string Id { get; set; }
         public virtual double Longditude { get; set; }

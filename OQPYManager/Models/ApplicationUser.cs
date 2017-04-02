@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using OQPYModels;
+﻿using OQPYModels;
 
 namespace OQPYManager.Models
 {
@@ -9,9 +8,9 @@ namespace OQPYManager.Models
         public ApplicationUser(string userName) : base(userName)
         {
         }
+
         public ApplicationUser() : base()
         {
-
         }
     }
 }

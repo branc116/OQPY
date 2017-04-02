@@ -1,68 +1,68 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OQPYManager.Data;
+using OQPYModels.Extensions;
+using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OQPYManager.Data;
-using OQPYModels.Models.CoreModels;
-using OQPYModels.Extensions;
 using static OQPYModels.Models.CoreModels.ErrorMessages;
+
 namespace OQPYManager.Controllers
 {
     [Produces("application/json")]
-    [Route("api/BaseReservations")]
-    public class BaseReservationsController : Controller
+    [Route("api/Reservations")]
+    public class ReservationsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public BaseReservationsController(ApplicationDbContext context)
+        public ReservationsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/BaseReservations
+        // GET: api/Reservations
         [HttpGet]
-        public IEnumerable<BaseReservation> GetReservations()
+        public IEnumerable<Reservation> GetReservations()
         {
             return _context.Reservations;
         }
 
-        // GET: api/BaseReservations/5
+        // GET: api/Reservations/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBaseReservation([FromRoute] string id)
+        public async Task<IActionResult> GetReservation([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var baseReservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
+            var Reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (baseReservation == null)
+            if (Reservation == null)
             {
                 return NotFound();
             }
 
-            return Ok(baseReservation);
+            return Ok(Reservation);
         }
 
-        // PUT: api/BaseReservations/5
+        // PUT: api/Reservations/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBaseReservation([FromRoute] string id, [FromBody] BaseReservation baseReservation)
+        public async Task<IActionResult> PutReservation([FromRoute] string id, [FromBody] Reservation reservation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != baseReservation.Id)
+            if (id != reservation.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(baseReservation).State = EntityState.Modified;
+            _context.Entry(reservation).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +70,7 @@ namespace OQPYManager.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BaseReservationExists(id))
+                if (!ReservationExists(id))
                 {
                     return NotFound();
                 }
@@ -83,51 +83,50 @@ namespace OQPYManager.Controllers
             return NoContent();
         }
 
-        // POST: api/BaseReservations
+        // POST: api/Reservations
         [HttpPost]
-        public async Task<IActionResult> PostBaseReservation([FromBody] BaseReservation baseReservation)
+        public async Task<IActionResult> PostReservation([FromBody] Reservation reservation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-
-            _context.Reservations.Add(baseReservation);
+            _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBaseReservation", new { id = baseReservation.Id }, baseReservation);
+            return CreatedAtAction("GetReservation", new { id = reservation.Id }, reservation);
         }
 
-        // DELETE: api/BaseReservations/5
+        // DELETE: api/Reservations/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBaseReservation([FromRoute] string id)
+        public async Task<IActionResult> DeleteReservation([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var baseReservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
-            if (baseReservation == null)
+            var Reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
+            if (Reservation == null)
             {
                 return NotFound();
             }
 
-            _context.Reservations.Remove(baseReservation);
+            _context.Reservations.Remove(Reservation);
             await _context.SaveChangesAsync();
 
-            return Ok(baseReservation);
+            return Ok(Reservation);
         }
 
-        private bool BaseReservationExists(string id)
+        private bool ReservationExists(string id)
         {
             return _context.Reservations.Any(e => e.Id == id);
         }
 
         [Route("VenueReservation")]
         [HttpGet]
-        public IEnumerable<BaseReservation> GetBaseReservationFromVenues([FromHeader] string venueId)
+        public IEnumerable<Reservation> GetReservationFromVenues([FromHeader] string venueId)
         {
             return (from _ in _context.Resources
                    .Include(i => i.Venue)
@@ -136,9 +135,10 @@ namespace OQPYManager.Controllers
                     let reserv = _.Reservations
                     select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
         }
+
         [Route("ResourceReservation")]
         [HttpGet]
-        public IEnumerable<BaseReservation> GetBaseReservationFromResource([FromHeader] string resourceId)
+        public IEnumerable<Reservation> GetReservationFromResource([FromHeader] string resourceId)
         {
             return (from _ in _context.Resources
                    .Where(i => i.Id == resourceId)
@@ -146,18 +146,20 @@ namespace OQPYManager.Controllers
                     let reserv = _.Reservations
                     select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
         }
+
         [Route("SecretCodeReservation")]
         [HttpGet]
-        public async Task<BaseReservation> GetBaseReservationFromSecretCode([FromHeader] string secretCode)
+        public async Task<Reservation> GetReservationFromSecretCode([FromHeader] string secretCode)
         {
             return await _context.Reservations
                 .Where(i => i.SecretCode == secretCode)
                 .Include(i => i.Resource)
                 .FirstOrDefaultAsync();
         }
+
         [HttpPost]
         [Route("ResourceReservation")]
-        public async Task<IActionResult> PostBaseReservaationToResource([FromHeader] string resourceId, [FromHeader] DateTime from, [FromHeader] DateTime to)
+        public async Task<IActionResult> PostReservationToResource([FromHeader] string resourceId, [FromBody] DateTime from, [FromBody] DateTime to)
         {
             if ((to - from).TotalDays < 1)
                 return BadRequest(new { error = Reservation2Long });
@@ -185,15 +187,16 @@ namespace OQPYManager.Controllers
             if (!working)
                 return BadRequest(new { error = ClosedInThisTime });
 
-            var reservation = new BaseReservation(from, to, resource);
+            var reservation = new Reservation(from, to, resource);
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBaseReservation", new { id = reservation.Id });
+            return CreatedAtAction("GetReservation", new { id = reservation.Id });
         }
+
         [HttpDelete]
         [Route("ResourceReservation")]
-        public async Task<IActionResult> DeleteBaseReservation([FromHeader] string resourceId, [FromHeader] DateTime from, [FromHeader] DateTime to)
+        public async Task<IActionResult> DeleteReservation([FromHeader] string resourceId, [FromBody] DateTime from, [FromBody] DateTime to)
         {
             if (!ModelState.IsValid)
             {

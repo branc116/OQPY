@@ -1,11 +1,11 @@
 ﻿using OQPYModels.Models.CoreModels;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using static OQPYModels.Helper.Helper;
+
 namespace OQPYModels.Models
 {
-    public class BaseEmployee : BaseApplicationUser
+    public class Employee : BaseApplicationUser
     {
         /// <summary>
         /// Venue where worker works.
@@ -13,23 +13,25 @@ namespace OQPYModels.Models
         /// note : very unlikely situation altough possible
         /// Better List<Venue>, what if he is a manager, but not the owner and he is managing more venues
         /// </summary>
-        public virtual BaseVenue Venue { get; set; }
+        public virtual Venue Venue { get; set; }
 
-        public BaseEmployee(string userName) : base(userName)
+        public Employee(string userName) : base(userName)
         {
-
         }
-        public BaseEmployee(string userName, BaseVenue workPlace) : base(userName)
+
+        public Employee(string userName, Venue workPlace) : base(userName)
         {
             this.Venue = workPlace;
         }
-        public static IEnumerable<BaseEmployee> RandomEmployees(int n, BaseVenue workPlace){
+
+        public static IEnumerable<Employee> RandomEmployees(int n, Venue workPlace)
+        {
             return from _ in new string(' ', n)
                    let email = RandomEmail()
                    let userName = RandomName()
                    let name = RandomName()
                    let lastName = RandomName()
-                   let employ = new BaseEmployee(userName, workPlace)
+                   let employ = new Employee(userName, workPlace)
                    {
                        Email = email,
                        Name = name,

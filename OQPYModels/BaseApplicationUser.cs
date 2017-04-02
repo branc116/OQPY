@@ -9,11 +9,10 @@ namespace OQPYModels
 
         public BaseApplicationUser(string userName) : base(userName)
         {
-
         }
+
         public BaseApplicationUser() : base()
         {
-
         }
     }
 }

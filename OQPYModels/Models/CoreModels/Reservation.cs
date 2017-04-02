@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using static OQPYModels.Helper.Helper;
+
 namespace OQPYModels.Models.CoreModels
 {
-    public class BaseReservation
+    public class Reservation
     {
         public virtual string Id { get; set; }
 
         public virtual DateTime StartReservationTime { get; set; }
 
         public virtual DateTime EndReservationTime { get; set; }
-        public virtual BaseResource Resource { get; set; }
+        public virtual Resource Resource { get; set; }
 
         /// <summary>
         /// Could be just a name and/or surname
@@ -25,18 +26,20 @@ namespace OQPYModels.Models.CoreModels
                 return EndReservationTime - StartReservationTime;
             }
         }
-        public BaseReservation()
-        {
 
+        public Reservation()
+        {
         }
-        public BaseReservation(DateTime start, DateTime end)
+
+        public Reservation(DateTime start, DateTime end)
         {
             Id = Guid.NewGuid().ToString();
             SecretCode = Guid.NewGuid().ToString();
             StartReservationTime = start;
             EndReservationTime = end;
         }
-        public BaseReservation(DateTime start, DateTime end, BaseResource resource)
+
+        public Reservation(DateTime start, DateTime end, Resource resource)
         {
             Id = Guid.NewGuid().ToString();
             SecretCode = Guid.NewGuid().ToString();
@@ -44,12 +47,13 @@ namespace OQPYModels.Models.CoreModels
             EndReservationTime = end;
             this.Resource = resource;
         }
-        public static IEnumerable<BaseReservation> RandomReservations(int n, BaseResource resource)
+
+        public static IEnumerable<Reservation> RandomReservations(int n, Resource resource)
         {
             return from _ in new string(' ', n)
                    let start = DateTime.Now + RandomDays(5, 10)
                    let end = start + RandomHours(2, 5)
-                   select new BaseReservation(start, end, resource);
+                   select new Reservation(start, end, resource);
         }
     }
 }

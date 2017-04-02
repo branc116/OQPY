@@ -2,38 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using static OQPYModels.Helper.Helper;
+
 namespace OQPYModels.Models.CoreModels
 {
-    public class BaseWorkTime
+    public class WorkTime
     {
         public string Id { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public TimeSpan Diration => EndTime - StartTime;
-        public BaseWorkHours WorkHours { get; set; }
-        public BaseWorkTime()
-        {
+        public WorkHours WorkHours { get; set; }
 
+        public WorkTime()
+        {
         }
-        public BaseWorkTime(DateTime start, DateTime end)
+
+        public WorkTime(DateTime start, DateTime end)
         {
             this.Id = Guid.NewGuid().ToString();
             this.StartTime = start;
             this.EndTime = end;
         }
-        public BaseWorkTime(DateTime start, DateTime end, BaseWorkHours parent)
+
+        public WorkTime(DateTime start, DateTime end, WorkHours parent)
         {
             this.Id = Guid.NewGuid().ToString();
             this.StartTime = start;
             this.EndTime = end;
             this.WorkHours = parent;
         }
-        public static IEnumerable<BaseWorkTime> RandomWorkTime(int n, BaseWorkHours parent)
+
+        public static IEnumerable<WorkTime> RandomWorkTime(int n, WorkHours parent)
         {
             return from _ in new string(' ', n)
                    let startTime = new DateTime(RandomHours(4, 13).Ticks)
                    let endTime = new DateTime(RandomHours(16, 23).Ticks)
-                   select new BaseWorkTime(startTime, endTime, parent);
+                   select new WorkTime(startTime, endTime, parent);
         }
     }
 }
