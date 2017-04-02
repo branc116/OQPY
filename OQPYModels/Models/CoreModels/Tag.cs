@@ -15,6 +15,10 @@ namespace OQPYModels.Models.CoreModels
         /// </summary>
         public virtual List<BaseVenueTag> VenueTags { get; set; }
 
+        public BaseTag()
+        {
+        }
+
         public BaseTag(string tagName)
         {
             Id = Guid.NewGuid().ToString();
@@ -27,9 +31,6 @@ namespace OQPYModels.Models.CoreModels
             VenueTags = new List<BaseVenueTag>() { new BaseVenueTag(this, venue) };
         }
 
-        public BaseTag()
-        {
-        }
 
         public int Compare(BaseTag x, BaseTag y)
         {

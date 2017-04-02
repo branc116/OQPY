@@ -11,7 +11,10 @@ namespace OQPYModels.Models.CoreModels
         public DateTime EndTime { get; set; }
         public TimeSpan Diration => EndTime - StartTime;
         public BaseWorkHours WorkHours { get; set; }
+        public BaseWorkTime()
+        {
 
+        }
         public BaseWorkTime(DateTime start, DateTime end)
         {
             this.Id = Guid.NewGuid().ToString();

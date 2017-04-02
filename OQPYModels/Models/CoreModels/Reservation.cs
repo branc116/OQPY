@@ -25,6 +25,10 @@ namespace OQPYModels.Models.CoreModels
                 return EndReservationTime - StartReservationTime;
             }
         }
+        public BaseReservation()
+        {
+
+        }
         public BaseReservation(DateTime start, DateTime end)
         {
             Id = Guid.NewGuid().ToString();

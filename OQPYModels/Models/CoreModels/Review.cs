@@ -37,7 +37,10 @@ namespace OQPYModels.Models.CoreModels
                     _rating = value;
             }
         }
+        public BaseReview()
+        {
 
+        }
         public BaseReview(int rating, string comment)
         {
             Id = Guid.NewGuid().ToString();
