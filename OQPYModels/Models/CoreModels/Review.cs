@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using static OQPYModels.Helper.Helper;
+
 namespace OQPYModels.Models.CoreModels
 {
-    public class BaseReview
+    public class Review
     {
         /// <summary>
         /// Text of a review
@@ -18,7 +19,7 @@ namespace OQPYModels.Models.CoreModels
         /// <summary>
         /// Venue to be reviewed
         /// </summary>
-        public virtual BaseVenue Venue { get; set; }
+        public virtual Venue Venue { get; set; }
 
         /// <summary>
         /// Somewhat a numerical representation of a review, a summary
@@ -37,17 +38,19 @@ namespace OQPYModels.Models.CoreModels
                     _rating = value;
             }
         }
-        public BaseReview()
-        {
 
+        public Review()
+        {
         }
-        public BaseReview(int rating, string comment)
+
+        public Review(int rating, string comment)
         {
             Id = Guid.NewGuid().ToString();
             this.Rating = rating;
             this.Comment = comment;
         }
-        public BaseReview(int rating, string comment, BaseVenue venue)
+
+        public Review(int rating, string comment, Venue venue)
         {
             Id = Guid.NewGuid().ToString();
             this.Rating = rating;
@@ -55,12 +58,12 @@ namespace OQPYModels.Models.CoreModels
             this.Venue = venue;
         }
 
-        public static IEnumerable<BaseReview> RandomReviews(int n, BaseVenue venue)
+        public static IEnumerable<Review> RandomReviews(int n, Venue venue)
         {
             return from _ in new string('a', n)
                    let text = RandomText(50, 100)
                    let review = RandomInt(Constants.MinimumRating, Constants.MaximumRating)
-                   select new BaseReview(review, text, venue);
+                   select new Review(review, text, venue);
         }
     }
 }

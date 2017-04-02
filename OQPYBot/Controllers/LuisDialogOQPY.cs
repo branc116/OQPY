@@ -1,10 +1,11 @@
 ﻿//#define DEBUG1
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.ConnectorEx;
+using OQPYBot1.Helper;
 using OQPYModels.Extensions;
 using OQPYModels.Models.CoreModels;
 using OQPYModels.TestObjects;
@@ -13,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using OQPYBot1.Helper;
+
 namespace OQPYBot
 {
     [LuisModel("2f4d5a10-e2cf-4238-ab65-51ab4b4dd0ea", "b36329fcaa154546ba25f10bc5740770")]
@@ -108,7 +109,7 @@ namespace OQPYBot
             await context.PostAsync(message);
         }
 
-        public IEnumerable<Attachment> MakeACard(IEnumerable<BaseVenue> venue)
+        public IEnumerable<Attachment> MakeACard(IEnumerable<Venue> venue)
         {
             var comonTags = venue.IntersectionTags();
             var subtitle = comonTags.TagsToString((i) => $"{i.TagName} ");
@@ -116,14 +117,14 @@ namespace OQPYBot
                    select new HeroCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions().ToList()).ToAttachment();
         }
 
-        public IEnumerable<CardImage> MakeListOfImages(IEnumerable<BaseVenue> venue)
+        public IEnumerable<CardImage> MakeListOfImages(IEnumerable<Venue> venue)
         {
             var images = from _ in venue
                          select new CardImage(_.ImageUrl);
             return images;
         }
 
-        public List<CardImage> MakeImage(BaseVenue venue)
+        public List<CardImage> MakeImage(Venue venue)
         {
             return new List<CardImage>() { new CardImage(venue.ImageUrl) };
         }
@@ -190,6 +191,7 @@ namespace OQPYBot
             }
             conx.Wait(this.MessageReceived);
         }
+
         public override async Task StartAsync(IDialogContext context)
         {
 #if DEBUG1
@@ -224,10 +226,9 @@ namespace OQPYBot
             Log.BasicLog("Attachments",
                     (a.Attachments != null && a.Attachments.Any()) ?
                         (from _ in a.Attachments
-                         select _.Content).Aggregate((i, j) => $"{i}\n{j}") : 
+                         select _.Content).Aggregate((i, j) => $"{i}\n{j}") :
                          "No Attachments",
                     SeverityLevel.Information);
-
         }
 
         private async Task DebugOut(IDialogContext context, string methode)

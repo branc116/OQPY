@@ -22,7 +22,7 @@ namespace OQPYModels.TestObjects
             }
         }
 
-        public static List<BaseTag> TagsTest
+        public static List<Tag> TagsTest
         {
             get
             {
@@ -31,7 +31,7 @@ namespace OQPYModels.TestObjects
                         let name = new string((from __ in new string('a', 5)
                                                select (char)(__ + rand.Next(0, 24))).ToArray())
                         let id = Guid.NewGuid().ToString()
-                        select new BaseTag() { Id = id, TagName = name }).ToList();
+                        select new Tag() { Id = id, TagName = name }).ToList();
             }
         }
 
@@ -47,7 +47,7 @@ namespace OQPYModels.TestObjects
             }
         }
 
-        public static List<BaseVenue> VenuesTest
+        public static List<Venue> VenuesTest
         {
             get
             {
@@ -59,7 +59,7 @@ namespace OQPYModels.TestObjects
                             let venuetags = from __ in new string(' ', rand.Next(4, 7))
                                             select TagsTest[rand.Next(0, TagsTest.Count)]
                             let image = images[rand.Next(0, images.Count)]
-                            select new BaseVenue()
+                            select new Venue()
                             {
                                 Tags = venuetags.ToList(),
                                 Id = new Guid().ToString(),

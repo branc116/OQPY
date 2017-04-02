@@ -1,14 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OQPYManager.Data;
+using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OQPYManager.Data;
-using OQPYManager.Models.CoreModels;
-using OQPYModels.Models;
-using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Controllers
 {
@@ -26,58 +23,14 @@ namespace OQPYManager.Controllers
         // GET: api/AllVenues
         [HttpGet]
         [Route("All")]
-        public IEnumerable<BaseVenue> GetAllVenues()
+        public IEnumerable<Venue> GetAllVenues()
         {
             return from _ in _context.Venues
                    let OwnerName = _.Owner
-                   let location = _.Location 
+                   let location = _.Location
                    select _;
         }
 
-        // GET: api/Venue
-        [HttpGet]
-        [Route("Specific")]
-        public async Task<IActionResult> GetVenue([FromHeader] string id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var venue = await _context.Venues.SingleOrDefaultAsync(m => m.Id == id);
-
-            if (venue == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(venue);
-        }
-        // GET: api/Venues
-        [HttpGet]
-        [Route("Multiple")]
-        public async Task<IActionResult> GetVenues([FromBody] IEnumerable<string> ids)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-
-            var venues = from _ in _context.Venues
-                         where ids.Any(i => i == _.Id)
-                         select _;
-
-            //var venue = from _ in ids
-            //            join await _context.Venue.SingleOrDefaultAsync(m => m.Id == id) as
-
-            if (venues == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(venues);
-        }
         // PUT: api/Venues/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVenue([FromRoute] string id, [FromBody] Venue venue)
@@ -113,45 +66,6 @@ namespace OQPYManager.Controllers
             return NoContent();
         }
 
-        // POST: api/Venues
-        [HttpPost]
-        [Route("Single")]
-        public async Task<IActionResult> PostVenue([FromBody] Venue venue)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Venues.Add(venue);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetVenues", new { id = venue.Id }, venue);
-        }
-        // POST: api/Venues/Rand
-        [HttpPost]
-        [Route("Multiple")]
-        public async Task<IActionResult> PostVenueRandom([FromBody] IEnumerable<string> names)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            IEnumerable<BaseVenue> venues;
-            try
-            {
-                venues = from _ in names
-                             let venue = BaseVenue.CreateRandomVenues(1).First()
-                             let name = venue.Name = _
-                             select venue;
-                _context.Venues.AddRange(venues);
-                await _context.SaveChangesAsync();
-            }catch(Exception ex)
-            {
-
-            }
-            return CreatedAtAction("GetVenue", new { ids = names });
-        }
-
         // DELETE: api/Venues/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVenue([FromRoute] string id)
@@ -176,6 +90,87 @@ namespace OQPYManager.Controllers
         private bool VenueExists(string id)
         {
             return _context.Venues.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        [Route("Multi")]
+        public async Task<IActionResult> PostVenueMulti([FromBody] IEnumerable<string> names)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            IEnumerable<Venue> venues;
+            try
+            {
+                venues = from _ in names
+                         let venue = Venue.CreateRandomVenues(1).First()
+                         let name = venue.Name = _
+                         select venue;
+                _context.Venues.AddRange(venues);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+            }
+            return CreatedAtAction("GetVenue", new { ids = names });
+        }
+
+        [HttpPost]
+        [Route("Single")]
+        public async Task<IActionResult> PostVenueSingle([FromBody] Venue venue)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.Venues.Add(venue);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetVenues", new { id = venue.Id }, venue);
+        }
+
+        [HttpGet]
+        [Route("Multi")]
+        public async Task<IActionResult> GetVenuesMulti([FromBody] IEnumerable<string> ids)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var venues = from _ in _context.Venues
+                         where ids.Any(i => i == _.Id)
+                         select _;
+
+            //var venue = from _ in ids
+            //            join await _context.Venue.SingleOrDefaultAsync(m => m.Id == id) as
+
+            if (venues == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(venues);
+        }
+
+        [HttpGet]
+        [Route("Single")]
+        public async Task<IActionResult> GetVenueSingle([FromHeader] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var venue = await _context.Venues.SingleOrDefaultAsync(m => m.Id == id);
+
+            if (venue == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(venue);
         }
     }
 }

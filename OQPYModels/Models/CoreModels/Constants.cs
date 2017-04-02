@@ -5,6 +5,7 @@
         public static int MinimumRating = 0;
         public static int MaximumRating = 10;
     }
+
     public static class ErrorMessages
     {
         public static string Reservation2Long = "One can only reservate ones resource during one day";
