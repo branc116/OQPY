@@ -1,8 +1,6 @@
 ﻿//#define DEBUG1
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Bot.Builder.Dialogs;
-
-//using Microsoft.Cognitive.LUIS;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
@@ -192,26 +190,6 @@ namespace OQPYBot
             }
             conx.Wait(this.MessageReceived);
         }
-
-        //private async Task ConfirmPropertyChange(IDialogContext context, IAwaitable<bool> result)
-        //{
-        //    var rez = await result;
-        //    if (context.PrivateConversationData.TryGetValue("propertyName", out string propertyName))
-        //    {
-        //        context.Wait(this.MessageReceived);
-        //        return;
-        //    }
-        //    context.UserData.TryGetValue(propertyName, out string test);
-        //    context.PrivateConversationData.TryGetValue(propertyName, out string name);
-        //    if (rez)
-        //    {
-        //        context.UserData.SetValue(propertyName, name);
-        //        await context.PostAsync($"Ok, your {propertyName} is now {name}");
-        //    }
-        //    else
-        //        await context.PostAsync($"Ok, your {propertyName} will stay {test}");
-        //    context.Wait(this.MessageReceived);
-        //}
         public override async Task StartAsync(IDialogContext context)
         {
 #if DEBUG1
