@@ -118,9 +118,29 @@ namespace OQPYManager.Controllers
             return Ok(baseReview);
         }
 
-        private bool BaseReviewExists(string id)
+        private bool BaseReviewExists(string id) => _context.Reviews.Any(e => e.Id == id);
+
+        [HttpGet]
+        public async Task<IActionResult> GetBaseReviewForVenue([FromHeader] string venueId)
         {
-            return _context.Reviews.Any(e => e.Id == id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviews = await _context.Venues
+                .Where(i => i.Id == venueId)
+                .Include(i => i.Reviews)
+                .FirstOrDefaultAsync();
+
+
+            if (reviews == null)
+            {
+                return NotFound(venueId);
+            }
+            
+            return Ok(reviews.Reviews);
         }
+
     }
 }
