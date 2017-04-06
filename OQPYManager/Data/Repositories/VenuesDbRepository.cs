@@ -13,11 +13,17 @@ namespace OQPYManager.Data
         {
             _context = context;
 
+            if (!_context.Venues.Any())
+            {
+                AddVenue(new Venue("Josip", "WWWW", "None", "This ONe"));
+            }
+
         }
 
         public void AddVenue(Venue venue)
         {
             _context.Venues.Add(venue);
+            _context.SaveChanges();
         }
 
         public IEnumerable<Venue> GetAllVenues()

@@ -5,7 +5,7 @@ using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data
 {
-    interface IVenuesDbRepository
+    public interface IVenuesDbRepository
     {
         void AddVenue(Venue venue);
 
