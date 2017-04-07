@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OQPYModels.Models.CoreModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace OQPYManager.Data
 {
@@ -15,55 +17,84 @@ namespace OQPYManager.Data
 
             if (!_context.Venues.Any())
             {
-                AddVenue(new Venue("Josip", "WWWW", "None", "This ONe"));
+                Init();
             }
 
         }
+        public void Init()
+        {
+            Task.WaitAll(AddVenueAsync(new Venue("Josip", "WWWW", "None", "This ONe")));
+        }
 
-        public void AddVenue(Venue venue)
+        public async Task AddVenueAsync(Venue venue)
         {
             _context.Venues.Add(venue);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+        }
+        public async Task AddVenuesAsync(params Venue[] venues)
+        {
+            _context.Venues.AddRange(venues);
+            await _context.SaveChangesAsync();
+        }
+        public async Task AddVenuesAsync(IEnumerable<Venue> venues)
+        {
+            _context.Venues.AddRange(venues);
+            await _context.SaveChangesAsync();
         }
 
         public IEnumerable<Venue> GetAllVenues()
         {
             return _context.Venues.AsQueryable();
         }
+        public IEnumerable<Venue> GetAllVenues(params string[] includedParams)
+        {
+            var venues = _context.Venues.AsQueryable();
+            foreach (var param in includedParams)
+                venues.Include(param);
+            return venues;
+        }
 
+        public IEnumerable<Venue> GetAllVenues(string includedParams)
+        {
+            return GetAllVenues(includedParams.Split(new char[1]{ ';' }, StringSplitOptions.RemoveEmptyEntries));
+        }
 
         public IEnumerable<Venue> GetVenues(params Func<Venue, bool>[] filters)
         {
-            var collection = GetAllVenues();
-
+            return GetVenues(string.Empty, filters);
+        }
+        public IEnumerable<Venue> GetVenues(string includedParams, params Func<Venue, bool>[] filters)
+        {
+            var venues = GetAllVenues(includedParams);
             foreach (var filter in filters)
             {
-                collection = collection.Where(filter);
+                venues = venues.Where(filter);
             }
 
-            return collection;
+            return venues;
         }
+
 
         //I may change implementation a bit beacuse we may need to
         //load some other info(like owner and such)
-        public Venue FindVenue(string key)
+        public async Task<Venue> FindVenueAsync(string key)
         {
-            return _context.Venues.Find(key);
+            return await _context.Venues.FindAsync(key);
         }
 
-        public void Remove(string key)
+        public async Task RemoveAsync(string key)
         {
-            var entity = FindVenue(key);
+            var entity = await FindVenueAsync(key);
             _context.Venues.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Venue venue)
+        public async Task UpdateAsync(Venue venue)
         {
             _context.Venues.Update(venue);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        
+
     }
 }
