@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OQPYManager.Data;
+using OQPYManager.Data.Interface;
+using OQPYManager.Data.Repositories;
 using OQPYManager.Models;
 using OQPYManager.Services;
 using Swashbuckle.AspNetCore.Swagger;
@@ -26,7 +28,6 @@ namespace OQPYManager
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>();
             }
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }

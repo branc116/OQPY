@@ -1,29 +1,34 @@
-﻿using System;
+﻿using OQPYModels.Models.CoreModels;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using OQPYModels.Models.CoreModels;
 using System.Threading.Tasks;
 
-namespace OQPYManager.Data
+namespace OQPYManager.Data.Interface
 {
     public interface IVenuesDbRepository
     {
         Task AddVenueAsync(Venue venue);
+
         Task AddVenuesAsync(params Venue[] venues);
+
         Task AddVenuesAsync(IEnumerable<Venue> venues);
+
         IEnumerable<Venue> GetAllVenues();
+
         /// <summary>
         /// Get all venues with included parameters
         /// </summary>
         /// <param name="includedParams">list of included parameters e.g. "Resources"</param>
         /// <returns>list of venues with included parameters</returns>
         IEnumerable<Venue> GetAllVenues(params string[] includedParams);
+
         /// <summary>
         /// Get all venues with included parameters
         /// </summary>
         /// <param name="includedParams">list of included parameters seperated with ';' e.g. "Resources;Resources.Reservations"</param>
         /// <returns>list of venues with included parameters</returns>
         IEnumerable<Venue> GetAllVenues(string includedParams);
+
         /// <summary>
         /// Gets venues based on passed filters.
         /// </summary>

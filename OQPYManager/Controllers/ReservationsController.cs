@@ -172,6 +172,7 @@ namespace OQPYManager.Controllers
                 .Include(i => i.Reservations)
                 .Include(i => i.Venue)
                 .FirstOrDefaultAsync();
+
             if (resource == null)
                 return NotFound(new { resourceId = resourceId });
 

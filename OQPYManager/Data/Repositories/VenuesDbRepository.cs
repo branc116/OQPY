@@ -1,27 +1,20 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using OQPYManager.Data.Interface;
+using OQPYModels.Models.CoreModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OQPYModels.Models.CoreModels;
-using Microsoft.EntityFrameworkCore;
 
-namespace OQPYManager.Data
+namespace OQPYManager.Data.Repositories
 {
-    public class VenuesDbRepository : IVenuesDbRepository
+    public class VenuesDbRepository : BaseDbRepository, IVenuesDbRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public VenuesDbRepository(ApplicationDbContext context)
+        public VenuesDbRepository(ApplicationDbContext context) : base(context)
         {
-            _context = context;
-
-            if (!_context.Venues.Any())
-            {
-                Init();
-            }
-
         }
-        public void Init()
+
+        public override void OnCreate()
         {
             Task.WaitAll(AddVenueAsync(new Venue("Josip", "WWWW", "None", "This ONe")));
         }
@@ -31,11 +24,13 @@ namespace OQPYManager.Data
             _context.Venues.Add(venue);
             await _context.SaveChangesAsync();
         }
+
         public async Task AddVenuesAsync(params Venue[] venues)
         {
             _context.Venues.AddRange(venues);
             await _context.SaveChangesAsync();
         }
+
         public async Task AddVenuesAsync(IEnumerable<Venue> venues)
         {
             _context.Venues.AddRange(venues);
@@ -46,6 +41,7 @@ namespace OQPYManager.Data
         {
             return _context.Venues.AsQueryable();
         }
+
         public IEnumerable<Venue> GetAllVenues(params string[] includedParams)
         {
             var venues = _context.Venues.AsQueryable();
@@ -56,13 +52,14 @@ namespace OQPYManager.Data
 
         public IEnumerable<Venue> GetAllVenues(string includedParams)
         {
-            return GetAllVenues(includedParams.Split(new char[1]{ ';' }, StringSplitOptions.RemoveEmptyEntries));
+            return GetAllVenues(includedParams.Split(new char[1] { ';' }, StringSplitOptions.RemoveEmptyEntries));
         }
 
         public IEnumerable<Venue> GetVenues(params Func<Venue, bool>[] filters)
         {
             return GetVenues(string.Empty, filters);
         }
+
         public IEnumerable<Venue> GetVenues(string includedParams, params Func<Venue, bool>[] filters)
         {
             var venues = GetAllVenues(includedParams);
@@ -73,7 +70,6 @@ namespace OQPYManager.Data
 
             return venues;
         }
-
 
         //I may change implementation a bit beacuse we may need to
         //load some other info(like owner and such)
@@ -94,7 +90,5 @@ namespace OQPYManager.Data
             _context.Venues.Update(venue);
             await _context.SaveChangesAsync();
         }
-
-
     }
 }

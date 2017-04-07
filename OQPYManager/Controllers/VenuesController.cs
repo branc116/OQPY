@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OQPYManager.Data.Interface;
+using OQPYModels.Models.CoreModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using OQPYManager.Data;
-using OQPYModels.Models.CoreModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,7 +13,6 @@ namespace OQPYManager.Controllers
     [Route("api/venues")]
     public class VenuesController : Controller
     {
-
         private readonly IVenuesDbRepository _venuesDbRepository;
 
         public VenuesController(IVenuesDbRepository venuesDbRepository)
@@ -21,22 +20,10 @@ namespace OQPYManager.Controllers
             _venuesDbRepository = venuesDbRepository;
         }
 
+        [HttpGet]
         public IEnumerable<Venue> GetAllVenues()
         {
             return _venuesDbRepository.GetAllVenues();
-        }
-
-        // GET api/values/5
-        [HttpGet("{id}", Name = "GetVenue")]
-        public IActionResult GetVenue(string id)
-        {
-            var item = _venuesDbRepository.FindVenueAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return new ObjectResult(item);
         }
 
         [HttpPost]
@@ -53,11 +40,12 @@ namespace OQPYManager.Controllers
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(string id)
+        [HttpDelete]
+        public void Delete([FromHeader] string id)
         {
             _venuesDbRepository.RemoveAsync(id);
         }
+
         [HttpPost]
         [Route("Multi")]
         public async Task<IActionResult> PostVenueMulti([FromBody] IEnumerable<string> names)
