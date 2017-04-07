@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OQPYManager.Data;
+using OQPYManager.Data.Interface;
+using OQPYManager.Data.Repositories;
 using OQPYManager.Models;
 using OQPYManager.Services;
 using Swashbuckle.AspNetCore.Swagger;
@@ -26,7 +28,6 @@ namespace OQPYManager
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>();
             }
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -55,6 +56,7 @@ namespace OQPYManager
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddScoped<IVenuesDbRepository, VenuesDbRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
