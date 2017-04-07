@@ -31,40 +31,40 @@ namespace OQPYManager.Controllers
                    select _;
         }
 
-        // PUT: api/Venues/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutVenue([FromRoute] string id, [FromBody] Venue venue)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// PUT: api/Venues/5
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutVenue([FromRoute] string id, [FromBody] Venue venue)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (id != venue.Id)
-            {
-                return BadRequest();
-            }
+        //    if (id != venue.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(venue).State = EntityState.Modified;
+        //    _context.Entry(venue).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VenueExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!VenueExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         // DELETE: api/Venues/5
         [HttpDelete("{id}")]
