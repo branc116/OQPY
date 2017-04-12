@@ -88,7 +88,58 @@ namespace OQPYModels.Models.CoreModels
             VenueCreationDate = DateTime.Now;
             this.Location = new Location() { Id = Guid.NewGuid().ToString(), Adress = location };
         }
+        public Venue(string name, string ownerUsername, string imageUrl, string location, string id = null)
+        {
 
+            Id = id ?? Guid.NewGuid().ToString();
+            this.Name = name;
+            //Owner = new Owner(ownerUsername, this);
+            ImageUrl = imageUrl;
+            VenueCreationDate = DateTime.Now;
+            this.Location = new Location() { Id = Guid.NewGuid().ToString(), Adress = location };
+        }
+        public Venue FixLoops()
+        {
+            if (this.Employees != null)
+                foreach (var emp in Employees)
+                    emp.Venue = this;
+            if (this.PriceTags != null)
+                foreach (var _ in PriceTags)
+                    _.Venue = this;
+            if (this.Resources != null)
+                foreach (var _ in Resources)
+                    _.Venue = this;
+            if(this.Reviews != null)
+                foreach (var _ in Reviews)
+                    _.Venue = this;
+            if (this.WorkHours != null)
+            {
+                WorkHours.Venue = this;
+                WorkHours.FixLoops();
+            }
+            return this;
+        }
+        public Venue UnFixLoops()
+        {
+            if (this.Employees != null)
+                foreach (var emp in Employees)
+                    emp.Venue = null;
+            if (this.PriceTags != null)
+                foreach (var _ in PriceTags)
+                    _.Venue = null;
+            if (this.Resources != null)
+                foreach (var _ in Resources)
+                    _.Venue = null;
+            if (this.Reviews != null)
+                foreach (var _ in Reviews)
+                    _.Venue = null;
+            if (this.WorkHours != null)
+            {
+                WorkHours.Venue = null;
+                WorkHours.UnFixLoops();
+            }
+            return this;
+        }
         public static IEnumerable<Venue> CreateRandomVenues(int n)
         {
             return from _ in new string(' ', n)

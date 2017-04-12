@@ -21,28 +21,30 @@ namespace OQPYManager.Controllers
 
         // GET: api/Tags
         [HttpGet]
+        [Route("All")]
         public IEnumerable<Tag> GetTags()
         {
             return _context.Tags;
         }
 
         // GET: api/Tags/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTag([FromRoute] string id)
+        [HttpGet]
+        public async Task<Tag> GetTag([FromHeader] string id)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                base.BadRequest();
+                return null;
             }
 
             var Tag = await _context.Tags.SingleOrDefaultAsync(m => m.Id == id);
 
             if (Tag == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(Tag);
+                base.NotFound();
+            else
+                base.Ok();
+            
+            return Tag;
         }
 
         // PUT: api/Tags/5
@@ -175,6 +177,7 @@ namespace OQPYManager.Controllers
         {
             if (!ModelState.IsValid)
             {
+                base.BadRequest();
                 return null;
             }
             var tag = _context.Venues.Include(i => i.Tags);
@@ -182,6 +185,7 @@ namespace OQPYManager.Controllers
 
             if (venue == null)
             {
+                base.NotFound();
                 return null;
             }
 
@@ -189,10 +193,9 @@ namespace OQPYManager.Controllers
                        select _;
 
             if (tags == null)
-            {
-                return null;
-            }
-
+                base.NotFound();
+            else
+                base.Ok();
             return tags;
         }
     }

@@ -24,28 +24,30 @@ namespace OQPYManager.Controllers
 
         // GET: api/Reservations
         [HttpGet]
+        [Route("All")]
         public IEnumerable<Reservation> GetReservations()
         {
             return _context.Reservations;
         }
 
         // GET: api/Reservations/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetReservation([FromRoute] string id)
+        [HttpGet]
+        
+        public async Task<Reservation> GetReservation([FromHeader] string id)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                BadRequest(ModelState);
+                return null;
             }
 
-            var Reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
+            var reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (Reservation == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(Reservation);
+            if (reservation == null)
+                NotFound(id);
+            else
+                Ok();
+            return reservation;
         }
 
         // PUT: api/Reservations/5
@@ -128,33 +130,63 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public IEnumerable<Reservation> GetReservationFromVenues([FromHeader] string venueId)
         {
-            return (from _ in _context.Resources
-                   .Include(i => i.Venue)
-                   .Where(i => i.Venue.Id == venueId)
-                   ?.Include(i => i.Reservations)
-                    let reserv = _.Reservations
-                    select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
+            if (!ModelState.IsValid)
+            {
+                base.BadRequest();
+                return null;
+            }
+            var ret = (from _ in _context.Resources
+                                         .Include(i => i.Venue)
+                                         .Where(i => i.Venue.Id == venueId)
+                                         ?.Include(i => i.Reservations)
+                       let reserv = _.Reservations
+                       select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
+            if (ret == null)
+                base.NotFound();
+            else
+                base.Ok();
+            return ret;
         }
 
         [Route("ResourceReservation")]
         [HttpGet]
         public IEnumerable<Reservation> GetReservationFromResource([FromHeader] string resourceId)
         {
-            return (from _ in _context.Resources
-                   .Where(i => i.Id == resourceId)
-                   ?.Include(i => i.Reservations)
-                    let reserv = _.Reservations
-                    select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
+            if (!ModelState.IsValid)
+            {
+                base.BadRequest();
+                return null;
+            }
+            var ret = (from _ in _context.Resources
+                                         .Where(i => i.Id == resourceId)
+                                         ?.Include(i => i.Reservations)
+                       let reserv = _.Reservations
+                       select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
+            if (ret == null)
+                base.NotFound();
+            else
+                base.Ok();
+            return ret;
         }
 
         [Route("SecretCodeReservation")]
         [HttpGet]
         public async Task<Reservation> GetReservationFromSecretCode([FromHeader] string secretCode)
         {
-            return await _context.Reservations
-                .Where(i => i.SecretCode == secretCode)
-                .Include(i => i.Resource)
-                .FirstOrDefaultAsync();
+            if (!ModelState.IsValid)
+            {
+                base.BadRequest();
+                return null;
+            }
+            var ret = await _context.Reservations
+                                    .Where(i => i.SecretCode == secretCode)
+                                    .Include(i => i.Resource)
+                                    .FirstOrDefaultAsync();
+            if (ret == null)
+                base.NotFound();
+            else
+                base.Ok();
+            return ret;
         }
 
         [HttpPost]

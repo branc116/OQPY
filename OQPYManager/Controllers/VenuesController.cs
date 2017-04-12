@@ -21,6 +21,7 @@ namespace OQPYManager.Controllers
         }
 
         [HttpGet]
+        [Route("All")]
         public IEnumerable<Venue> GetAllVenues()
         {
             return _venuesDbRepository.GetAllVenues();
@@ -61,6 +62,18 @@ namespace OQPYManager.Controllers
             await _venuesDbRepository.AddVenuesAsync(venues);
             return CreatedAtAction("GetVenue", new { ids = names });
         }
+        [HttpPost]
+        [Route("MultiFull")]
+        public async Task<IActionResult> PostVenueMulti([FromBody] IEnumerable<Venue> venues)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _venuesDbRepository.AddVenuesAsync(from _ in venues select _.FixLoops());
+            return Ok();
+        }
 
         [HttpPost]
         [Route("Single")]
@@ -77,38 +90,41 @@ namespace OQPYManager.Controllers
 
         [HttpGet]
         [Route("Multi")]
-        public async Task<IActionResult> GetVenuesMulti([FromBody] IEnumerable<string> ids)
+        public async Task<IEnumerable<Venue>> GetVenuesMulti([FromBody] IEnumerable<string> ids)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                BadRequest(ModelState);
+                return null;
             }
 
             var venues = _venuesDbRepository.GetVenues(i => ids.Contains(i.Id));
 
             if (venues == null)
-                return NotFound();
-
-            return Ok(venues);
+                base.NotFound();
+            else
+                base.Ok();
+            return venues;
         }
 
         [HttpGet]
         [Route("Single")]
-        public async Task<IActionResult> GetVenueSingle([FromHeader] string id)
+        public async Task<Venue> GetVenueSingle([FromHeader] string id)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                base.BadRequest();
+                return null;
             }
 
             var venue = await _venuesDbRepository.FindVenueAsync(id);
 
             if (venue == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(venue);
+                base.NotFound();
+            else
+                base.Ok();
+            return venue;
         }
+        
     }
 }
