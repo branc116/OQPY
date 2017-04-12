@@ -1,7 +1,7 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
 using System.Collections.Generic;
 
-namespace OQPYBot1.Helper
+namespace OQPYBot.Helper
 {
     public static class Log
     {

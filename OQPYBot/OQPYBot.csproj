@@ -190,6 +190,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Helper\Constants.cs" />
+    <Compile Include="Controllers\Helper\Helper.cs" />
     <Compile Include="Controllers\LuisDialogOQPY.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -228,6 +230,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OQPYClient\OQPYClient.csproj">
+      <Project>{f01a57eb-850e-481e-bd63-423c74e53777}</Project>
+      <Name>OQPYClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OQPYModels\OQPYModels.csproj">
       <Project>{cb96f60f-632d-4420-84d0-9a641ffaa395}</Project>
       <Name>OQPYModels</Name>

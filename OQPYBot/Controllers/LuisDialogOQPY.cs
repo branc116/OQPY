@@ -5,10 +5,13 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
-using OQPYBot1.Helper;
+using OQPYBot.Helper;
 using OQPYModels.Extensions;
 using OQPYModels.Models.CoreModels;
 using OQPYModels.TestObjects;
+
+using static OQPYBot.Controllers.Helper.Helper;
+using static OQPYBot.Controllers.Helper.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,23 +24,23 @@ namespace OQPYBot
     [Serializable]
     public class LuisDialogOQPY : LuisDialog<object>
     {
-        private const string _propNames = "propertyNames";
-        private const string _name = "name";
-        private const string _email = "email";
-        private const string _location = "location";
-        private const string _sublocation = "SubLocation";
-        private const string _subsublocation = "SubSubLocation";
-        private readonly List<string> _propertyKeys = new List<string> { "name", "email", "location" };
-        private readonly List<string> _cardActions1 = new List<string> { "Info", "Comments", "Reservate", "See list of reservations" };
-        private readonly List<string> _cardActions2 = new List<string> { "yes", "no" };
+
+        public LuisDialogOQPY()
+        {
+            WaitContextPrompt += (conx, args) =>
+            {
+                if (conx is IDialogContext context)
+                {
+                    context.Wait(MessageReceived);
+                }
+            };
+        }
 
         [LuisIntent("")]
         [LuisIntent("none")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-#if DEBUG1
             await DebugOut(context, "None");
-#endif
             var message = context.MakeMessage();
 
             string mess = "Intent | score" + Environment.NewLine + "-------|-------" + Environment.NewLine +
@@ -48,9 +51,7 @@ namespace OQPYBot
             Log.BasicLog(name ?? "Unnamed", result.Query + "\r\n" + mess, SeverityLevel.Information);
             message.Text = mess;
             await context.PostAsync($"Hi {name ?? ""}!");
-            await Task.Delay(400);
             await context.PostAsync($"This: \"{result.Query}\" doesn't look like anything to me :(");
-            await Task.Delay(400);
             await context.PostAsync(message);
             context.Wait(this.MessageReceived);
         }
@@ -58,36 +59,28 @@ namespace OQPYBot
         [LuisIntent("self.info")]
         public async Task SelfInfo(IDialogContext context, LuisResult result)
         {
-#if DEBUG1
             await DebugOut(context, "SelfInfo");
-#endif
             await ApplyProperty(context, result, _name);
         }
 
         [LuisIntent("self.info.email")]
         public async Task SelfInfoEmail(IDialogContext context, LuisResult result)
         {
-#if DEBUG1
             await DebugOut(context, "SelfInfoEmail");
-#endif
             await ApplyProperty(context, result, _email);
         }
 
         [LuisIntent("self.info.location")]
         public async Task SelfInfoLocation(IDialogContext context, LuisResult result)
         {
-#if DEBUG1
             await DebugOut(context, "SelfInfoLocation");
-#endif
             await ApplyProperty(context, result, _location);
         }
 
         [LuisIntent("self.info.get")]
         public async Task SelfInfoGet(IDialogContext context, LuisResult result)
         {
-#if DEBUG1
             await DebugOut(context, "SelfInfoGet");
-#endif
             var message = context.MakeMessage();
             message.Text = $"Property | Value{Environment.NewLine}---|---{Environment.NewLine}";
             message.Text += (from _ in _propertyKeys
@@ -99,9 +92,7 @@ namespace OQPYBot
         [LuisIntent("venue.search")]
         public async Task VenueSearch(IDialogContext context, LuisResult result)
         {
-#if DEBUG1
             await DebugOut(context, "SelfInfoGet");
-#endif
             var message = context.MakeMessage();
             message.Attachments = MakeACard(TestObjects.VenuesTest).ToList();
             message.AttachmentLayout = "carousel";
@@ -109,103 +100,16 @@ namespace OQPYBot
             await context.PostAsync(message);
         }
 
-        public IEnumerable<Attachment> MakeACard(IEnumerable<Venue> venue)
-        {
-            var comonTags = venue.IntersectionTags();
-            var subtitle = comonTags.TagsToString((i) => $"{i.TagName} ");
-            return from _ in venue
-                   select new HeroCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions().ToList()).ToAttachment();
-        }
-
-        public IEnumerable<CardImage> MakeListOfImages(IEnumerable<Venue> venue)
-        {
-            var images = from _ in venue
-                         select new CardImage(_.ImageUrl);
-            return images;
-        }
-
-        public List<CardImage> MakeImage(Venue venue)
-        {
-            return new List<CardImage>() { new CardImage(venue.ImageUrl) };
-        }
-
-        public IEnumerable<CardAction> MakeCardActions()
-        {
-            return from _ in _cardActions1
-                   select new CardAction() { Title = _, Value = _, Type = "imBack" };
-        }
-
-        private async Task ApplyProperty(IDialogContext context, LuisResult result, params string[] propertyName)
-        {
-            for (int i = 0; i < result.Entities.Count; i++)
-            {
-                result.Entities[i].Type = result.Entities[i].Type.Replace("builtin.", string.Empty);
-            }
-            var items = from _ in result.Entities
-                        let type = _.Type
-                        where propertyName?.Contains(type) ?? false
-                        select new { Key = type, Value = _.Entity };
-
-            if (items.Any())
-            {
-                var question = (from _ in items
-                                select $"Is your {_.Key} {_.Value}?")
-                                .Aggregate((i, j) => $"{i.Replace('?', ' ')} and {j.ToLower()}");
-                foreach (var prop in items)
-                    context.PrivateConversationData.SetValue(prop.Key, prop.Value);
-                context.PrivateConversationData.SetValue(_propNames, propertyName);
-                PromptDialog.Confirm(context, ConfirmPropertyAboutUser, question);
-            }
-            else
-            {
-                await None(context, result);
-            }
-        }
-
-        private async Task ConfirmPropertyAboutUser(IDialogContext conx, IAwaitable<bool> args)
-        {
-            var res = await args;
-            if (!conx.PrivateConversationData.TryGetValue(_propNames, out string[] propertyName))
-            {
-                conx.Wait(this.MessageReceived);
-                return;
-            }
-            foreach (var pro in propertyName)
-            {
-                if (conx.PrivateConversationData.TryGetValue(pro, out string prop))
-                {
-                    if (res)
-                    {
-                        conx.UserData.SetValue(pro, prop);
-                        await conx.PostAsync($"Ok, your {pro} is now {prop}");
-                    }
-                    else
-                    {
-                        await conx.PostAsync($"Then what is your {pro}?");
-                    }
-                }
-                else
-                {
-                    await conx.PostAsync($"Something went wrong, ups :/");
-                }
-            }
-            conx.Wait(this.MessageReceived);
-        }
-
         public override async Task StartAsync(IDialogContext context)
         {
-#if DEBUG1
             await DebugOut(context, "StartAsync");
-#endif
             await base.StartAsync(context);
         }
 
         protected override async Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
             var a = await item;
-#if DEBUG1
             await DebugOut(context, "MessageRecived");
-#endif
             if (a.ChannelId == "facebook")
             {
                 var reply = context.MakeMessage();
@@ -230,9 +134,13 @@ namespace OQPYBot
                          "No Attachments",
                     SeverityLevel.Information);
         }
-
+        public async Task ExposeMessageRecived(IDialogContext context, IAwaitable<IMessageActivity> item)
+        {
+            await MessageReceived(context, item);
+        }
         private async Task DebugOut(IDialogContext context, string methode)
         {
+#if DEBUG1
             await context.PostAsync($"DEBUG from methode: {methode} ");
             await context.PostAsync($"frame:");
             await context.PostAsync((from _ in context.Frames
@@ -240,6 +148,7 @@ namespace OQPYBot
             await context.PostAsync($"Private data={context.PrivateConversationData.Count}");
             await context.PostAsync($"Conversation data={context.ConversationData.Count}");
             await context.PostAsync($"User data={context.UserData.Count}");
+#endif
         }
     }
 }
