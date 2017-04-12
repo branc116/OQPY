@@ -22,28 +22,29 @@ namespace OQPYManager.Controllers
 
         // GET: api/Reviews
         [HttpGet]
+        [Route("All")]
         public IEnumerable<Review> GetReviews()
         {
             return _context.Reviews;
         }
 
         // GET: api/Reviews/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetReview([FromRoute] string id)
+        [HttpGet]
+        public async Task<Review> GetReview([FromHeader] string id)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                BadRequest(ModelState);
+                return null;
             }
 
-            var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
+            var review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (Review == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(Review);
+            if (review == null)
+                NotFound(id);
+            else
+                Ok();
+            return review;
         }
 
         // PUT: api/Reviews/5
@@ -121,11 +122,12 @@ namespace OQPYManager.Controllers
 
         [HttpGet]
         [Route("VenueReview")]
-        public async Task<IActionResult> GetReviewFromVenue([FromHeader] string venueId)
+        public async Task<IEnumerable<Review>> GetReviewFromVenue([FromHeader] string venueId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                BadRequest(ModelState);
+                return null;
             }
 
             var reviews = await _context.Venues
@@ -134,11 +136,10 @@ namespace OQPYManager.Controllers
                 .FirstOrDefaultAsync();
 
             if (reviews == null)
-            {
-                return NotFound(venueId);
-            }
-
-            return Ok(reviews.Reviews);
+                NotFound(venueId);
+            else
+                Ok();
+            return reviews.Reviews;
         }
 
         [HttpPost]
