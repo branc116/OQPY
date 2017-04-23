@@ -1,11 +1,12 @@
-﻿using OQPYModels.Models.CoreModels;
+﻿using OQPYManager.Data.Repositories.Interfaces;
+using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OQPYManager.Data.Interface
+namespace OQPYManager.Data.Repositories.Interfaces
 {
-    public interface IVenuesDbRepository
+    public interface IVenuesDbRepository : IBaseDbRepository<Venue>
     {
         Task AddVenueAsync(Venue venue);
 
