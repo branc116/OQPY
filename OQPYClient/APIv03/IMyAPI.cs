@@ -2,12 +2,12 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
-namespace OQPYClient.APIv02
+namespace OQPYClient.APIv03
 {
     using Microsoft.Rest;
+    using Newtonsoft.Json;
     using OQPYModels.Models.CoreModels;
     using OQPYModels.Models;
-    using Newtonsoft.Json;
     using System.Collections;
     using System.Collections.Generic;
     using System.Threading;
@@ -388,6 +388,16 @@ namespace OQPYClient.APIv02
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse> ApiVenuesSinglePostWithHttpMessagesAsync(Venue venue = default(Venue), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='venueLike'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IList<Venue>>> ApiVenuesFilterPostWithHttpMessagesAsync(Venue venueLike = default(Venue), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

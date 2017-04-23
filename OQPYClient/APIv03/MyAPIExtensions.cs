@@ -2,7 +2,7 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
-namespace OQPYClient.APIv02
+namespace OQPYClient.APIv03
 {
     using OQPYModels.Models.CoreModels;
     using OQPYModels.Models;
@@ -870,6 +870,32 @@ namespace OQPYClient.APIv02
             public static async Task ApiVenuesSinglePostAsync(this IMyAPI operations, Venue venue = default(Venue), CancellationToken cancellationToken = default(CancellationToken))
             {
                 (await operations.ApiVenuesSinglePostWithHttpMessagesAsync(venue, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='venueLike'>
+            /// </param>
+            public static IList<Venue> ApiVenuesFilterPost(this IMyAPI operations, Venue venueLike = default(Venue))
+            {
+                return operations.ApiVenuesFilterPostAsync(venueLike).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='venueLike'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IList<Venue>> ApiVenuesFilterPostAsync(this IMyAPI operations, Venue venueLike = default(Venue), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ApiVenuesFilterPostWithHttpMessagesAsync(venueLike, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
     }
