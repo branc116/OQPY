@@ -32,7 +32,6 @@ namespace OQPYManager.Controllers
 
         // GET: api/Reservations/5
         [HttpGet]
-        
         public async Task<Reservation> GetReservation([FromHeader] string id)
         {
             if (!ModelState.IsValid)

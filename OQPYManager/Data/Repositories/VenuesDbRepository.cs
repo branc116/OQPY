@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OQPYManager.Data.Interface;
+using OQPYManager.Data.Repositories.Base;
+using OQPYModels.Extensions;
 using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories
 {
-    public class VenuesDbRepository : BaseDbRepository, IVenuesDbRepository
+    public class VenuesDbRepository : BaseVenueDbRepository
     {
         public VenuesDbRepository(ApplicationDbContext context) : base(context)
         {
@@ -19,30 +21,30 @@ namespace OQPYManager.Data.Repositories
             Task.WaitAll(AddVenueAsync(new Venue("Josip", "WWWW", "None", "This ONe")));
         }
 
-        public async Task AddVenueAsync(Venue venue)
+        public override async Task AddVenueAsync(Venue venue)
         {
             _context.Venues.Add(venue);
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddVenuesAsync(params Venue[] venues)
+        public override async Task AddVenuesAsync(params Venue[] venues)
         {
             _context.Venues.AddRange(venues);
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddVenuesAsync(IEnumerable<Venue> venues)
+        public override async Task AddVenuesAsync(IEnumerable<Venue> venues)
         {
             _context.Venues.AddRange(venues);
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Venue> GetAllVenues()
+        public override IEnumerable<Venue> GetAllVenues()
         {
             return _context.Venues.AsQueryable();
         }
 
-        public IEnumerable<Venue> GetAllVenues(params string[] includedParams)
+        public override IEnumerable<Venue> GetAllVenues(params string[] includedParams)
         {
             var venues = _context.Venues.AsQueryable();
             foreach (var param in includedParams)
@@ -50,17 +52,17 @@ namespace OQPYManager.Data.Repositories
             return venues;
         }
 
-        public IEnumerable<Venue> GetAllVenues(string includedParams)
+        public override IEnumerable<Venue> GetAllVenues(string includedParams)
         {
             return GetAllVenues(includedParams.Split(new char[1] { ';' }, StringSplitOptions.RemoveEmptyEntries));
         }
 
-        public IEnumerable<Venue> GetVenues(params Func<Venue, bool>[] filters)
+        public override IEnumerable<Venue> GetVenues(params Func<Venue, bool>[] filters)
         {
             return GetVenues(string.Empty, filters);
         }
 
-        public IEnumerable<Venue> GetVenues(string includedParams, params Func<Venue, bool>[] filters)
+        public override IEnumerable<Venue> GetVenues(string includedParams, params Func<Venue, bool>[] filters)
         {
             var venues = GetAllVenues(includedParams);
             foreach (var filter in filters)
@@ -73,22 +75,20 @@ namespace OQPYManager.Data.Repositories
 
         //I may change implementation a bit beacuse we may need to
         //load some other info(like owner and such)
-        public async Task<Venue> FindVenueAsync(string key)
-        {
-            return await _context.Venues.FindAsync(key);
-        }
+        public override async Task<Venue> FindVenueAsync(string key) => await _context.Venues.FindAsync(key);
 
-        public async Task RemoveAsync(string key)
+        public override async Task RemoveAsync(string key)
         {
             var entity = await FindVenueAsync(key);
             _context.Venues.Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Venue venue)
+        public override async Task UpdateAsync(Venue venue)
         {
             _context.Venues.Update(venue);
             await _context.SaveChangesAsync();
         }
+        public override IQueryable<Venue> Filter(Venue like) => _context.Venues.AsQueryable().Filter(like);
     }
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OQPYManager.Data.Interface;
+﻿using Microsoft.AspNetCore.Mvc;
+using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace OQPYManager.Controllers
             {
                 return BadRequest();
             }
-
+            
             _venuesDbRepository.AddVenueAsync(venue);
 
             return CreatedAtRoute("GetVenue", new { id = venue.Id }, venue);
@@ -62,6 +61,7 @@ namespace OQPYManager.Controllers
             await _venuesDbRepository.AddVenuesAsync(venues);
             return CreatedAtAction("GetVenue", new { ids = names });
         }
+
         [HttpPost]
         [Route("MultiFull")]
         public async Task<IActionResult> PostVenueMulti([FromBody] IEnumerable<Venue> venues)
@@ -125,6 +125,16 @@ namespace OQPYManager.Controllers
                 base.Ok();
             return venue;
         }
-        
+        [HttpPost]
+        [Route("Filter")]
+        public async Task<IEnumerable<Venue>> PostVenueFilter([FromBody] Venue venueLike)
+        {
+            var venues = _venuesDbRepository.Filter(venueLike);
+            if ( venues == null )
+                NotFound();
+            else
+                Ok();
+            return venues.AsEnumerable();
+        }
     }
 }

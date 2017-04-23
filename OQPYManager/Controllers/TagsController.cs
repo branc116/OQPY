@@ -43,7 +43,7 @@ namespace OQPYManager.Controllers
                 base.NotFound();
             else
                 base.Ok();
-            
+
             return Tag;
         }
 
