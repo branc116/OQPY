@@ -1,7 +1,9 @@
-﻿using OQPYModels.Models.CoreModels;
+﻿using OQPYModels.Helper;
+using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace OQPYModels.Extensions
 {
@@ -15,10 +17,10 @@ namespace OQPYModels.Extensions
         /// <returns>Set of common tags</returns>
         public static IEnumerable<Tag> IntersectionTags(this IEnumerable<Venue> venues)
         {
-            if (venues == null || !venues.Any())
+            if ( venues == null || !venues.Any() )
                 return null;
             IEnumerable<Tag> tags = venues.First().Tags;
-            foreach (var _ in venues)
+            foreach ( var _ in venues )
             {
                 tags = tags.Intersect(_.Tags);
             }
@@ -28,20 +30,33 @@ namespace OQPYModels.Extensions
         public static string TagsToString(this IEnumerable<Tag> tags, Func<Tag, string> Stringify)
         {
             string retString = string.Empty;
-            foreach (var _ in tags)
-            {
-                retString += Stringify(_);
-            }
+            if ( tags != null )
+                foreach ( var _ in tags )
+                {
+                    retString += Stringify(_);
+                }
             return retString;
+        }
+
+        public static IQueryable<T> Filter<T>(this IQueryable<T> _, T Like) where T : ICoreModel<T>
+        {
+            //T.Filter
+            //typeof(T).GetProperties().Where(i => i?.GetCustomAttribute<FilterableAttribute>()?.Filter ?? false).Select((i) => i.GetValue(;
+            //from __ in typeof(T).GetProperties()
+            //where __?.GetCustomAttribute<FilterableAttribute>()?.Filter ?? false
+            //where __?.GetValue
+            return (from __ in _
+                    where __.Filter(__, Like)
+                    select __).AsQueryable();
         }
 
         public static bool Working(this WorkHours obj, DateTime from, DateTime to)
         {
             var working = true;
-            if (obj != null)
+            if ( obj != null )
             {
                 var today = obj?.WholeWeek?[from.DayOfWeek];
-                if (today != null)
+                if ( today != null )
                 {
                     working = today.StartTime.Hour < from.Hour && today.EndTime.Hour > from.Hour;
                 }
