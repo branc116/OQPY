@@ -1,18 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using GoogleApi;
 using GoogleApi.Entities.Places.Search.NearBy.Request;
-using GoogleApi.Entities.Common;
-using System.Threading.Tasks;
-using GoogleApi;
-using OQPYClient.APIv02;
+using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
-
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 namespace OQPYCralwer
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var cralw = new Cralw();
             Task.WaitAll(cralw.CralwBars());
@@ -21,11 +18,12 @@ namespace OQPYCralwer
     public class Cralw
     {
         private static string _apiKey = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q";
+
         public Cralw()
         {
-
-
         }
+
+
         public async Task CralwBars()
         {
             var req = new PlacesNearBySearchRequest()
@@ -50,7 +48,7 @@ namespace OQPYCralwer
                                                              select _.Result.PlaceId).ToList());
             var exes = res2.Select(i =>
             {
-                if (containd.All(ii => ii.Id != i.Result.PlaceId))
+                if ( containd.All(ii => ii.Id != i.Result.PlaceId) )
                     return i.Result;
                 return null;
             });
@@ -66,16 +64,16 @@ namespace OQPYCralwer
                                                                        select new Tag(__.ToString(), venue)).ToList() : null
                             let workh = venue.WorkHours = _.OpeningHours.ToNormalWorkHovers(venue)
                             select venue.UnFixLoops();
-            
+
             await api.ApiVenuesMultiFullPostAsync(newVenues.ToList());
         }
     }
+
     public static class Ext
     {
-
         public static WorkHours ToNormalWorkHovers(this GoogleApi.Entities.Places.Details.Response.OpeningHours p, Venue venue)
         {
-            if (p == null)
+            if ( p == null )
                 return null;
             var vh = new WorkHours(null, p.OpenNow, venue);
             vh.WorkTimes = (from _ in p.Periods
