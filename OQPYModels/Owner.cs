@@ -6,7 +6,7 @@ namespace OQPYModels.Models
     /// <summary>
     /// I created this class in order to simplify data creation.
     /// </summary>
-    public class Owner : BaseApplicationUser
+    public class Owner: BaseApplicationUser
     {
         /// <summary>
         /// Owner can own multiple venues.

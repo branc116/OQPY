@@ -1,13 +1,15 @@
-﻿using System;
+﻿using OQPYModels.Helper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static OQPYModels.Helper.Helper;
-using OQPYModels.Helper;
+
 namespace OQPYModels.Models.CoreModels
 {
     public class Venue: ICoreModel<Venue>
     {
         public virtual string Id { get; set; }
+
         [Filterable(Filter = true)]
         public virtual string Name { get; set; }
 
@@ -81,6 +83,7 @@ namespace OQPYModels.Models.CoreModels
         public virtual List<VenueTag> VenueTags { get; set; }
 
         public string ImageUrl { get; set; }
+
         [Filterable(Filter = true)]
         public decimal AverageReview => (Reviews?.Select(i => i?.Rating)?.Sum() ?? -1) / (decimal)(Reviews?.Count ?? 1);
 
@@ -149,6 +152,12 @@ namespace OQPYModels.Models.CoreModels
                 WorkHours.Venue = null;
                 WorkHours.UnFixLoops();
             }
+            if ( this.Tags != null )
+            {
+                foreach ( var t in Tags )
+                    t.UnFixLoops();
+            }
+            this.VenueTags = null;
             return this;
         }
 
@@ -177,7 +186,6 @@ namespace OQPYModels.Models.CoreModels
                    (one.AverageReview == -1 || two.AverageReview == -1 || Math.Abs(two.AverageReview - one.AverageReview) < 3) &&
                    (one.Description == null || two.Description == null || one.Description.ToLower().Contains(two.Description.ToLower()) || two.Description.ToLower().Contains(one.Description.ToLower())) &&
                    (one.Location == null || two.Location == null || one.Location.Filter(one.Location, two.Location));
-
         }
     }
 }

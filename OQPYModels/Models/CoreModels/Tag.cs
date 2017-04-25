@@ -5,7 +5,7 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
-    public class Tag : IComparer<Tag>
+    public class Tag: IComparer<Tag>
     {
         public virtual string Id { get; set; }
 
@@ -45,6 +45,11 @@ namespace OQPYModels.Models.CoreModels
                    let tag = new Tag(tagName)
                    let venuetag = tag.VenueTags = new List<VenueTag>() { new VenueTag(tag, venue) }
                    select tag;
+        }
+
+        internal void UnFixLoops()
+        {
+            VenueTags = null;
         }
     }
 }

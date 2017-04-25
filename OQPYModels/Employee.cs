@@ -5,7 +5,7 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models
 {
-    public class Employee : BaseApplicationUser
+    public class Employee: BaseApplicationUser
     {
         /// <summary>
         /// Venue where worker works.

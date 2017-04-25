@@ -30,9 +30,9 @@ namespace OQPYModels.Models.CoreModels
             get { return _rating; }
             set
             {
-                if (value < Constants.MinimumRating)
+                if ( value < Constants.MinimumRating )
                     _rating = Constants.MinimumRating;
-                else if (value > Constants.MaximumRating)
+                else if ( value > Constants.MaximumRating )
                     _rating = Constants.MaximumRating;
                 else
                     _rating = value;

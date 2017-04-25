@@ -59,15 +59,15 @@ namespace OQPYModels.Models.CoreModels
 
         public void FixLoops()
         {
-            if (this.WorkTimes != null)
-                foreach (var _ in WorkTimes)
+            if ( this.WorkTimes != null )
+                foreach ( var _ in WorkTimes )
                     _.WorkHours = this;
         }
 
         public void UnFixLoops()
         {
-            if (this.WorkTimes != null)
-                foreach (var _ in WorkTimes)
+            if ( this.WorkTimes != null )
+                foreach ( var _ in WorkTimes )
                     _.WorkHours = null;
         }
 
