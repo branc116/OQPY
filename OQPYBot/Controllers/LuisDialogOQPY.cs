@@ -6,8 +6,6 @@ using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using OQPYBot.Helper;
-using OQPYModels.Models.CoreModels;
-using OQPYModels.TestObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +18,13 @@ namespace OQPYBot.Controllers
 {
     [LuisModel("2f4d5a10-e2cf-4238-ab65-51ab4b4dd0ea", "b36329fcaa154546ba25f10bc5740770")]
     [Serializable]
-    public class LuisDialogOQPY : LuisDialog<object>
+    public class LuisDialogOQPY: LuisDialog<object>
     {
         public LuisDialogOQPY()
         {
             WaitContextPrompt += (conx, args) =>
             {
-                if (conx is IDialogContext context)
+                if ( conx is IDialogContext context )
                 {
                     context.Wait(MessageReceived);
                 }
@@ -90,9 +88,8 @@ namespace OQPYBot.Controllers
         public async Task VenueSearch(IDialogContext context, LuisResult result)
         {
             await DebugOut(context, "SelfInfoGet");
-            
-            context.Call(LuisDialogSearchVenues.Create(context), ProcessVenues);    
-            
+
+            context.Call(LuisDialogSearchVenues.Create(context), ProcessVenues);
         }
 
         private async Task ProcessVenues(IDialogContext context, IAwaitable<SearchVenues> result)
@@ -114,7 +111,7 @@ namespace OQPYBot.Controllers
         {
             var a = await item;
             await DebugOut(context, "MessageRecived");
-            if (a.ChannelId == "facebook")
+            if ( a.ChannelId == "facebook" )
             {
                 var reply = context.MakeMessage();
                 reply.ChannelData = new FacebookMessage
