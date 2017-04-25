@@ -1,10 +1,15 @@
 ﻿using GoogleApi;
+using GoogleApi.Entities.Places.Details.Response;
 using GoogleApi.Entities.Places.Search.NearBy.Request;
+using GoogleApi.Entities.Places.Search.NearBy.Response;
+using GoogleApi.Entities.Places.Search.Text.Response;
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 namespace OQPYCralwer
 {
     internal class Program
@@ -15,6 +20,7 @@ namespace OQPYCralwer
             Task.WaitAll(cralw.CralwBars());
         }
     }
+
     public class Cralw
     {
         private static string _apiKey = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q";
@@ -23,6 +29,120 @@ namespace OQPYCralwer
         {
         }
 
+        public async Task<IEnumerable<Venue>> CrawlSimlar(Venue like)
+        {
+            var req = new PlacesNearBySearchRequest()
+            {
+                Key = _apiKey,
+                Keyword = like.Name ?? like.Description ?? like.Tags.Select(i => i.TagName).Aggregate((i, j) => $"{i} {j}") ?? string.Empty,
+                Location = like.Location != null ?
+                           like.Location.Latitude != 0 && like.Location.Longditude != 0 ?
+                                new GoogleApi.Entities.Common.Location(like.Location.Latitude, like.Location.Longditude) :
+                                !string.IsNullOrWhiteSpace(like.Location.Adress) ? (await AddressToLocation(like.Location.Adress)).FirstOrDefault() :
+                            null :
+                            null
+            };
+            var res = await GooglePlaces.NearBySearch.QueryAsync(req);
+            return await GetDetails(res.Results);
+        }
+
+        public async Task<IEnumerable<Venue>> CrawlByText(string text)
+        {
+            var req = new GoogleApi.Entities.Places.Search.Text.Request.PlacesTextSearchRequest()
+            {
+                Key = _apiKey,
+                Query = text,
+            };
+            var res = await GooglePlaces.TextSearch.QueryAsync(req);
+            return await GetDetails(res.Results);
+        }
+
+        public async Task<IEnumerable<Venue>> CrawlByLocation(string address)
+        {
+            var locations = await AddressToLocation(address);
+            return await CrawlByLocation(locations.ToArray());
+        }
+
+        public async Task<IEnumerable<Venue>> CrawlByLocation(params GoogleApi.Entities.Common.Location[] locations)
+        {
+            var reqs = from _ in locations
+                       let location = _
+                       let req = new PlacesNearBySearchRequest()
+                       {
+                           Key = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q",
+                           Location = location,
+                           Radius = 10000,
+                           Sensor = false
+                       }
+                       select GooglePlaces.NearBySearch.QueryAsync(req);
+            var resoults = await Task.WhenAll(reqs);
+            var details = await Task.WhenAll(from _ in resoults
+                                             select GetDetails(_.Results));
+            List<Venue> venues = new List<Venue>(details.Length * 10);
+            foreach ( var _ in details )
+                venues.AddRange(_);
+            return venues;
+        }
+
+        public async Task<IEnumerable<Venue>> GetDetails(IEnumerable<NearByResult> response)
+        {
+            var resTask = from _ in response
+                          let v = new GoogleApi.Entities.Places.Details.Request.PlacesDetailsRequest()
+                          {
+                              PlaceId = _.PlaceId,
+                              Key = _apiKey
+                          }
+                          select GooglePlaces.Details.QueryAsync(v);
+            var res2 = await Task.WhenAll(resTask);
+            return CreateVenues(res2);
+        }
+
+        public async Task<IEnumerable<Venue>> GetDetails(IEnumerable<TextResult> response)
+        {
+            var resTask = from _ in response
+                          let v = new GoogleApi.Entities.Places.Details.Request.PlacesDetailsRequest()
+                          {
+                              PlaceId = _.PlaceId,
+                              Key = _apiKey
+                          }
+                          select GooglePlaces.Details.QueryAsync(v);
+            var res2 = await Task.WhenAll(resTask);
+            return CreateVenues(res2);
+        }
+
+        public IEnumerable<Venue> CreateVenues(params PlacesDetailsResponse[] places)
+        {
+            var newVenues = from res in places
+                            where res.Status == GoogleApi.Entities.Common.Status.Ok
+                            where res.Result != null
+                            let _ = res.Result
+                            let venue = new Venue(_.Name, null, _.Icon, _.FormattedAddress, _.PlaceId)
+                            {
+                                Description = _.Website,
+                                VenueCreationDate = DateTime.Now,
+                            }
+                            let reviews = venue.Reviews = _.Review != null ? (from __ in _.Review
+                                                                              select new OQPYModels.Models.CoreModels.Review((int)(__.Rating * 2), __.Text, venue)).ToList() : null
+                            let tags = venue.Tags = _.Types != null ? (from __ in _.Types
+                                                                       select new Tag(__.ToString(), venue)).ToList() : null
+                            let workh = venue.WorkHours = _.OpeningHours.ToNormalWorkHovers(venue)
+                            select venue.UnFixLoops();
+            return newVenues;
+        }
+
+        public async Task<IEnumerable<GoogleApi.Entities.Common.Location>> AddressToLocation(string address)
+        {
+            var req = new GoogleApi.Entities.Maps.Geocode.Request.GeocodingRequest()
+            {
+                Address = address,
+                Key = _apiKey,
+            };
+            var res = await GoogleApi.GoogleMaps.Geocode.QueryAsync(req);
+            return from _ in res.Results
+                   where _.Geometry != null
+                   where _.Geometry.Location != null
+                   select _.Geometry.Location;
+        }
 
         public async Task CralwBars()
         {
@@ -59,7 +179,7 @@ namespace OQPYCralwer
                                 VenueCreationDate = DateTime.Now,
                             }
                             let reviews = venue.Reviews = _.Review != null ? (from __ in _.Review
-                                                                              select new Review((int)(__.Rating * 2), __.Text, venue)).ToList() : null
+                                                                              select new OQPYModels.Models.CoreModels.Review((int)(__.Rating * 2), __.Text, venue)).ToList() : null
                             let tags = venue.Tags = _.Types != null ? (from __ in _.Types
                                                                        select new Tag(__.ToString(), venue)).ToList() : null
                             let workh = venue.WorkHours = _.OpeningHours.ToNormalWorkHovers(venue)
