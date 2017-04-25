@@ -7,15 +7,13 @@ namespace OQPYClient.APIv03
     using Microsoft.Rest;
     using Newtonsoft.Json;
     using OQPYModels.Models.CoreModels;
-    using OQPYModels.Models;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
     /// </summary>
-    public partial interface IMyAPI : System.IDisposable
+    public partial interface IMyAPI: System.IDisposable
     {
         /// <summary>
         /// The base URI of the service.
@@ -31,7 +29,6 @@ namespace OQPYClient.APIv03
         /// Gets or sets json deserialization settings.
         /// </summary>
         JsonSerializerSettings DeserializationSettings { get; }
-
 
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -398,6 +395,5 @@ namespace OQPYClient.APIv03
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<IList<Venue>>> ApiVenuesFilterPostWithHttpMessagesAsync(Venue venueLike = default(Venue), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
     }
 }
