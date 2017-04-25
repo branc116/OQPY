@@ -5,12 +5,11 @@ using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories
 {
-    public class VenuesDbRepository : BaseVenueDbRepository
+    public class VenuesDbRepository: BaseVenueDbRepository
     {
         public VenuesDbRepository(ApplicationDbContext context) : base(context)
         {
@@ -47,7 +46,7 @@ namespace OQPYManager.Data.Repositories
         public override IEnumerable<Venue> GetAllVenues(params string[] includedParams)
         {
             var venues = _context.Venues.AsQueryable();
-            foreach (var param in includedParams)
+            foreach ( var param in includedParams )
                 venues.Include(param);
             return venues;
         }
@@ -65,7 +64,7 @@ namespace OQPYManager.Data.Repositories
         public override IEnumerable<Venue> GetVenues(string includedParams, params Func<Venue, bool>[] filters)
         {
             var venues = GetAllVenues(includedParams);
-            foreach (var filter in filters)
+            foreach ( var filter in filters )
             {
                 venues = venues.Where(filter);
             }
@@ -89,6 +88,25 @@ namespace OQPYManager.Data.Repositories
             _context.Venues.Update(venue);
             await _context.SaveChangesAsync();
         }
-        public override IQueryable<Venue> Filter(Venue like) => _context.Venues.AsQueryable().Filter(like);
+
+        public async override Task<IQueryable<Venue>> Filter(Venue like)
+        {
+            var venues = _context.Venues.AsQueryable().Filter(like);
+            if ( venues.Count() < 5 )
+            {
+                var crawl = new OQPYCralwer.Cralw();
+                IEnumerable<Venue> newVenues;
+                if ( like.Location == null )
+                    newVenues = await crawl.CrawlByText(like.Name);
+                else
+                    newVenues = await crawl.CrawlSimlar(like);
+                newVenues = newVenues.Where((i) =>
+                {
+                    return _context.Venues.All(j => j.Id != i.Id);
+                });
+                await AddVenuesAsync(newVenues);
+            }
+            return venues;
+        }
     }
 }

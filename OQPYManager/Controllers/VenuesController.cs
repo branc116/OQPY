@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace OQPYManager.Controllers
 {
     [Route("api/venues")]
-    public class VenuesController : Controller
+    public class VenuesController: Controller
     {
         private readonly IVenuesDbRepository _venuesDbRepository;
 
@@ -29,11 +29,11 @@ namespace OQPYManager.Controllers
         [HttpPost]
         public IActionResult CreateVenue([FromBody] Venue venue)
         {
-            if (venue == null)
+            if ( venue == null )
             {
                 return BadRequest();
             }
-            
+
             _venuesDbRepository.AddVenueAsync(venue);
 
             return CreatedAtRoute("GetVenue", new { id = venue.Id }, venue);
@@ -50,7 +50,7 @@ namespace OQPYManager.Controllers
         [Route("Multi")]
         public async Task<IActionResult> PostVenueMulti([FromBody] IEnumerable<string> names)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -66,7 +66,7 @@ namespace OQPYManager.Controllers
         [Route("MultiFull")]
         public async Task<IActionResult> PostVenueMulti([FromBody] IEnumerable<Venue> venues)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -79,7 +79,7 @@ namespace OQPYManager.Controllers
         [Route("Single")]
         public async Task<IActionResult> PostVenueSingle([FromBody] Venue venue)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -92,7 +92,7 @@ namespace OQPYManager.Controllers
         [Route("Multi")]
         public async Task<IEnumerable<Venue>> GetVenuesMulti([FromBody] IEnumerable<string> ids)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 BadRequest(ModelState);
                 return null;
@@ -100,7 +100,7 @@ namespace OQPYManager.Controllers
 
             var venues = _venuesDbRepository.GetVenues(i => ids.Contains(i.Id));
 
-            if (venues == null)
+            if ( venues == null )
                 base.NotFound();
             else
                 base.Ok();
@@ -111,7 +111,7 @@ namespace OQPYManager.Controllers
         [Route("Single")]
         public async Task<Venue> GetVenueSingle([FromHeader] string id)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 base.BadRequest();
                 return null;
@@ -119,22 +119,27 @@ namespace OQPYManager.Controllers
 
             var venue = await _venuesDbRepository.FindVenueAsync(id);
 
-            if (venue == null)
+            if ( venue == null )
                 base.NotFound();
             else
                 base.Ok();
             return venue;
         }
+
         [HttpPost]
         [Route("Filter")]
         public async Task<IEnumerable<Venue>> PostVenueFilter([FromBody] Venue venueLike)
         {
-            var venues = _venuesDbRepository.Filter(venueLike);
+            var venues = (await _venuesDbRepository.Filter(venueLike)).Take(10).ToList();
             if ( venues == null )
+            {
                 NotFound();
+                return null;
+            }
             else
                 Ok();
-            return venues.AsEnumerable();
+            return from _ in venues
+                   select _.UnFixLoops();
         }
     }
 }

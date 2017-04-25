@@ -11,7 +11,7 @@ namespace OQPYManager.Controllers
 {
     [Produces("application/json")]
     [Route("api/Reviews")]
-    public class ReviewsController : Controller
+    public class ReviewsController: Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -32,7 +32,7 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public async Task<Review> GetReview([FromHeader] string id)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 BadRequest(ModelState);
                 return null;
@@ -40,7 +40,7 @@ namespace OQPYManager.Controllers
 
             var review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (review == null)
+            if ( review == null )
                 NotFound(id);
             else
                 Ok();
@@ -51,12 +51,12 @@ namespace OQPYManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReview([FromRoute] string id, [FromBody] Review Review)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != Review.Id)
+            if ( id != Review.Id )
             {
                 return BadRequest();
             }
@@ -67,9 +67,9 @@ namespace OQPYManager.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch ( DbUpdateConcurrencyException )
             {
-                if (!ReviewExists(id))
+                if ( !ReviewExists(id) )
                 {
                     return NotFound();
                 }
@@ -86,7 +86,7 @@ namespace OQPYManager.Controllers
         [HttpPost]
         public async Task<IActionResult> PostReview([FromBody] Review Review)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -101,13 +101,13 @@ namespace OQPYManager.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] string id)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
 
             var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
-            if (Review == null)
+            if ( Review == null )
             {
                 return NotFound();
             }
@@ -124,7 +124,7 @@ namespace OQPYManager.Controllers
         [Route("VenueReview")]
         public async Task<IEnumerable<Review>> GetReviewFromVenue([FromHeader] string venueId)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 BadRequest(ModelState);
                 return null;
@@ -135,7 +135,7 @@ namespace OQPYManager.Controllers
                 .Include(i => i.Reviews)
                 .FirstOrDefaultAsync();
 
-            if (reviews == null)
+            if ( reviews == null )
                 NotFound(venueId);
             else
                 Ok();
@@ -146,12 +146,12 @@ namespace OQPYManager.Controllers
         [Route("VenueReview")]
         public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromBody] int rating, [FromHeader] string venueId)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
             Venue venue = await GetVenueAsync(_context, venueId);
-            if (venue == null)
+            if ( venue == null )
                 return NotFound(venueId);
             var review = new Review(rating, comment, venue);
             _context.Reviews.Add(review);
@@ -164,15 +164,15 @@ namespace OQPYManager.Controllers
         [Route("VenueReview")]
         public async Task<IActionResult> DeleteReviewFromVenue([FromHeader] string reviewId, [FromHeader] string venueId)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
                 return BadRequest(ModelState);
 
             var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == reviewId);
-            if (Review == null)
+            if ( Review == null )
                 return NotFound(reviewId);
 
             var venue = await GetVenueAsync(_context, venueId, "Reviews");
-            if (venue == null)
+            if ( venue == null )
                 return NotFound(venueId);
 
             int n = venue.Reviews.RemoveAll(i => i.Id == reviewId);
