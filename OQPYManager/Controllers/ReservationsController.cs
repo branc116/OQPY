@@ -13,7 +13,7 @@ namespace OQPYManager.Controllers
 {
     [Produces("application/json")]
     [Route("api/Reservations")]
-    public class ReservationsController : Controller
+    public class ReservationsController: Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -32,10 +32,9 @@ namespace OQPYManager.Controllers
 
         // GET: api/Reservations/5
         [HttpGet]
-        
         public async Task<Reservation> GetReservation([FromHeader] string id)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 BadRequest(ModelState);
                 return null;
@@ -43,7 +42,7 @@ namespace OQPYManager.Controllers
 
             var reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (reservation == null)
+            if ( reservation == null )
                 NotFound(id);
             else
                 Ok();
@@ -54,12 +53,12 @@ namespace OQPYManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReservation([FromRoute] string id, [FromBody] Reservation reservation)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != reservation.Id)
+            if ( id != reservation.Id )
             {
                 return BadRequest();
             }
@@ -70,9 +69,9 @@ namespace OQPYManager.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch ( DbUpdateConcurrencyException )
             {
-                if (!ReservationExists(id))
+                if ( !ReservationExists(id) )
                 {
                     return NotFound();
                 }
@@ -89,7 +88,7 @@ namespace OQPYManager.Controllers
         [HttpPost]
         public async Task<IActionResult> PostReservation([FromBody] Reservation reservation)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -104,13 +103,13 @@ namespace OQPYManager.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReservation([FromRoute] string id)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
 
             var Reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
-            if (Reservation == null)
+            if ( Reservation == null )
             {
                 return NotFound();
             }
@@ -130,7 +129,7 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public IEnumerable<Reservation> GetReservationFromVenues([FromHeader] string venueId)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 base.BadRequest();
                 return null;
@@ -141,7 +140,7 @@ namespace OQPYManager.Controllers
                                          ?.Include(i => i.Reservations)
                        let reserv = _.Reservations
                        select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
-            if (ret == null)
+            if ( ret == null )
                 base.NotFound();
             else
                 base.Ok();
@@ -152,7 +151,7 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public IEnumerable<Reservation> GetReservationFromResource([FromHeader] string resourceId)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 base.BadRequest();
                 return null;
@@ -162,7 +161,7 @@ namespace OQPYManager.Controllers
                                          ?.Include(i => i.Reservations)
                        let reserv = _.Reservations
                        select reserv)?.ToList()?.Aggregate((i, j) => { i.AddRange(j); return i; }) ?? null;
-            if (ret == null)
+            if ( ret == null )
                 base.NotFound();
             else
                 base.Ok();
@@ -173,7 +172,7 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public async Task<Reservation> GetReservationFromSecretCode([FromHeader] string secretCode)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 base.BadRequest();
                 return null;
@@ -182,7 +181,7 @@ namespace OQPYManager.Controllers
                                     .Where(i => i.SecretCode == secretCode)
                                     .Include(i => i.Resource)
                                     .FirstOrDefaultAsync();
-            if (ret == null)
+            if ( ret == null )
                 base.NotFound();
             else
                 base.Ok();
@@ -193,10 +192,10 @@ namespace OQPYManager.Controllers
         [Route("ResourceReservation")]
         public async Task<IActionResult> PostReservationToResource([FromHeader] string resourceId, [FromBody] DateTime from, [FromBody] DateTime to)
         {
-            if ((to - from).TotalDays < 1)
+            if ( (to - from).TotalDays < 1 )
                 return BadRequest(new { error = Reservation2Long });
 
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
                 return BadRequest(ModelState);
 
             var resource = await _context.Resources
@@ -205,11 +204,11 @@ namespace OQPYManager.Controllers
                 .Include(i => i.Venue)
                 .FirstOrDefaultAsync();
 
-            if (resource == null)
+            if ( resource == null )
                 return NotFound(new { resourceId = resourceId });
 
             var taken = resource.Reservable(from, to);
-            if (taken)
+            if ( taken )
                 return BadRequest(new { error = ReservatioAlredyTaken });
 
             var workTimes = await _context.VenueWorkHours
@@ -217,7 +216,7 @@ namespace OQPYManager.Controllers
                 .Include(i => i.WorkTimes)
                 .FirstOrDefaultAsync();
             var working = workTimes.Working(from, to);
-            if (!working)
+            if ( !working )
                 return BadRequest(new { error = ClosedInThisTime });
 
             var reservation = new Reservation(from, to, resource);
@@ -231,7 +230,7 @@ namespace OQPYManager.Controllers
         [Route("ResourceReservation")]
         public async Task<IActionResult> DeleteReservation([FromHeader] string resourceId, [FromBody] DateTime from, [FromBody] DateTime to)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -239,7 +238,7 @@ namespace OQPYManager.Controllers
                 .Where(i => i.Id == resourceId)
                 .Include(i => i.Reservations)
                 .FirstOrDefaultAsync();
-            if (resource == null)
+            if ( resource == null )
                 return NotFound(new { Resourceid = resourceId });
             var n = resource.Reservations.RemoveAll(i => i.StartReservationTime > from && i.StartReservationTime < to);
             await _context.SaveChangesAsync();

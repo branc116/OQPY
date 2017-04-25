@@ -6,7 +6,7 @@ using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Location> Locations { get; set; }

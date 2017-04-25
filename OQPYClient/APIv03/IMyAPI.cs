@@ -2,20 +2,18 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
-namespace OQPYClient.APIv02
+namespace OQPYClient.APIv03
 {
     using Microsoft.Rest;
-    using OQPYModels.Models.CoreModels;
-    using OQPYModels.Models;
     using Newtonsoft.Json;
-    using System.Collections;
+    using OQPYModels.Models.CoreModels;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
     /// </summary>
-    public partial interface IMyAPI : System.IDisposable
+    public partial interface IMyAPI: System.IDisposable
     {
         /// <summary>
         /// The base URI of the service.
@@ -31,7 +29,6 @@ namespace OQPYClient.APIv02
         /// Gets or sets json deserialization settings.
         /// </summary>
         JsonSerializerSettings DeserializationSettings { get; }
-
 
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -389,5 +386,14 @@ namespace OQPYClient.APIv02
         /// </param>
         Task<HttpOperationResponse> ApiVenuesSinglePostWithHttpMessagesAsync(Venue venue = default(Venue), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <param name='venueLike'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IList<Venue>>> ApiVenuesFilterPostWithHttpMessagesAsync(Venue venueLike = default(Venue), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

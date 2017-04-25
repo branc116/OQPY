@@ -6,30 +6,25 @@ using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using OQPYBot.Helper;
-using OQPYModels.Extensions;
-using OQPYModels.Models.CoreModels;
-using OQPYModels.TestObjects;
-
-using static OQPYBot.Controllers.Helper.Helper;
-using static OQPYBot.Controllers.Helper.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using static OQPYBot.Controllers.Helper.Constants;
+using static OQPYBot.Controllers.Helper.Helper;
 
-namespace OQPYBot
+namespace OQPYBot.Controllers
 {
     [LuisModel("2f4d5a10-e2cf-4238-ab65-51ab4b4dd0ea", "b36329fcaa154546ba25f10bc5740770")]
     [Serializable]
-    public class LuisDialogOQPY : LuisDialog<object>
+    public class LuisDialogOQPY: LuisDialog<object>
     {
-
         public LuisDialogOQPY()
         {
             WaitContextPrompt += (conx, args) =>
             {
-                if (conx is IDialogContext context)
+                if ( conx is IDialogContext context )
                 {
                     context.Wait(MessageReceived);
                 }
@@ -93,10 +88,16 @@ namespace OQPYBot
         public async Task VenueSearch(IDialogContext context, LuisResult result)
         {
             await DebugOut(context, "SelfInfoGet");
-            var message = context.MakeMessage();
-            message.Attachments = MakeACard(TestObjects.VenuesTest).ToList();
-            message.AttachmentLayout = "carousel";
 
+            context.Call(LuisDialogSearchVenues.Create(context), ProcessVenues);
+        }
+
+        private async Task ProcessVenues(IDialogContext context, IAwaitable<SearchVenues> result)
+        {
+            var message = context.MakeMessage();
+            var like = (await result);
+            message.Attachments = MakeACard(await like.QAsync()).ToList();
+            message.AttachmentLayout = "carousel";
             await context.PostAsync(message);
         }
 
@@ -110,7 +111,7 @@ namespace OQPYBot
         {
             var a = await item;
             await DebugOut(context, "MessageRecived");
-            if (a.ChannelId == "facebook")
+            if ( a.ChannelId == "facebook" )
             {
                 var reply = context.MakeMessage();
                 reply.ChannelData = new FacebookMessage
@@ -134,10 +135,12 @@ namespace OQPYBot
                          "No Attachments",
                     SeverityLevel.Information);
         }
+
         public async Task ExposeMessageRecived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
             await MessageReceived(context, item);
         }
+
         private async Task DebugOut(IDialogContext context, string methode)
         {
 #if DEBUG1

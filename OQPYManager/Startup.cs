@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OQPYManager.Data;
-using OQPYManager.Data.Interface;
 using OQPYManager.Data.Repositories;
+using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Models;
 using OQPYManager.Services;
 using Swashbuckle.AspNetCore.Swagger;
@@ -23,7 +23,7 @@ namespace OQPYManager
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            if (env.IsDevelopment())
+            if ( env.IsDevelopment() )
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>();
@@ -39,7 +39,14 @@ namespace OQPYManager
         {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(
+#if DEBUG
+                    Configuration.GetConnectionString("DefaultConnection")
+
+#else
+                    System.Environment.GetEnvironmentVariable("SQLAZURECONNSTR_OQPYDb")
+#endif
+                    ));
 
             //services.AddDbContext<VenuesDbContext>(options =>
             //  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -65,7 +72,7 @@ namespace OQPYManager
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
+            if ( env.IsDevelopment() )
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();

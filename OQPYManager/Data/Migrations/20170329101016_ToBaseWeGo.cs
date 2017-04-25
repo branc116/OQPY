@@ -3,7 +3,7 @@ using System;
 
 namespace OQPYManager.Data.Migrations
 {
-    public partial class ToBaseWeGo : Migration
+    public partial class ToBaseWeGo: Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

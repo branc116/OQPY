@@ -18,7 +18,7 @@ namespace OQPYModels.Models.CoreModels
         public List<WorkTime> WorkTimes { get; set; }
 
         public bool IsWorking { get; set; }
-        public WorkTime Mondy => WorkTimes != null &&  WorkTimes.Count >= 1 ? WorkTimes[0] : null;
+        public WorkTime Mondy => WorkTimes != null && WorkTimes.Count >= 1 ? WorkTimes[0] : null;
         public WorkTime Tuesday => WorkTimes != null && WorkTimes.Count >= 2 ? WorkTimes[1] : null;
         public WorkTime Wednesday => WorkTimes != null && WorkTimes.Count >= 3 ? WorkTimes[2] : null;
         public WorkTime Thursday => WorkTimes != null && WorkTimes.Count >= 4 ? WorkTimes[3] : null;
@@ -59,16 +59,18 @@ namespace OQPYModels.Models.CoreModels
 
         public void FixLoops()
         {
-            if (this.WorkTimes != null)
-                foreach (var _ in WorkTimes)
+            if ( this.WorkTimes != null )
+                foreach ( var _ in WorkTimes )
                     _.WorkHours = this;
         }
+
         public void UnFixLoops()
         {
-            if (this.WorkTimes != null)
-                foreach (var _ in WorkTimes)
+            if ( this.WorkTimes != null )
+                foreach ( var _ in WorkTimes )
                     _.WorkHours = null;
         }
+
         public static IEnumerable<WorkHours> RandomWorkHours(int n, Venue venue)
         {
             return from _ in new string(' ', n)
@@ -76,6 +78,5 @@ namespace OQPYModels.Models.CoreModels
                    let hours = workHours.WorkTimes = WorkTime.RandomWorkTime(7, workHours).ToList()
                    select workHours;
         }
-
     }
 }

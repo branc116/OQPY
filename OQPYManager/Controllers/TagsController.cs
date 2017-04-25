@@ -10,7 +10,7 @@ namespace OQPYManager.Controllers
 {
     [Produces("application/json")]
     [Route("api/Tags")]
-    public class TagsController : Controller
+    public class TagsController: Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -31,7 +31,7 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public async Task<Tag> GetTag([FromHeader] string id)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 base.BadRequest();
                 return null;
@@ -39,11 +39,11 @@ namespace OQPYManager.Controllers
 
             var Tag = await _context.Tags.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (Tag == null)
+            if ( Tag == null )
                 base.NotFound();
             else
                 base.Ok();
-            
+
             return Tag;
         }
 
@@ -51,12 +51,12 @@ namespace OQPYManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTag([FromRoute] string id, [FromBody] Tag Tag)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != Tag.Id)
+            if ( id != Tag.Id )
             {
                 return BadRequest();
             }
@@ -67,9 +67,9 @@ namespace OQPYManager.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch ( DbUpdateConcurrencyException )
             {
-                if (!TagExists(id))
+                if ( !TagExists(id) )
                 {
                     return NotFound();
                 }
@@ -86,7 +86,7 @@ namespace OQPYManager.Controllers
         [HttpPost]
         public async Task<IActionResult> PostTag([FromBody] Tag Tag)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -101,13 +101,13 @@ namespace OQPYManager.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTag([FromRoute] string id)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
 
             var Tag = await _context.Tags.SingleOrDefaultAsync(m => m.Id == id);
-            if (Tag == null)
+            if ( Tag == null )
             {
                 return NotFound();
             }
@@ -127,7 +127,7 @@ namespace OQPYManager.Controllers
         [Route("VenueTags")]
         public async Task<IActionResult> DeleteTagFromVenue([FromHeader] string venueId, [FromHeader] string tagValue)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
@@ -140,7 +140,7 @@ namespace OQPYManager.Controllers
                 .Where(i => i.Id == venueId)
                 .Include(i => i.Tags)
                 .FirstOrDefaultAsync();
-            if (venue == null)
+            if ( venue == null )
             {
                 return Ok();
             }
@@ -154,12 +154,12 @@ namespace OQPYManager.Controllers
         [Route("VenueTags")]
         public async Task<IActionResult> PostTagToVenue([FromHeader] string valueTag, [FromHeader] string venueId)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
             var venue = await _context.Venues.Where(i => i.Id == venueId).Include(i => i.Tags).FirstOrDefaultAsync();
-            if (venue == null)
+            if ( venue == null )
             {
                 return BadRequest(new { VenueId = venueId });
             }
@@ -175,7 +175,7 @@ namespace OQPYManager.Controllers
         [Route("VenueTags")]
         public async Task<IEnumerable<Tag>> GetTagsForVenue([FromHeader] string venueId)
         {
-            if (!ModelState.IsValid)
+            if ( !ModelState.IsValid )
             {
                 base.BadRequest();
                 return null;
@@ -183,7 +183,7 @@ namespace OQPYManager.Controllers
             var tag = _context.Venues.Include(i => i.Tags);
             var venue = await tag.FirstOrDefaultAsync((i) => i.Id == venueId);
 
-            if (venue == null)
+            if ( venue == null )
             {
                 base.NotFound();
                 return null;
@@ -192,7 +192,7 @@ namespace OQPYManager.Controllers
             var tags = from _ in venue.Tags
                        select _;
 
-            if (tags == null)
+            if ( tags == null )
                 base.NotFound();
             else
                 base.Ok();
