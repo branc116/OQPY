@@ -40,7 +40,8 @@ namespace OQPYCralwer
                                 new GoogleApi.Entities.Common.Location(like.Location.Latitude, like.Location.Longditude) :
                                 !string.IsNullOrWhiteSpace(like.Location.Adress) ? (await AddressToLocation(like.Location.Adress)).FirstOrDefault() :
                             null :
-                            null
+                            null,
+                Radius = 10000
             };
             var res = await GooglePlaces.NearBySearch.QueryAsync(req);
             return await GetDetails(res.Results);
@@ -71,7 +72,7 @@ namespace OQPYCralwer
                        {
                            Key = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q",
                            Location = location,
-                           Radius = 10000,
+                           Radius = 1000,
                            Sensor = false
                        }
                        select GooglePlaces.NearBySearch.QueryAsync(req);
@@ -120,12 +121,18 @@ namespace OQPYCralwer
                             {
                                 Description = _.Website,
                                 VenueCreationDate = DateTime.Now,
+                                Location = new Location() {
+                                    Latitude = _.Geometry.Location.Latitude,
+                                    Longditude = _.Geometry.Location.Longitude,
+                                    Adress = _.FormattedAddress
+                                }
                             }
                             let reviews = venue.Reviews = _.Review != null ? (from __ in _.Review
                                                                               select new OQPYModels.Models.CoreModels.Review((int)(__.Rating * 2), __.Text, venue)).ToList() : null
                             let tags = venue.Tags = _.Types != null ? (from __ in _.Types
                                                                        select new Tag(__.ToString(), venue)).ToList() : null
                             let workh = venue.WorkHours = _.OpeningHours.ToNormalWorkHovers(venue)
+                           
                             select venue.UnFixLoops();
             return newVenues;
         }
