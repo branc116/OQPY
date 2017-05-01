@@ -1,5 +1,8 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
 using System.Collections.Generic;
+using Microsoft.Bot.Connector;
+using System;
+using System.Linq;
 
 namespace OQPYBot.Helper
 {
@@ -18,6 +21,18 @@ namespace OQPYBot.Helper
                            SeverityLevel.Information,
                            new Dictionary<string, string> { { about, logData.ToString() } });
             System.Diagnostics.Debug.WriteLine($"{about}({Sl}): {logData}");
+        }
+
+        internal static void BasicLog(IMessageActivity a)
+        {
+#if DEBUG
+            BasicLog("Attachments",
+                    (a.Attachments != null && a.Attachments.Any()) ?
+                        (from _ in a.Attachments
+                         select _.Content).Aggregate((i, j) => $"{i}\n{j}") :
+                         "No Attachments",
+                    SeverityLevel.Information);
+#endif
         }
     }
 }

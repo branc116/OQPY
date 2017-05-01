@@ -1,13 +1,19 @@
 ﻿//#define DEBUG
+using Autofac;
 using LuisBot.Services;
 using Microsoft.ApplicationInsights.DataContracts;
 
 //using Microsoft.Cognitive.LUIS;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
+using Microsoft.Rest.Serialization;
 using OQPYBot.Controllers;
+using OQPYBot.Controllers.Helper;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -26,53 +32,87 @@ namespace OQPYBot
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
-            if ( activity.Type == ActivityTypes.Message )
+            try
             {
-                try
+                //Record(activity);
+                if ( activity.Type == ActivityTypes.Message )
                 {
                     var b = new System.Net.Http.WebRequestHandler();
-                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                    activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text;
+                    //ConnectorClient connector = new ConnectorClient(new Uri(activity?.ServiceUrl ?? "http://localhost:6666"));
+                    //activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text ?? "none";
 
                     await Conversation.SendAsync(activity, () => new LuisDialogOQPY());
+                    
+
                 }
-                catch ( Exception ex )
+                else
                 {
-                    var telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
-                    telemetry.TrackTrace("ExceptionInPost", SeverityLevel.Critical, new Dictionary<string, string> { { "Exceptions", ex.ToString() } });
+                    await HandleSystemMessageAsync(activity);
                 }
             }
-            else
+            catch ( Exception ex )
             {
-                HandleSystemMessage(activity);
+                var telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
+                telemetry.TrackTrace("ExceptionInPost", SeverityLevel.Critical, new Dictionary<string, string> { { "Exceptions", ex.ToString() }});
             }
-            var response = Request.CreateResponse(HttpStatusCode.OK);
+            var response = Request?.CreateResponse(HttpStatusCode.OK) ?? null;
             return response;
         }
-
-        private Activity HandleSystemMessage(Activity message)
+        private static object objectLock = new object();
+        private static void Record(Activity act)
         {
-            if ( message.Type == ActivityTypes.DeleteUserData )
+            lock ( objectLock )
+            {
+                var delimiter = "^^ˇˇ\n";
+                var pathOut = @"C:\Users\Branimir\ActivityLog.log";
+                if ( !File.Exists(pathOut) )
+                    File.Create(pathOut);
+                var newJson = SafeJsonConvert.SerializeObject(act, Constants._safeDeserializationSettings);
+                newJson = delimiter + newJson + delimiter;
+                File.AppendAllText(pathOut, newJson);
+            }
+        }
+        private async Task<Activity> HandleSystemMessageAsync(Activity activity)
+        {
+            if ( activity.Type == ActivityTypes.DeleteUserData )
             {
                 // Implement user deletion here
                 // If we handle user deletion, return a real message
             }
-            else if ( message.Type == ActivityTypes.ConversationUpdate )
+            else if ( activity.Type == ActivityTypes.ConversationUpdate )
             {
-                // Handle conversation state changes, like members being added and removed
-                // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
-                // Not available in all channels
+                IConversationUpdateActivity update = activity;
+                using ( var scope = DialogModule.BeginLifetimeScope(Conversation.Container, activity) )
+                {
+                    var client = scope.Resolve<IConnectorClient>();
+                    if ( update.MembersAdded.Any() )
+                    {
+                        var reply = activity.CreateReply();
+                        foreach ( var newMember in update.MembersAdded )
+                        {
+                            if ( newMember.Id != activity.Recipient.Id )
+                            {
+                                reply.Text = $"Welcome {newMember.Name}!";
+                            }
+                            else
+                            {
+                                reply.Text = $"Welcome {activity.From.Name}";
+                            }
+                            await client.Conversations.ReplyToActivityAsync(reply);
+                        }
+                    }
+                }
             }
-            else if ( message.Type == ActivityTypes.ContactRelationUpdate )
+            else if ( activity.Type == ActivityTypes.ContactRelationUpdate )
             {
                 // Handle add/remove from contact lists
                 // Activity.From + Activity.Action represent what happened
             }
-            else if ( message.Type == ActivityTypes.Typing )
+            else if ( activity.Type == ActivityTypes.Typing )
             {
                 // Handle knowing tha the user is typing
             }
-            else if ( message.Type == ActivityTypes.Ping )
+            else if ( activity.Type == ActivityTypes.Ping )
             {
             }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
+﻿using Microsoft.Bot.Builder.ConnectorEx;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using OQPYModels.Models.CoreModels;
@@ -20,7 +21,10 @@ namespace OQPYBot.Controllers.Helper
             //var comonTags = venue.IntersectionTags();
             var subtitle = "bars"; /*comonTags.TagsToString((i) => $"{i.TagName} ");*/
             return from _ in venue
-                   select new HeroCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions().ToList()).ToAttachment();
+                   where !string.IsNullOrWhiteSpace(_.ImageUrl)
+                   where Uri.IsWellFormedUriString(_.ImageUrl, UriKind.Absolute)
+                   where _.Name != null
+                   select new ThumbnailCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions().ToList()).ToAttachment();
         }
 
         public static IEnumerable<CardImage> MakeListOfImages(IEnumerable<Venue> venue)
@@ -40,9 +44,26 @@ namespace OQPYBot.Controllers.Helper
             return from _ in _cardActions
                    select new CardAction() { Title = _, Value = _, Type = "imBack" };
         }
+        public static IMessageActivity GimmeLocationFacebook(IMessageActivity baseMessage)
+        {
+            baseMessage.ChannelData = new FacebookMessage
+            (
+                text: "Please share your location with me.",
+                quickReplies: new List<FacebookQuickReply>
+                {
+                    new FacebookQuickReply(
+                        contentType: FacebookQuickReply.ContentTypes.Location,
+                        title: default(string),
+                        payload: default(string)
+                    )
+                }
+            );
+            return baseMessage;
+        }
 
         public static async Task ApplyProperty(IDialogContext context, LuisResult result, params string[] propertyName)
         {
+            context.PrivateConversationData.SetValue<bool>(_insideDialogKey, true);
             for ( int i = 0 ; i < result.Entities.Count ; i++ )
             {
                 result.Entities[i].Type = result.Entities[i].Type.Replace("builtin.", string.Empty);

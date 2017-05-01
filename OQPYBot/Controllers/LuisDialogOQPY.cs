@@ -5,7 +5,9 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using Microsoft.Rest.Serialization;
 using OQPYBot.Helper;
+using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +28,11 @@ namespace OQPYBot.Controllers
             {
                 if ( conx is IDialogContext context )
                 {
-                    context.Wait(MessageReceived);
+                    if ( context.PrivateConversationData.TryGetValue(_insideDialogKey, out bool inside) && inside )
+                    {
+                        context.Wait(MessageReceived);
+                        context.PrivateConversationData.SetValue(_insideDialogKey, false);
+                    }
                 }
             };
         }
@@ -79,8 +85,9 @@ namespace OQPYBot.Controllers
             var message = context.MakeMessage();
             message.Text = $"Property | Value{Environment.NewLine}---|---{Environment.NewLine}";
             message.Text += (from _ in _propertyKeys
-                             where context.UserData.ContainsKey(_) && context.UserData.Get<object>(_).GetType() == typeof(string)
-                             select $"{_}|{context.UserData.Get<string>(_)}").Aggregate((i, j) => $"{i}{Environment.NewLine}{j}");
+                             where context.UserData.ContainsKey(_)
+                             select $"{_}|{context.UserData.Get<object>(_)}")
+                            .Aggregate((i, j) => $"{i}{Environment.NewLine}{j}");
             await context.PostAsync(message);
         }
 
@@ -88,17 +95,37 @@ namespace OQPYBot.Controllers
         public async Task VenueSearch(IDialogContext context, LuisResult result)
         {
             await DebugOut(context, "SelfInfoGet");
+            var search = LuisDialogSearchVenues.Create(context);
+            if ( context.ConversationData.TryGetValue(_channelId, out string chid) && chid == "facebook" )
+                await context.PostAsync("It'd be nice if you'd send the location of where you wanna search :)");
+            //context.Call(search, ProcessVenues);
+            var message = context.MakeMessage();
+            await context.Forward(search, ProcessVenues, message, default(System.Threading.CancellationToken));
 
-            context.Call(LuisDialogSearchVenues.Create(context), ProcessVenues);
         }
 
         private async Task ProcessVenues(IDialogContext context, IAwaitable<SearchVenues> result)
         {
-            var message = context.MakeMessage();
             var like = (await result);
-            message.Attachments = MakeACard(await like.QAsync()).ToList();
-            message.AttachmentLayout = "carousel";
-            await context.PostAsync(message);
+            IEnumerable<Venue> venues;
+            if ( context.ConversationData.TryGetValue(_channelId, out string chid) && chid == "facebook" && context.UserData.TryGetValue(_facebooklocation, out Geo geolocation) )
+                venues = await like.QAsync(geolocation);
+            else
+                venues = await like.QAsync();
+            if ( venues.Any() )
+            {
+                var message = context.MakeMessage();
+
+                context.ConversationData.SetValue(_currentActiveVenues, venues);
+                Log.BasicLog("venues", venues.Select(i => i.ToString()).Aggregate((i, j) => $"{i}\n{j}"), SeverityLevel.Verbose);
+
+                message.Attachments = MakeACard(venues).ToList();
+                message.AttachmentLayout = "carousel";
+                await context.PostAsync(message);
+            }else
+            {
+                await context.PostAsync("Sorry, can't find anything... :(");
+            }
         }
 
         public override async Task StartAsync(IDialogContext context)
@@ -111,29 +138,30 @@ namespace OQPYBot.Controllers
         {
             var a = await item;
             await DebugOut(context, "MessageRecived");
+            context.ConversationData.SetValue(_channelId, a.ChannelId);
             if ( a.ChannelId == "facebook" )
             {
-                var reply = context.MakeMessage();
-                reply.ChannelData = new FacebookMessage
-                (
-                    text: "Please share your location with me.",
-                    quickReplies: new List<FacebookQuickReply>
+                if (a.Entities != null && a.Entities.Count > 0 )
+                {
+                    try
                     {
-                        new FacebookQuickReply(
-                            contentType: FacebookQuickReply.ContentTypes.Location,
-                            title: default(string),
-                            payload: default(string)
-                        )
+                        var loc = a.Entities[0].GetAs<FacebookLocation>();
+                        context.UserData.SetValue(_facebooklocation, loc.geo);
+                        await context.PostAsync("Got it! :)");
+                        context.Wait(this.MessageReceived);
+                        return;
                     }
-                );
+                    catch ( Exception ex )
+                    {
+
+                    }
+                }
+                //var reply = context.MakeMessage();
+                //reply = GimmeLocationFacebook(reply);
+                //await context.PostAsync(reply);
             }
             await base.MessageReceived(context, item);
-            Log.BasicLog("Attachments",
-                    (a.Attachments != null && a.Attachments.Any()) ?
-                        (from _ in a.Attachments
-                         select _.Content).Aggregate((i, j) => $"{i}\n{j}") :
-                         "No Attachments",
-                    SeverityLevel.Information);
+            Log.BasicLog(a);
         }
 
         public async Task ExposeMessageRecived(IDialogContext context, IAwaitable<IMessageActivity> item)
