@@ -11,7 +11,6 @@ namespace OQPYManager
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
-                .UseUrls("*:52305", "*:44353")
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
                 .Build();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
+using Microsoft.Bot.Builder.FormFlow.Advanced;
 using Microsoft.Bot.Builder.Luis;
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
@@ -15,25 +16,19 @@ namespace OQPYBot.Controllers
     {
         public static IDialog<SearchVenues> Create(IDialogContext context)
         {
-            return Chain.From(() =>
+            var form = Chain.From(() =>
             {
-                try
-                {
                     return FormDialog.FromForm(SearchVenues.Builder);
-                }
-                catch ( Exception ex )
-                {
-                    throw;
-                }
             });
+            var message = context.MakeMessage();
+            return form;
         }
     }
 
     [Serializable]
     public class SearchVenues
     {
-        [Optional]
-        //[Prompt("What is the name of the venue?")]
+        [Prompt("What is the name of the venue? (n - nothing)")]
         public string Name { get; set; }
 
         //[Optional]
@@ -46,37 +41,35 @@ namespace OQPYBot.Controllers
 
         public async Task<IEnumerable<Venue>> QAsync()
         {
+                return await QAsync(null);
+        }
+        public async Task<IEnumerable<Venue>> QAsync(Geo location)
+        {
             var api = new MyAPI(
 #if DEBUG
-                new Uri("http://localhost:52305/")
+                new Uri("http://localhost:5000/")
 #else
                 new Uri("https://oqpymanager.azurewebsites.net/")
 #endif
                 );
-            try
+            var venue = GetVenue();
+            if ( location != null )
             {
-                return await api.ApiVenuesFilterPostAsync(GetVenue());
+                venue.Location = new Location() { Latitude = location.latitude, Longditude = location.latitude };
+                venue.Name = venue.Name.ToLower() == "n" ? null : venue.Name;
             }
-            catch ( Exception ex )
-            {
-                throw;
-            }
+            return await api.ApiVenuesFilterPostAsync(venue);
         }
 
         public static IForm<SearchVenues> Builder()
         {
-            try
-            {
-                var build = new FormBuilder<SearchVenues>();
-                        //.Field(nameof(Name));
-                //.Field(nameof(Address));
-                var a = build.Build();
-                return a;
-            }
-            catch ( Exception ex )
-            {
-                throw;
-            }
+            var colture = System.Threading.Thread.CurrentThread.CurrentUICulture;
+            var build = new FormBuilder<SearchVenues>()
+                    .Message("Give me some information on what do you want to search")
+                    .Field(nameof(Name));
+            var a = build.Build();
+            return a;
+         
         }
     }
 }

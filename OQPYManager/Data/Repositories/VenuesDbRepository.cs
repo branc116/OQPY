@@ -4,9 +4,10 @@ using OQPYModels.Extensions;
 using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-
+using static OQPYModels.Helper.Helper;
 namespace OQPYManager.Data.Repositories
 {
     public class VenuesDbRepository: BaseVenueDbRepository
@@ -91,20 +92,51 @@ namespace OQPYManager.Data.Repositories
 
         public async override Task<IQueryable<Venue>> Filter(Venue like)
         {
-            var venues = _context.Venues.AsQueryable().Filter(like);
-            if ( venues.Count() < 5 )
+
+            var venues = _context.Venues
+                .Include(i => i.Tags)
+                .AsQueryable();
+
+            if ( like.Location != null )
+                venues = venues
+                    .Where(i => i.Location != null)
+                    .Where(i => i.Location
+                        .Filter(i.Location, like.Location))
+                    .Include(i => i.Location);
+
+            if ( like.Name != null )
+                venues = venues
+                    .Where(i => i.Name != null)
+                    .Where(i => i.Name.StringLikenes(like.Name) > 100);
+            if(like.Location != null)
+                venues = venues
+                    .OrderBy(i => i.Location
+                        .DistanceInDegrees(like.Location));
+            else 
+                venues = venues
+                    .OrderByDescending(i => i.Name.StringLikenes(like.Name));
+            if ( venues.Count() < 10 )
             {
-                var crawl = new OQPYCralwer.Cralw();
-                IEnumerable<Venue> newVenues;
-                if ( like.Location == null )
-                    newVenues = await crawl.CrawlByText(like.Name);
-                else
-                    newVenues = await crawl.CrawlSimlar(like);
-                newVenues = newVenues.Where((i) =>
+                try
                 {
-                    return _context.Venues.All(j => j.Id != i.Id);
-                });
-                await AddVenuesAsync(newVenues);
+                    var crawl = new OQPYCralwer.Cralw();
+                    IEnumerable<Venue> newVenues;
+                    if ( like.Location == null && like.Name != null )
+                        newVenues = await crawl.CrawlByText(like.Name);
+                    else if ( like.Name == null && like.Location != null )
+                        newVenues = await crawl.CrawlByLocation(new GoogleApi.Entities.Common.Location(like.Location.Latitude, like.Location.Longditude));
+                    else if ( like.Name != null && like.Location != null )
+                        newVenues = await crawl.CrawlSimlar(like);
+                    else
+                        return null;
+                    newVenues = newVenues.Where((i) =>
+                    {
+                        return _context.Venues.All(j => j.Id != i.Id);
+                    });
+                    await AddVenuesAsync(newVenues);
+                }catch(Exception ex )
+                {
+                }
             }
             return venues;
         }

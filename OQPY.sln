@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OQPYManager", "OQPYManager\OQPYManager.csproj", "{AD6ADBA5-184A-4445-84C5-0CE4EE0CC51E}"
 EndProject
@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OQPYModels", "OQPYModels\OQPYModels.csproj", "{CB96F60F-632D-4420-84D0-9A641FFAA395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OQPYManagerTests", "OQPYManagerTests\OQPYManagerTests.csproj", "{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OQPYClient", "OQPYClient\OQPYClient.csproj", "{F01A57EB-850E-481E-BD63-423C74E53777}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OQPYCralwer", "OQPYCralwer\OQPYCralwer.csproj", "{2F3E17B8-F4AE-42DB-BA83-4B8E8CFCC800}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OQPYClientTests", "OQPYClientTests\OQPYClientTests.csproj", "{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,18 +69,6 @@ Global
 		{CB96F60F-632D-4420-84D0-9A641FFAA395}.Release|x64.Build.0 = Release|Any CPU
 		{CB96F60F-632D-4420-84D0-9A641FFAA395}.Release|x86.ActiveCfg = Release|Any CPU
 		{CB96F60F-632D-4420-84D0-9A641FFAA395}.Release|x86.Build.0 = Release|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Debug|x64.Build.0 = Debug|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Debug|x86.Build.0 = Debug|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Release|x64.ActiveCfg = Release|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Release|x64.Build.0 = Release|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Release|x86.ActiveCfg = Release|Any CPU
-		{5F1238B6-9BF9-4064-9C90-2C9FAD00A61E}.Release|x86.Build.0 = Release|Any CPU
 		{F01A57EB-850E-481E-BD63-423C74E53777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F01A57EB-850E-481E-BD63-423C74E53777}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F01A57EB-850E-481E-BD63-423C74E53777}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -105,6 +93,18 @@ Global
 		{2F3E17B8-F4AE-42DB-BA83-4B8E8CFCC800}.Release|x64.Build.0 = Release|Any CPU
 		{2F3E17B8-F4AE-42DB-BA83-4B8E8CFCC800}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F3E17B8-F4AE-42DB-BA83-4B8E8CFCC800}.Release|x86.Build.0 = Release|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Debug|x64.Build.0 = Debug|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Debug|x86.Build.0 = Debug|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Release|x64.ActiveCfg = Release|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Release|x64.Build.0 = Release|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Release|x86.ActiveCfg = Release|Any CPU
+		{6EBCE773-0C34-4AEB-A01E-E4A1199F1CB3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

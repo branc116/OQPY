@@ -182,10 +182,16 @@ namespace OQPYModels.Models.CoreModels
 
         public bool Filter(Venue one, Venue two)
         {
-            return (one.Name == null || two.Name == null || one.Name.ToLower().Contains(two.Name.ToLower()) || two.Name.ToLower().Contains(one.Name.ToLower())) &&
+            return one != null && two != null &&
+                   (one.Name == null || two.Name == null || one.Name.ToLower().Contains(two.Name.ToLower()) || two.Name.ToLower().Contains(one.Name.ToLower())) &&
                    (one.AverageReview == -1 || two.AverageReview == -1 || Math.Abs(two.AverageReview - one.AverageReview) < 3) &&
                    (one.Description == null || two.Description == null || one.Description.ToLower().Contains(two.Description.ToLower()) || two.Description.ToLower().Contains(one.Description.ToLower())) &&
-                   (one.Location == null || two.Location == null || one.Location.Filter(one.Location, two.Location));
+                   ((one.Location == null && two.Location == null) || (one != null && one.Location.Filter(one.Location, two.Location)) || (one != null && one.Location.Filter(one.Location, two.Location)));
+        }
+        public override string ToString()
+        {
+            string s = $"Venue.Name = {this.Name}\nVenue.Location = {this?.Location?.Adress ?? ""}, ({this?.Location?.Longditude ?? 0}, {this?.Location?.Latitude ?? 0})\n";
+            return s;
         }
     }
 }
