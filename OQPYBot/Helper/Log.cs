@@ -1,7 +1,6 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
-using System.Collections.Generic;
 using Microsoft.Bot.Connector;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OQPYBot.Helper

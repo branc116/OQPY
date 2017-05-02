@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OQPYModels.Models.CoreModels
+﻿namespace OQPYModels.Models.CoreModels
 {
-
     public class FacebookLocation
     {
         public Geo geo { get; set; }
+
         public override string ToString() => geo.ToString();
     }
 
@@ -17,8 +13,7 @@ namespace OQPYModels.Models.CoreModels
         public float latitude { get; set; }
         public float longitude { get; set; }
         public string type { get; set; }
+
         public override string ToString() => $"({latitude}, {longitude})";
     }
-
-
 }
