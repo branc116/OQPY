@@ -1,0 +1,59 @@
+menu "Config wifi"
+
+config WIFI_SSID
+    string "WiFi SSID"
+	default "ES_9199"
+	help
+		SSID (network name) for the example to connect to.
+
+config WIFI_PASSWORD
+    string "WiFi Password"
+	default "12345678"
+	help
+		WiFi password (WPA or WPA2) for the example to use.
+
+		Can be left blank if the network has no security set.
+
+endmenu
+
+menu "Config Esp's id"
+config ESP_ID
+	string "esps_id"
+	default "Zagreb_havana_stolac1"
+	help
+		Helps to identify the object the esp is attached to
+endmenu
+menu "Config endpoint"
+config HOST
+	string "host"
+	default "192.168.43.231"
+	help
+		host to send data to
+config ROUTE
+	string "route"
+	default "/espData"
+	help
+		route on the host on which the socket is
+config PORT
+	string "port"
+	default "5001"
+	help
+		port to send data
+endmenu
+menu "Hall calibration"
+config MIN_THRESHOLD
+	int "min"
+	default 100
+	help
+		minimal threshold to trigger hall change
+config MAX_THRESHOLD
+	int "max"
+	default 150
+	help
+		maximum threshold to trigger hall change
+config REFRESH_TIME
+	int "refresh"
+	default 1000
+	help
+		time between two readings in ms
+endmenu

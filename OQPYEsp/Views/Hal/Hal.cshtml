@@ -1,0 +1,46 @@
+@using Server.Controllers
+@using Server.Models
+@using System.Collections.Generic
+@using System.Linq
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div>
+        <p>This is data from esp:</p>
+    </div>
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>OQPYed</th>
+                        <th>RawData</th>
+                    </tr>
+                </thead>
+                @{
+                    if(ViewData["Esp"] is IEnumerable<ESPData>){
+                        IEnumerable<ESPData> ass = ViewData["Esp"] as IEnumerable<ESPData>;
+                        foreach (var AppS in ass)
+                        {
+                            <tr class="table-active">
+                                <td class="d-table-cell">@AppS.EspId</td>
+                                <td class="d-table-cell">@AppS.time</td>
+                                <td class="d-table-cell">@AppS.OnOff</td>
+                                <td class="d-table-cell">@AppS.RawHall</td>
+                            </tr>
+                        }
+                    }else{
+                        <p> @ViewData["Esp"].ToString() </p>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</body>
