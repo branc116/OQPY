@@ -6,14 +6,16 @@ namespace OQPYClient.APIv03
 {
     using Microsoft.Rest;
     using Newtonsoft.Json;
+    using OQPYModels.Models;
     using OQPYModels.Models.CoreModels;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
     /// </summary>
-    public partial interface IMyAPI: System.IDisposable
+    public partial interface IMyAPI : System.IDisposable
     {
         /// <summary>
         /// The base URI of the service.
@@ -29,6 +31,7 @@ namespace OQPYClient.APIv03
         /// Gets or sets json deserialization settings.
         /// </summary>
         JsonSerializerSettings DeserializationSettings { get; }
+
 
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -137,6 +140,70 @@ namespace OQPYClient.APIv03
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<Reservation>> ApiReservationsSecretCodeReservationGetWithHttpMessagesAsync(string secretCode = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IList<Resource>>> ApiResourcesGetWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='resource'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> ApiResourcesPostWithHttpMessagesAsync(Resource resource = default(Resource), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> ApiResourcesByIdGetWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
+        /// <param name='resource'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> ApiResourcesByIdPutWithHttpMessagesAsync(string id, Resource resource = default(Resource), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> ApiResourcesByIdDeleteWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='id'>
+        /// </param>
+        /// <param name='oQPYed'>
+        /// </param>
+        /// <param name='secretCode'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> ApiResourcesIOTPostWithHttpMessagesAsync(string id = default(string), string oQPYed = default(string), string secretCode = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -395,5 +462,6 @@ namespace OQPYClient.APIv03
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<IList<Venue>>> ApiVenuesFilterPostWithHttpMessagesAsync(Venue venueLike = default(Venue), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
     }
 }
