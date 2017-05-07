@@ -164,11 +164,10 @@ namespace OQPYManager.Controllers
                 return BadRequest(new { VenueId = venueId });
             }
             var tag = new Tag(valueTag, venue);
-            //venue.Tags.Add(tag);
             _context.Tags.Add(tag);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTag", new { id = tag.Id }, tag);
+            return Ok();
         }
 
         [HttpGet]

@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OQPYManager.Data;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using static OQPYManager.Helper.Log;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OQPYManager.Controllers
@@ -13,6 +16,7 @@ namespace OQPYManager.Controllers
     public class VenuesController: Controller
     {
         private readonly IVenuesDbRepository _venuesDbRepository;
+        private readonly ApplicationDbContext _context;
 
         public VenuesController(IVenuesDbRepository venuesDbRepository)
         {
@@ -23,27 +27,34 @@ namespace OQPYManager.Controllers
         [Route("All")]
         public IEnumerable<Venue> GetAllVenues()
         {
-            return _venuesDbRepository.GetAllVenues();
+            return _venuesDbRepository.GetAll();
         }
 
         [HttpPost]
-        public IActionResult CreateVenue([FromBody] Venue venue)
+        public async Task <IActionResult> CreateVenue([FromBody] Venue venue)
         {
             if ( venue == null )
             {
                 return BadRequest();
             }
 
-            _venuesDbRepository.AddVenueAsync(venue);
+            await _venuesDbRepository.AddAsync(venue);
 
-            return CreatedAtRoute("GetVenue", new { id = venue.Id }, venue);
+            return Ok();
         }
 
         // DELETE api/values/5
         [HttpDelete]
-        public void Delete([FromHeader] string id)
+        public async Task Delete([FromHeader] string id)
         {
-            _venuesDbRepository.RemoveAsync(id);
+            try
+            {
+                await _venuesDbRepository.RemoveAsync(id);
+                Ok("Deleted");
+            }catch(Exception ex )
+            {
+                BadRequest(ex.ToString());
+            }
         }
 
         [HttpPost]
@@ -58,7 +69,7 @@ namespace OQPYManager.Controllers
                          let venue = Venue.CreateRandomVenues(1).First()
                          let name = venue.Name = _
                          select venue;
-            await _venuesDbRepository.AddVenuesAsync(venues);
+            await _venuesDbRepository.AddAsync(venues);
             return CreatedAtAction("GetVenue", new { ids = names });
         }
 
@@ -71,20 +82,20 @@ namespace OQPYManager.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _venuesDbRepository.AddVenuesAsync(from _ in venues select _.FixLoops());
+            await _venuesDbRepository.AddAsync(from _ in venues select _.FixLoops());
             return Ok();
         }
 
         [HttpPost]
         [Route("Single")]
-        public async Task<IActionResult> PostVenueSingle([FromBody] Venue venue)
+        public async Task<IActionResult> PostSingle([FromBody] Venue venue)
         {
             if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
 
-            await _venuesDbRepository.AddVenueAsync(venue);
+            await _venuesDbRepository.AddAsync(venue);
             return CreatedAtAction("GetVenues", new { id = venue.Id }, venue);
         }
 
@@ -98,7 +109,9 @@ namespace OQPYManager.Controllers
                 return null;
             }
 
-            var venues = _venuesDbRepository.GetVenues(i => ids.Contains(i.Id));
+            var venues = _venuesDbRepository.Get(i => ids.Contains(i.Id));
+            foreach ( var _ in venues )
+                _.UnFixLoops();
 
             if ( venues == null )
                 base.NotFound();
@@ -117,7 +130,8 @@ namespace OQPYManager.Controllers
                 return null;
             }
 
-            var venue = await _venuesDbRepository.FindVenueAsync(id);
+            var venue = await _venuesDbRepository.FindAsync(id);
+            venue.UnFixLoops();
 
             if ( venue == null )
                 base.NotFound();
