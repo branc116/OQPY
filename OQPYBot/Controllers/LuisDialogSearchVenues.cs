@@ -7,7 +7,7 @@ using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using static OQPYBot.Controllers.Helper.Constants;
 namespace OQPYBot.Controllers
 {
     [LuisModel("2f4d5a10-e2cf-4238-ab65-51ab4b4dd0ea", "b36329fcaa154546ba25f10bc5740770")]
@@ -45,17 +45,11 @@ namespace OQPYBot.Controllers
         }
         public async Task<IEnumerable<Venue>> QAsync(Geo location)
         {
-            var api = new MyAPI(
-#if DEBUG
-                new Uri("http://localhost:5000/")
-#else
-                new Uri("https://oqpymanager.azurewebsites.net/")
-#endif
-                );
+            var api = new MyAPI(new Uri(_managerUri));
             var venue = GetVenue();
             if ( location != null )
             {
-                venue.Location = new Location() { Latitude = location.latitude, Longditude = location.latitude };
+                venue.Location = new Location() { Latitude = location.latitude, Longditude = location.longitude };
                 venue.Name = venue.Name.ToLower() == "n" ? null : venue.Name;
             }
             return await api.ApiVenuesFilterPostAsync(venue);
