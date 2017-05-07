@@ -1,4 +1,4 @@
-﻿//#define prod
+﻿#define prod
 #define console
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,7 +20,7 @@ namespace OQPYClientTests
     public class OQPYTests
     {
         private const string filename = @"C:\Users\Branimir\Logs\debug.log";
-        [TestMethod]
+        //[TestMethod]
         public async Task CrawlByText()
         {
             DropLog();
@@ -69,6 +69,20 @@ namespace OQPYClientTests
 #endif
                 );
         [TestMethod]
+        public async Task LocationNameManager()
+        {
+            IList<Venue> venues;
+
+            venues = await api.ApiVenuesFilterPostAsync((new Venue()
+            {
+                Location = new Location(45.7849274, 15.9468622),
+                Name = "Stijepan Radić"
+            }));
+            Log(venues.Count.ToString());
+            Log(venues.First().ToString());
+            AsserVenues(venues);
+        }
+        [TestMethod]
         public async Task HelloTest()
         {
             IList<Venue> venues;
@@ -76,8 +90,7 @@ namespace OQPYClientTests
             venues = await api.ApiVenuesFilterPostAsync(new OQPYModels.Models.CoreModels.Venue() { Location = new OQPYModels.Models.CoreModels.Location() { Longditude = -74.0059731, Latitude = 40.7143528 } });
             AsserVenues(venues);
         }
-
-        [TestMethod]
+        //[TestMethod]
         public async Task TestingCrawlingByLocation()
         {
             var cralwer = new OQPYCralwer.Cralw();
@@ -85,18 +98,18 @@ namespace OQPYClientTests
             AssertVenues(venues);
 
         }
-        [TestMethod]
+        //[TestMethod]
         public async Task TestingCrawlingByLocationAndName()
         {
             var cralwer = new OQPYCralwer.Cralw();
             var venues = await cralwer.CrawlSimlar(new Venue() {
-                Location = new Location(40.7143528, -74.0059731),
-                Name = "Bar"
+                Location = new Location(45.7851303, 15.9474278),
+                Name = "Stijepan Radić"
                 });
             AssertVenues(venues);
 
         }
-        [TestMethod]
+        //[TestMethod]
         public async Task CrowlByText()
         {
             var cralwer = new OQPYCralwer.Cralw();
@@ -110,7 +123,7 @@ namespace OQPYClientTests
             venues = await api.ApiVenuesFilterPostAsync(new OQPYModels.Models.CoreModels.Venue() { Name = "Bars" });
             AsserVenues(venues);
         }
-        [TestMethod]
+        //[TestMethod]
         public async Task AddressToLocation()
         {
             var placesToVisit = new List<string>() { "zagreb", "istandbul", "knežija", "fer", "transy", "budapeste", "Konjščina" };
@@ -148,6 +161,11 @@ namespace OQPYClientTests
                 temp2.StringLikenes(temp1);
 
             }
+        }
+        [TestMethod]
+        public async Task TestChangeState()
+        {
+            await api.ApiResourcesIOTPostWithHttpMessagesAsync("Zagreb_stijepanradic_8_30_1", "1", null);
         }
         //[TestMethod]
         //public async Task TestActivityes()

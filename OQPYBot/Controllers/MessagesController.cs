@@ -37,13 +37,10 @@ namespace OQPYBot
                 //Record(activity);
                 if ( activity.Type == ActivityTypes.Message )
                 {
-                    var b = new System.Net.Http.WebRequestHandler();
                     //ConnectorClient connector = new ConnectorClient(new Uri(activity?.ServiceUrl ?? "http://localhost:6666"));
-                    //activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text ?? "none";
+                    activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text ?? "none";
 
                     await Conversation.SendAsync(activity, () => new LuisDialogOQPY());
-                    
-
                 }
                 else
                 {

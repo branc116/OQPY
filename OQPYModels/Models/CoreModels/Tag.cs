@@ -30,7 +30,6 @@ namespace OQPYModels.Models.CoreModels
         {
             Id = Guid.NewGuid().ToString();
             this.TagName = tagName;
-            VenueTags = new List<VenueTag>() { new VenueTag(this, venue) };
         }
 
         public int Compare(Tag x, Tag y)

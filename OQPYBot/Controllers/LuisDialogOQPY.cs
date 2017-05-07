@@ -108,7 +108,8 @@ namespace OQPYBot.Controllers
         {
             var like = (await result);
             IEnumerable<Venue> venues;
-            if ( context.ConversationData.TryGetValue(_channelId, out string chid) && chid == "facebook" && context.UserData.TryGetValue(_facebooklocation, out Geo geolocation) )
+            var haveLoc = context.UserData.TryGetValue(_facebooklocation, out Geo geolocation);
+            if ( haveLoc )
                 venues = await like.QAsync(geolocation);
             else
                 venues = await like.QAsync();
@@ -119,7 +120,7 @@ namespace OQPYBot.Controllers
                 context.ConversationData.SetValue(_currentActiveVenues, venues);
                 Log.BasicLog("venues", venues.Select(i => i.ToString()).Aggregate((i, j) => $"{i}\n{j}"), SeverityLevel.Verbose);
 
-                message.Attachments = MakeACard(venues).ToList();
+                message.Attachments = MakeACard(venues, geolocation == null ? null : new Location(geolocation.longitude , geolocation.latitude)).ToList();
                 message.AttachmentLayout = "carousel";
                 await context.PostAsync(message);
             }else
@@ -160,10 +161,31 @@ namespace OQPYBot.Controllers
                 //reply = GimmeLocationFacebook(reply);
                 //await context.PostAsync(reply);
             }
-            await base.MessageReceived(context, item);
+            if ( a.Text.StartsWith("||||") )
+                await ProcessPostback(context, a);
+            else
+                await base.MessageReceived(context, item);
             Log.BasicLog(a);
         }
-
+        private async Task ProcessPostback(IDialogContext context, IMessageActivity item)
+        {
+            var intent = item.Text.Split(new string[2] { "||||", ":" }, StringSplitOptions.RemoveEmptyEntries);
+            context.UserData.TryGetValue(_facebooklocation, out Geo geo);
+            var loc = geo == null ? null : new Location(geo.longitude, geo.latitude);
+            var message = context.MakeMessage();
+            switch ( intent[0] )
+            {
+                case _actionInfo:
+                    var card = await MakeACard(intent[1], loc);
+                    message.Attachments = new List<Attachment> { card };
+                    message.AttachmentLayout = "list";
+                    break;
+                default:
+                    message.Text = "Ups, this button isn't working";
+                    break;
+            }
+            await context.PostAsync(message);
+        }
         public async Task ExposeMessageRecived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
             await MessageReceived(context, item);

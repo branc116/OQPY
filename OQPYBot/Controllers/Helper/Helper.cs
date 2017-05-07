@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OQPYClient.APIv03;
 using static OQPYBot.Controllers.Helper.Constants;
 using static OQPYModels.Extensions.Extensions;
 
@@ -19,12 +20,32 @@ namespace OQPYBot.Controllers.Helper
         public static IEnumerable<Attachment> MakeACard(IEnumerable<Venue> venue)
         {
             //var comonTags = venue.IntersectionTags();
-            var subtitle = "bars"; /*comonTags.TagsToString((i) => $"{i.TagName} ");*/
+            /*comonTags.TagsToString((i) => $"{i.TagName} ");*/
+            return MakeACard(venue, null);
+        }
+        public static IEnumerable<Attachment> MakeACard(IEnumerable<Venue> venue, Location startLoc)
+        {
             return from _ in venue
                    where !string.IsNullOrWhiteSpace(_.ImageUrl)
                    where Uri.IsWellFormedUriString(_.ImageUrl, UriKind.Absolute)
                    where _.Name != null
-                   select new ThumbnailCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions().ToList()).ToAttachment();
+                   let subtitle = (startLoc == null || _.Location == null) ? string.Empty : $"{startLoc.ToKilometers(_.Location)} km"
+                   select new ThumbnailCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions(_).ToList()).ToAttachment();
+        }
+        public async static Task<Attachment> MakeACard(string venueId, Location startLoc)
+        {
+            var venue = await _api.ApiVenuesSingleGetAsync(venueId);
+            var totalResources = venue?.Resources?.Count ?? 0;
+            var freeResources = totalResources == 0 ? 0 : venue.Resources.Where(i => i.OQPYed == false).Count();
+            var card = new ThumbnailCard("Resources", $"{freeResources} free out of {totalResources}");
+            return card.ToAttachment();
+
+        }
+
+        private static IEnumerable<CardAction> MakeCardActions(Venue venue)
+        {
+            return from _ in _cardActions
+                   select new CardAction() { Title = _, Value = $"||||{_}:{venue.Id}", Type = "imBack" };
         }
 
         public static IEnumerable<CardImage> MakeListOfImages(IEnumerable<Venue> venue)

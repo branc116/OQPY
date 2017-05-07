@@ -6,26 +6,40 @@ namespace OQPYEsp.DataStore
 {
     public class EspDataStore
     {
-        private static List<ESPData> _espData = new List<ESPData>();
+        private static Queue<ESPData> _espData = new Queue<ESPData>();
+        private static List<ESPData> _oldData = new List<ESPData>();
+        //public static event EventHandler<EventArgs> NewData;
 
-        public void addToStore(ESPData data)
+        public void AddToStore(ESPData data)
         {
-            _espData.Add(data);
+            _espData.Enqueue(data);
+            //NewData?.Invoke(null, EventArgs.Empty);
         }
 
-        public void addToStore(params ESPData[] data)
+        public void AddToStore(params ESPData[] data)
         {
-            _espData.AddRange(data);
+            foreach ( var _ in data )
+                AddToStore(_);
         }
 
+        public ESPData Pop()
+        {
+            if ( _espData.Count > 0 )
+            {
+                var cur = _espData.Dequeue();
+                _oldData.Add(cur);
+                return cur;
+            }
+            return null;
+        }
         public IEnumerable<ESPData> GetData()
         {
-            return _espData;
+            return _oldData;
         }
 
-        public void RemoveAllData(Predicate<ESPData> predicate)
-        {
-            _espData.RemoveAll(predicate);
-        }
+        //public void RemoveAllData(Predicate<ESPData> predicate)
+        //{
+        //    _espData.RemoveAll(predicate);
+        //}
     }
 }

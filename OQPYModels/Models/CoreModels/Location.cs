@@ -25,7 +25,7 @@ namespace OQPYModels.Models.CoreModels
 
         public bool Filter(Location one, Location two)
         {
-            return one != null && two != null && (one.DistanceInDegrees(two) < 0.1);
+            return one != null && two != null && (one.ToKilometers(two) < 10);
         }
 
         public async Task<bool> FilterAsync(Location one, string address)
@@ -56,5 +56,17 @@ namespace OQPYModels.Models.CoreModels
         }
 
         public override string ToString() => $"{Adress}: ({this.Latitude}, {this.Longditude})";
+        public double  ToKilometers(Location to)
+        { 
+            var R = 6378.137; // Radius of earth in KM
+            var dLat = to.Latitude * Math.PI / 180 - this.Latitude * Math.PI / 180;
+            var dLon = to.Longditude * Math.PI / 180 - this.Longditude * Math.PI / 180;
+            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+            Math.Cos(this.Latitude * Math.PI / 180) * Math.Cos(to.Latitude * Math.PI / 180) *
+            Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            var d = R * c;
+            return Math.Round(d,1);
+        }
     }
 }

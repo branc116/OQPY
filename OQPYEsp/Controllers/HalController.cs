@@ -2,6 +2,7 @@
 using OQPYEsp.DataStore;
 using System.Linq;
 
+
 namespace OQPYEsp.Controllers
 {
     [Route("api1/hal")]
@@ -10,10 +11,14 @@ namespace OQPYEsp.Controllers
         private EspDataStore _dataStore = new EspDataStore();
 
         [HttpGet]
-        public IActionResult Hal()
+        public string Hal()
         {
-            ViewData["Esp"] = _dataStore.GetData().Reverse().Take(20);
-            return View();
+            string ret = string.Empty;
+            foreach(var _ in _dataStore.GetData() )
+            {
+                ret += $"{_.EspId} {_.OnOff} {_.RawHall} {_.time}\r\n";
+            }
+            return ret;
         }
     }
 }

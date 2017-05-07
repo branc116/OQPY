@@ -12,14 +12,16 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SQLAZURECONNSTR_OQPYDb": "Server=(localdb)\\mssqllocaldb;Database=aspnet-OQPYManager-5537dc07-7ebc-4e5b-9c8b-8dd5eba4b2f1;Trusted_Connection=True;MultipleActiveResultSets=true"
       }
     },
     "OQPYManager": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SQLAZURECONNSTR_OQPYDb": "Server=(localdb)\\\\mssqllocaldb;Database=aspnet-OQPYManager-5537dc07-7ebc-4e5b-9c8b-8dd5eba4b2f1;Trusted_Connection=True;MultipleActiveResultSets=true"
       },
       "applicationUrl": "http://localhost:52306"
     }
