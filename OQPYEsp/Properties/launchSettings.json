@@ -12,6 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
+        "OQPYManagerUri": "https://oqpymanager.azurewebsites.net/",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

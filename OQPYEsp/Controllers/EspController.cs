@@ -20,7 +20,7 @@ namespace OQPYEsp.Controllers
             if ( parsed )
             {
                 var newData = new ESPData(on == 1, raw, espId);
-                _dataStore.addToStore(newData);
+                _dataStore.AddToStore(newData);
             }
             System.Console.WriteLine(retStr);
             return retStr;
