@@ -72,8 +72,8 @@ namespace OQPYCralwer
                        {
                            Key = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q",
                            Location = location,
-                           Radius = 1000,
-                           Sensor = false
+                           Radius = 10000,
+                           Sensor = true
                        }
                        select GooglePlaces.NearBySearch.QueryAsync(req);
             var resoults = await Task.WhenAll(reqs);
