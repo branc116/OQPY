@@ -10,6 +10,7 @@ using OQPYManager.Data.Repositories;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Models;
 using OQPYManager.Services;
+using OQPYModels.Models.CoreModels;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace OQPYManager
@@ -37,16 +38,10 @@ namespace OQPYManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connString = System.Environment.GetEnvironmentVariable("SQLAZURECONNSTR_OQPYDb") ?? "Server=(localdb)\\\\mssqllocaldb;Database=aspnet-OQPYManager-5537dc07-7ebc-4e5b-9c8b-8dd5eba4b2f1;Trusted_Connection=True;MultipleActiveResultSets=true";
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-#if DEBUG
-                    Configuration.GetConnectionString("DefaultConnection")
-
-#else
-                    System.Environment.GetEnvironmentVariable("SQLAZURECONNSTR_OQPYDb")
-#endif
-                    ));
+                options.UseSqlServer(connString));
 
             //services.AddDbContext<VenuesDbContext>(options =>
             //  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -63,6 +58,7 @@ namespace OQPYManager
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddScoped<IResourceDbRepository, ResourceDbRepository>();
             services.AddScoped<IVenuesDbRepository, VenuesDbRepository>();
         }
 
