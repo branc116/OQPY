@@ -14,6 +14,10 @@ namespace OQPYModels.Models
         /// Better List<Venue>, what if he is a manager, but not the owner and he is managing more venues
         /// </summary>
         public virtual Venue Venue { get; set; }
+        public Employee()
+        {
+
+        }
 
         public Employee(string userName) : base(userName)
         {

@@ -85,7 +85,7 @@ namespace OQPYModels.Models.CoreModels
         public string ImageUrl { get; set; }
 
         [Filterable(Filter = true)]
-        public decimal AverageReview => (Reviews?.Select(i => i?.Rating)?.Sum() ?? -1) / (decimal)(Reviews?.Count ?? 1);
+        public decimal AverageReview => Math.Round(((Reviews?.Select(i => i?.Rating)?.Sum() ?? -1) / (decimal)((Reviews?.Count ?? 1) + 0.1)), 1);
 
         public Venue()
         {

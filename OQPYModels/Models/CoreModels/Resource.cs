@@ -5,27 +5,38 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
-    public class Resource
+    public class Resource : ICoreModel<Resource>
     {
-        public virtual string Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Get one-to-many relationship with Venue
         /// </summary>
-        public virtual Venue Venue { get; set; }
+        public Venue Venue { get; set; }
 
         /// <summary>
         /// Is it a billiards table, dining table, dartboard etc.
         /// </summary>
-        public virtual string Category { get; set; }
+        public string Category { get; set; }
 
         /// <summary>
         /// Owners name their stuff as they want
         /// </summary>
-        public virtual string StuffName { get; set; }
-
-        public virtual List<Reservation> Reservations { get; set; }
-
+        public string StuffName { get; set; }
+        /// <summary>
+        /// maybe it'd be a good idea to have current state of the if it's iot enabled
+        /// </summary>
+        public bool OQPYed { get; set; }
+        /// <summary>
+        /// set this to true if the resource can change it's state by itself
+        /// </summary>
+        public bool IOTEnabled { get; set; }
+        /// <summary>
+        /// It'd be smart to have IOTEnabled resouce sends some sort of secret code. But for now it's null, not needed for now
+        /// </summary>
+        public string SecreteCode { get; set; }
+        public List<Reservation> Reservations { get; set; }
+        
         public Resource()
         {
         }
@@ -54,6 +65,11 @@ namespace OQPYModels.Models.CoreModels
                    let resouce = new Resource(stuffName, category, venue)
                    let reserv = resouce.Reservations = Reservation.RandomReservations(rand.Next(5, 10), resouce).ToList()
                    select resouce;
+        }
+
+        public bool Filter(Resource one, Resource two)
+        {
+            return one.Id == two.Id;
         }
     }
 }
