@@ -3,7 +3,6 @@ using GoogleApi.Entities.Places.Details.Response;
 using GoogleApi.Entities.Places.Search.NearBy.Request;
 using GoogleApi.Entities.Places.Search.NearBy.Response;
 using GoogleApi.Entities.Places.Search.Text.Response;
-using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
@@ -12,18 +11,9 @@ using System.Threading.Tasks;
 
 namespace OQPYCralwer
 {
-    internal class Program
-    {
-        private static void Main(string[] args)
-        {
-            var cralw = new Cralw();
-            Task.WaitAll(cralw.CralwBars());
-        }
-    }
-
     public class Cralw
     {
-        private static string _apiKey = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q";
+        private static string _apiKey = Environment.GetEnvironmentVariable("OQPYGoogleApiKey");
 
         public Cralw()
         {
@@ -70,7 +60,7 @@ namespace OQPYCralwer
                        let location = _
                        let req = new PlacesNearBySearchRequest()
                        {
-                           Key = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q",
+                           Key = _apiKey,
                            Location = location,
                            Radius = 10000,
                            Sensor = true
@@ -121,7 +111,8 @@ namespace OQPYCralwer
                             {
                                 Description = _.Website,
                                 VenueCreationDate = DateTime.Now,
-                                Location = new Location() {
+                                Location = new Location()
+                                {
                                     Latitude = _.Geometry.Location.Latitude,
                                     Longditude = _.Geometry.Location.Longitude,
                                     Adress = _.FormattedAddress
@@ -132,7 +123,7 @@ namespace OQPYCralwer
                             let tags = venue.Tags = _.Types != null ? (from __ in _.Types
                                                                        select new Tag(__.ToString(), venue)).ToList() : null
                             let workh = venue.WorkHours = _.OpeningHours.ToNormalWorkHovers(venue)
-                           
+
                             select venue.UnFixLoops();
             return newVenues;
         }
@@ -149,50 +140,6 @@ namespace OQPYCralwer
                    where _.Geometry != null
                    where _.Geometry.Location != null
                    select _.Geometry.Location;
-        }
-
-        public async Task CralwBars()
-        {
-            var req = new PlacesNearBySearchRequest()
-            {
-                Key = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q",
-                Location = new GoogleApi.Entities.Common.Location(45.7857986, 15.948076099999998),
-                Type = GoogleApi.Entities.Places.Search.Common.Enums.SearchPlaceType.Bar,
-                Radius = 10000,
-                Sensor = true
-            };
-            var res = await GooglePlaces.NearBySearch.QueryAsync(req);
-            var resTask = from _ in res.Results
-                          let v = new GoogleApi.Entities.Places.Details.Request.PlacesDetailsRequest()
-                          {
-                              PlaceId = _.PlaceId,
-                              Key = _apiKey
-                          }
-                          select GooglePlaces.Details.QueryAsync(v);
-            var res2 = await Task.WhenAll(resTask);
-            var api = new MyAPI(new Uri("http://localhost:5000/"));
-            var containd = await api.ApiVenuesMultiGetAsync((from _ in res2
-                                                             select _.Result.PlaceId).ToList());
-            var exes = res2.Select(i =>
-            {
-                if ( containd.All(ii => ii.Id != i.Result.PlaceId) )
-                    return i.Result;
-                return null;
-            });
-            var newVenues = from _ in exes
-                            let venue = new Venue(_.Name, null, _.Icon, _.FormattedAddress, _.PlaceId)
-                            {
-                                Description = _.Website,
-                                VenueCreationDate = DateTime.Now,
-                            }
-                            let reviews = venue.Reviews = _.Review != null ? (from __ in _.Review
-                                                                              select new OQPYModels.Models.CoreModels.Review((int)(__.Rating * 2), __.Text, venue)).ToList() : null
-                            let tags = venue.Tags = _.Types != null ? (from __ in _.Types
-                                                                       select new Tag(__.ToString(), venue)).ToList() : null
-                            let workh = venue.WorkHours = _.OpeningHours.ToNormalWorkHovers(venue)
-                            select venue.UnFixLoops();
-
-            await api.ApiVenuesMultiFullPostAsync(newVenues.ToList());
         }
     }
 

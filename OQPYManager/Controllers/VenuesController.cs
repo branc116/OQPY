@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OQPYManager.Data;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
@@ -7,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static OQPYManager.Helper.Log;
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OQPYManager.Controllers
@@ -31,7 +30,7 @@ namespace OQPYManager.Controllers
         }
 
         [HttpPost]
-        public async Task <IActionResult> CreateVenue([FromBody] Venue venue)
+        public async Task<IActionResult> CreateVenue([FromBody] Venue venue)
         {
             if ( venue == null )
             {
@@ -51,7 +50,8 @@ namespace OQPYManager.Controllers
             {
                 await _venuesDbRepository.RemoveAsync(id);
                 Ok("Deleted");
-            }catch(Exception ex )
+            }
+            catch ( Exception ex )
             {
                 BadRequest(ex.ToString());
             }
@@ -108,15 +108,24 @@ namespace OQPYManager.Controllers
                 BadRequest(ModelState);
                 return null;
             }
+            if (ids == null )
+            {
+                BadRequest();
+                return null;
+            }
 
-            var venues = _venuesDbRepository.Get(i => ids.Contains(i.Id));
-            foreach ( var _ in venues )
-                _.UnFixLoops();
+            var venues = _venuesDbRepository.Get(null, i => ids.Contains(i.Id));
+
 
             if ( venues == null )
+            {
                 base.NotFound();
+                return null;
+            }
             else
                 base.Ok();
+            foreach ( var _ in venues )
+                _.UnFixLoops();
             return venues;
         }
 
@@ -131,19 +140,26 @@ namespace OQPYManager.Controllers
             }
 
             var venue = await _venuesDbRepository.FindAsync(id);
-            venue.UnFixLoops();
 
             if ( venue == null )
+            {
                 base.NotFound();
+                return null;
+            }
             else
                 base.Ok();
-            return venue;
+            return venue.UnFixLoops();
         }
 
         [HttpPost]
         [Route("Filter")]
         public async Task<IEnumerable<Venue>> PostVenueFilter([FromBody] Venue venueLike)
         {
+            if (venueLike == null )
+            {
+                BadRequest();
+                return null;
+            }
             var venues = (await _venuesDbRepository.Filter(venueLike)).Take(10).ToList();
             if ( venues == null )
             {

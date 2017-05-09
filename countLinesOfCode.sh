@@ -1,1 +1,0 @@
-cloc $(git ls-files) 

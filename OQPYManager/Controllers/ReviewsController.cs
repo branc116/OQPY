@@ -136,28 +136,31 @@ namespace OQPYManager.Controllers
                 .FirstOrDefaultAsync();
 
             if ( reviews == null )
+            {
                 NotFound(venueId);
+                return null;
+            }
             else
                 Ok();
-            return reviews.Reviews;
+            return reviews.UnFixLoops().Reviews;
         }
 
         [HttpPost]
         [Route("VenueReview")]
-        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromBody] int rating, [FromHeader] string venueId)
+        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromHeader] string venueId, [FromBody] int rating)
         {
             if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
-            Venue venue = await GetVenueAsync(_context, venueId);
+            var venue = await _context.Venues
+                .FirstOrDefaultAsync(i => i.Id == venueId);
             if ( venue == null )
                 return NotFound(venueId);
             var review = new Review(rating, comment, venue);
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetReview", new { id = review.Id });
+            await _context.AddAsync(review);
+            //await _context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpDelete]
@@ -180,6 +183,23 @@ namespace OQPYManager.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { n = n, venueId = venueId, reviewId = reviewId });
+        }
+
+        /// <summary>
+        /// One can like or dislike a review, true = like, false = dislike
+        /// </summary>
+        /// <param name="like"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("like")]
+        public async Task<IActionResult> LikeReview([FromHeader]string reviewId,[FromBody]string like)
+        {
+            var review = await _context.Reviews.FindAsync(reviewId);
+            if ( review == null )
+                return NotFound();
+            review.Helpfulness += like == "0" ? -1 : 1;
+            await _context.SaveChangesAsync();
+            return Ok();
         }
     }
 }

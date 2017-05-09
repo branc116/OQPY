@@ -10,7 +10,6 @@ using OQPYManager.Data.Repositories;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Models;
 using OQPYManager.Services;
-using OQPYModels.Models.CoreModels;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace OQPYManager
@@ -42,9 +41,7 @@ namespace OQPYManager
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connString));
-
-            //services.AddDbContext<VenuesDbContext>(options =>
-            //  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

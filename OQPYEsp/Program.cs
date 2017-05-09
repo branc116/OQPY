@@ -12,7 +12,7 @@ namespace OQPYEsp
             Task t = Task.Factory.StartNew(async () =>
             {
                 await Services.HandleQ.PushQ();
-            }); 
+            });
             var host = new WebHostBuilder()
                 .UseUrls("http://0.0.0.0:5000")
                 .UseKestrel()

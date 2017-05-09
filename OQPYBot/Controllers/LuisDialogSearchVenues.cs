@@ -1,6 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
-using Microsoft.Bot.Builder.FormFlow.Advanced;
 using Microsoft.Bot.Builder.Luis;
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static OQPYBot.Controllers.Helper.Constants;
+
 namespace OQPYBot.Controllers
 {
     [LuisModel("2f4d5a10-e2cf-4238-ab65-51ab4b4dd0ea", "b36329fcaa154546ba25f10bc5740770")]
@@ -18,7 +18,7 @@ namespace OQPYBot.Controllers
         {
             var form = Chain.From(() =>
             {
-                    return FormDialog.FromForm(SearchVenues.Builder);
+                return FormDialog.FromForm(SearchVenues.Builder);
             });
             var message = context.MakeMessage();
             return form;
@@ -39,10 +39,6 @@ namespace OQPYBot.Controllers
         //public Venue Like { get => like; set => like = value; }
         public Venue GetVenue() => new Venue() { Name = Name };
 
-        public async Task<IEnumerable<Venue>> QAsync()
-        {
-                return await QAsync(null);
-        }
         public async Task<IEnumerable<Venue>> QAsync(Geo location)
         {
             var api = new MyAPI(new Uri(_managerUri));
@@ -55,6 +51,11 @@ namespace OQPYBot.Controllers
             return await api.ApiVenuesFilterPostAsync(venue);
         }
 
+        public async Task<IEnumerable<Venue>> QAsync(Venue like)
+        {
+            return await _api.ApiVenuesFilterPostAsync(like);
+        }
+
         public static IForm<SearchVenues> Builder()
         {
             var colture = System.Threading.Thread.CurrentThread.CurrentUICulture;
@@ -63,7 +64,6 @@ namespace OQPYBot.Controllers
                     .Field(nameof(Name));
             var a = build.Build();
             return a;
-         
         }
     }
 }

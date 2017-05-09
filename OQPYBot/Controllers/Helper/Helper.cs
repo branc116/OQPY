@@ -1,13 +1,14 @@
-﻿using Microsoft.Bot.Builder.ConnectorEx;
+﻿using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using OQPYBot.Helper;
 using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OQPYClient.APIv03;
 using static OQPYBot.Controllers.Helper.Constants;
 using static OQPYModels.Extensions.Extensions;
 
@@ -15,6 +16,8 @@ namespace OQPYBot.Controllers.Helper
 {
     public class Helper
     {
+        private const string TAG = "Helper";
+
         public static event EventHandler<EventArgs> WaitContextPrompt;
 
         public static IEnumerable<Attachment> MakeACard(IEnumerable<Venue> venue)
@@ -23,6 +26,7 @@ namespace OQPYBot.Controllers.Helper
             /*comonTags.TagsToString((i) => $"{i.TagName} ");*/
             return MakeACard(venue, null);
         }
+
         public static IEnumerable<Attachment> MakeACard(IEnumerable<Venue> venue, Location startLoc)
         {
             return from _ in venue
@@ -30,22 +34,25 @@ namespace OQPYBot.Controllers.Helper
                    where Uri.IsWellFormedUriString(_.ImageUrl, UriKind.Absolute)
                    where _.Name != null
                    let subtitle = (startLoc == null || _.Location == null) ? string.Empty : $"{startLoc.ToKilometers(_.Location)} km"
-                   select new ThumbnailCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions(_).ToList()).ToAttachment();
-        }
-        public async static Task<Attachment> MakeACard(string venueId, Location startLoc)
-        {
-            var venue = await _api.ApiVenuesSingleGetAsync(venueId);
-            var totalResources = venue?.Resources?.Count ?? 0;
-            var freeResources = totalResources == 0 ? 0 : venue.Resources.Where(i => i.OQPYed == false).Count();
-            var card = new ThumbnailCard("Resources", $"{freeResources} free out of {totalResources}");
-            return card.ToAttachment();
-
+                   select new ThumbnailCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions(_.Id, _venueObj, _venueCardActions).ToList()).ToAttachment();
         }
 
-        private static IEnumerable<CardAction> MakeCardActions(Venue venue)
+        internal static IEnumerable<CardAction> MakeCardActions(Venue venue)
         {
-            return from _ in _cardActions
+            return from _ in _venueCardActions
                    select new CardAction() { Title = _, Value = $"||||{_}:{venue.Id}", Type = "imBack" };
+        }
+
+        internal static IEnumerable<CardAction> MakeCardActions(string id, string Obj, IEnumerable<string> actions)
+        {
+            return from _ in actions
+                   select new CardAction() { Title = _, Value = $"||||{_}{Obj}:{id}", Type = "imBack" };
+        }
+
+        internal static IEnumerable<CardAction> MakeCardActions(string id, string Obj, params string[] actions)
+        {
+            return from _ in actions
+                   select new CardAction() { Title = _, Value = $"||||{_}{Obj}:{id}", Type = "imBack" };
         }
 
         public static IEnumerable<CardImage> MakeListOfImages(IEnumerable<Venue> venue)
@@ -60,11 +67,6 @@ namespace OQPYBot.Controllers.Helper
             return new List<CardImage>() { new CardImage(venue?.ImageUrl) } ?? null;
         }
 
-        public static IEnumerable<CardAction> MakeCardActions()
-        {
-            return from _ in _cardActions
-                   select new CardAction() { Title = _, Value = _, Type = "imBack" };
-        }
         public static IMessageActivity GimmeLocationFacebook(IMessageActivity baseMessage)
         {
             baseMessage.ChannelData = new FacebookMessage
@@ -80,6 +82,40 @@ namespace OQPYBot.Controllers.Helper
                 }
             );
             return baseMessage;
+        }
+
+        internal static async Task ProcessVenues(IDialogContext context, SearchVenues result)
+        {
+            var like = result;
+            Venue likeVenue;
+            IEnumerable<Venue> venues;
+            var haveLoc = context.UserData.TryGetValue(_facebooklocation, out Geo geolocation);
+            if ( haveLoc )
+            {
+                venues = await like.QAsync(likeVenue = new Venue()
+                {
+                    Name = like.Name == "n" ? null : like.Name,
+                    Location = new Location(geolocation.longitude, geolocation.latitude)
+                });
+            }
+            else
+                venues = await like.QAsync(likeVenue = like.GetVenue());
+            if ( venues.Any() )
+            {
+                var message = context.MakeMessage();
+
+                context.ConversationData.SetValue(_currentActiveVenues, venues);
+                Log.BasicLog("venues", venues.Select(i => i.ToString()).Aggregate((i, j) => $"{i}\n{j}"), SeverityLevel.Verbose);
+
+                message.Attachments = MakeACard(venues, geolocation == null ? null : new Location(geolocation.longitude, geolocation.latitude)).ToList();
+                message.AttachmentLayout = _layoutCarousel;
+                await context.PostAsync(message);
+            }
+            else
+            {
+                Log.BasicLog(TAG, $"Venue not found, name: {likeVenue.Name}, locatio: {likeVenue?.Location.ToString() ?? null}", SeverityLevel.Error);
+                await context.PostAsync("Sorry, can't find anything... :(");
+            }
         }
 
         public static async Task ApplyProperty(IDialogContext context, LuisResult result, params string[] propertyName)

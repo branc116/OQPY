@@ -4,6 +4,7 @@
     {
         public static int MinimumRating = 0;
         public static int MaximumRating = 10;
+        public static double EarthRadius = 6378.137;
     }
 
     public static class ErrorMessages

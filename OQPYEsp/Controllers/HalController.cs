@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OQPYEsp.DataStore;
-using System.Linq;
-
 
 namespace OQPYEsp.Controllers
 {
@@ -14,7 +12,7 @@ namespace OQPYEsp.Controllers
         public string Hal()
         {
             string ret = string.Empty;
-            foreach(var _ in _dataStore.GetData() )
+            foreach ( var _ in _dataStore.GetData() )
             {
                 ret += $"{_.EspId} {_.OnOff} {_.RawHall} {_.time}\r\n";
             }

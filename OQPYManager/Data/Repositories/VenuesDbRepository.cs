@@ -20,10 +20,7 @@ namespace OQPYManager.Data.Repositories
         {
         }
 
-        public async override Task OnCreate()
-        {
-            await Task.WhenAll(AddAsync(new Venue("Josip", "WWWW", "None", "This ONe")));
-        }
+        
 
         public override async Task AddAsync(Venue venue)
         {
@@ -49,39 +46,32 @@ namespace OQPYManager.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override IEnumerable<Venue> GetAll()
+        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null)
         {
-                return _context.Venues.AsQueryable();
+            return base.GetAll(_context.Venues);
         }
 
-        public override IEnumerable<Venue> GetAll(params string[] includedParams)
+        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null, params string[] includedParams)
         {
-            var venues = _context.Venues.AsQueryable();
-            foreach ( var param in includedParams )
-                venues.Include(param);
-            return venues;
+            return base.GetAll(_context.Venues, includedParams);
         }
 
-        public override IEnumerable<Venue> GetAll(string includedParams)
+        public override IEnumerable<Venue> GetAll(string includedParams, DbSet<Venue> dbSet = null)
         {
-            return GetAll(includedParams.Split(new char[1] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+            return base.GetAll(includedParams, _context.Venues);
         }
 
-        public override IEnumerable<Venue> Get(params Func<Venue, bool>[] filters)
+        public override IEnumerable<Venue> Get(DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
         {
-            return Get(string.Empty, filters);
+            return base.Get(_context.Venues, filters);
         }
 
-        public override IEnumerable<Venue> Get(string includedParams, params Func<Venue, bool>[] filters)
+        public override IEnumerable<Venue> Get(string includedParams, DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
         {
-            var venues = GetAll(includedParams);
-            foreach ( var filter in filters )
-            {
-                venues = venues.Where(filter);
-            }
-
-            return venues;
+            return base.Get(includedParams, _context.Venues, filters);
         }
+
+        
 
         //I may change implementation a bit beacuse we may need to
         //load some other info(like owner and such)
@@ -138,7 +128,12 @@ namespace OQPYManager.Data.Repositories
             }
         }
 
-        public async override Task<IQueryable<Venue>> Filter(Venue like)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="like"></param>
+        /// <returns></returns>
+        public override async Task<IQueryable<Venue>> Filter(Venue like)
         {
             try
             {

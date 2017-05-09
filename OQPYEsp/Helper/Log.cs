@@ -6,7 +6,8 @@ namespace OQPYEsp.Helper
 {
     public class Log
     {
-        static TelemetryClient telemetry = new TelemetryClient();
+        private static TelemetryClient telemetry = new TelemetryClient();
+
         public static void BasicLog(string about, string logData, SeverityLevel Sl)
         {
             if ( Sl == SeverityLevel.Information )

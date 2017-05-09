@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OQPYManager.Data.Migrations
 {
-    public partial class IOT : Migration
+    public partial class IOT: Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

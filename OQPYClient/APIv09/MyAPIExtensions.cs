@@ -578,13 +578,13 @@ namespace OQPYClient.APIv03
             /// </param>
             /// <param name='comment'>
             /// </param>
-            /// <param name='rating'>
-            /// </param>
             /// <param name='venueId'>
             /// </param>
-            public static void ApiReviewsVenueReviewPost(this IMyAPI operations, string comment = default(string), int? rating = default(int?), string venueId = default(string))
+            /// <param name='rating'>
+            /// </param>
+            public static void ApiReviewsVenueReviewPost(this IMyAPI operations, string comment = default(string), string venueId = default(string), int? rating = default(int?))
             {
-                operations.ApiReviewsVenueReviewPostAsync(comment, rating, venueId).GetAwaiter().GetResult();
+                operations.ApiReviewsVenueReviewPostAsync(comment, venueId, rating).GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -592,16 +592,16 @@ namespace OQPYClient.APIv03
             /// </param>
             /// <param name='comment'>
             /// </param>
-            /// <param name='rating'>
-            /// </param>
             /// <param name='venueId'>
+            /// </param>
+            /// <param name='rating'>
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiReviewsVenueReviewPostAsync(this IMyAPI operations, string comment = default(string), int? rating = default(int?), string venueId = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task ApiReviewsVenueReviewPostAsync(this IMyAPI operations, string comment = default(string), string venueId = default(string), int? rating = default(int?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.ApiReviewsVenueReviewPostWithHttpMessagesAsync(comment, rating, venueId, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                (await operations.ApiReviewsVenueReviewPostWithHttpMessagesAsync(comment, venueId, rating, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
             /// <param name='operations'>
@@ -629,6 +629,33 @@ namespace OQPYClient.APIv03
             public static async Task ApiReviewsVenueReviewDeleteAsync(this IMyAPI operations, string reviewId = default(string), string venueId = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
                 (await operations.ApiReviewsVenueReviewDeleteWithHttpMessagesAsync(reviewId, venueId, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='reviewId'>
+            /// </param>
+            /// <param name='like'>
+            /// </param>
+            public static void ApiReviewsLikeGet(this IMyAPI operations, string reviewId = default(string), string like = default(string))
+            {
+                operations.ApiReviewsLikeGetAsync(reviewId, like).GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='reviewId'>
+            /// </param>
+            /// <param name='like'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiReviewsLikeGetAsync(this IMyAPI operations, string reviewId = default(string), string like = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.ApiReviewsLikeGetWithHttpMessagesAsync(reviewId, like, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
             /// <param name='operations'>

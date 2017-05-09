@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.EntityFrameworkCore;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using static OQPYManager.Helper.Log;
-using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.EntityFrameworkCore;
 
 namespace OQPYManager.Data.Repositories.Base
 {
     public abstract class BaseResourceDbRepository: BaseDbRepository<Resource>, IResourceDbRepository
     {
         private const string TAG = "BaseResource";
+
         public BaseResourceDbRepository(ApplicationDbContext context) : base(context)
         {
-
         }
+
         public async Task ChangeState(string id, bool newState, string secretCode)
         {
             var resource = await _context.Resources.FindAsync(id);
@@ -29,6 +28,7 @@ namespace OQPYManager.Data.Repositories.Base
             _context.Update(resource);
             await _context.SaveChangesAsync();
         }
+
         public async Task<IEnumerable<Resource>> GetAllInVenue(string venueId)
         {
             var venue = await _context.Venues
