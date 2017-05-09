@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
-    public interface IBaseContext
+    public interface IBaseDbRepository
     {
     }
 }

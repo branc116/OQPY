@@ -3,67 +3,72 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
-    public interface IBaseDbRepository<T>: IBaseContext where T : ICoreModel<T>
+    public interface IBaseDbRepository<T> where T : class
     {
-        Task OnCreate();
+        
         Task AddAsync(T item);
 
         Task AddAsync(params T[] items);
 
         Task AddAsync(IEnumerable<T> items);
 
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(DbSet<T> dbSet);
 
         /// <summary>
-        /// Get all venues with included parameters
+        /// Get all objects with included parameters
         /// </summary>
+        /// <param name="dbSet"></param>
         /// <param name="includedParams">list of included parameters e.g. "Resources"</param>
-        /// <returns>list of venues with included parameters</returns>
-        IEnumerable<T> GetAll(params string[] includedParams);
+        /// <returns>list of objects of type T with included parameters</returns>
+        IEnumerable<T> GetAll(DbSet<T> dbSet = null, params string[] includedParams);
 
         /// <summary>
-        /// Get all venues with included parameters
+        /// Get all objects with included parameters
         /// </summary>
         /// <param name="includedParams">list of included parameters seperated with ';' e.g. "Resources;Resources.Reservations"</param>
-        /// <returns>list of venues with included parameters</returns>
-        IEnumerable<T> GetAll(string includedParams);
+        /// <param name="dbSet"></param>
+        /// <returns>list of objects of type T with included parameters</returns>
+        IEnumerable<T> GetAll(string includedParams, DbSet<T> dbSet = null);
 
         /// <summary>
-        /// Gets venues based on passed filters.
+        /// Gets objects based on passed filters.
         /// </summary>
-        /// <param name="filters">Filters a venue must pass.</param>
-        /// <returns>Venues that passed all filters.</returns>
-        IEnumerable<T> Get(params Func<T, bool>[] filters);
+        /// <param name="dbSet"></param>
+        /// <param name="filters">Filters an object must pass.</param>
+        /// <returns>Objects that passed all filters.</returns>
+        IEnumerable<T> Get(DbSet<T> dbSet = null, params Func<T, bool>[] filters);
 
         /// <summary>
-        /// Gets venues based on passed filters.
+        /// Gets objects based on passed filters.
         /// </summary>
         /// <param name="includedParams"></param>
-        /// <param name="filters">Filters a venue must pass.</param>
-        /// <returns>Venues that passed all filters.</returns>
-        IEnumerable<T> Get(string includedParams, params Func<T, bool>[] filters);
+        /// <param name="dbSet"></param>
+        /// <param name="filters">Filters a object must pass.</param>
+        /// <returns>objects that passed all filters.</returns>
+        IEnumerable<T> Get(string includedParams, DbSet<T> dbSet = null, params Func<T, bool>[] filters);
 
         /// <summary>
-        /// Finds venue based on key.
+        /// Finds object based on key.
         /// </summary>
         /// <param name="key"></param>
-        /// <returns>Venue with the key or null.</returns>
+        /// <returns>object with the key or null.</returns>
         Task<T> FindAsync(string key);
 
         /// <summary>
-        /// Removes venue from database which has passed key.
+        /// Removes object from database which has passed key.
         /// </summary>
         /// <param name="key">Passed key.</param>
         Task RemoveAsync(string key);
 
         /// <summary>
-        /// Update a venue in database with new values.
+        /// Update a object in database with new values.
         /// </summary>
-        /// <param name="venue">Venue which holds new values.</param>
-        Task UpdateAsync(T venue);
+        /// <param name="item">item which holds new values.</param>
+        Task UpdateAsync(T item);
 
         Task<IQueryable<T>> Filter(T like);
     }

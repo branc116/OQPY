@@ -58,7 +58,7 @@ namespace OQPYModels.Models.CoreModels
         public override string ToString() => $"{Adress}: ({this.Latitude}, {this.Longditude})";
         public double  ToKilometers(Location to)
         { 
-            var R = 6378.137; // Radius of earth in KM
+            var R = Constants.EarthRadius;
             var dLat = to.Latitude * Math.PI / 180 - this.Latitude * Math.PI / 180;
             var dLon = to.Longditude * Math.PI / 180 - this.Longditude * Math.PI / 180;
             var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
