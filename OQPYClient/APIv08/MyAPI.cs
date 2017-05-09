@@ -7,16 +7,14 @@ namespace OQPYClient.APIv03
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
-    using OQPYModels.Models;
     using OQPYModels.Models.CoreModels;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public partial class MyAPI : ServiceClient<MyAPI>, IMyAPI
+    public partial class MyAPI: ServiceClient<MyAPI>, IMyAPI
     {
         /// <summary>
         /// The base URI of the service.
@@ -72,7 +70,7 @@ namespace OQPYClient.APIv03
         /// </exception>
         public MyAPI(System.Uri baseUri, params DelegatingHandler[] handlers) : this(handlers)
         {
-            if (baseUri == null)
+            if ( baseUri == null )
             {
                 throw new System.ArgumentNullException("baseUri");
             }
@@ -96,7 +94,7 @@ namespace OQPYClient.APIv03
         /// </exception>
         public MyAPI(System.Uri baseUri, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
-            if (baseUri == null)
+            if ( baseUri == null )
             {
                 throw new System.ArgumentNullException("baseUri");
             }
@@ -107,6 +105,7 @@ namespace OQPYClient.APIv03
         /// An optional partial-method to perform custom initialization.
         ///</summary>
         partial void CustomInitialize();
+
         /// <summary>
         /// Initializes client properties.
         /// </summary>
@@ -121,7 +120,7 @@ namespace OQPYClient.APIv03
                 NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize,
                 ContractResolver = new ReadOnlyJsonContractResolver(),
-                Converters = new  List<JsonConverter>
+                Converters = new List<JsonConverter>
                     {
                         new Iso8601TimeSpanConverter()
                     }
@@ -140,6 +139,7 @@ namespace OQPYClient.APIv03
             };
             CustomInitialize();
         }
+
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -160,7 +160,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -177,12 +177,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -193,36 +192,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -233,24 +234,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Reservation>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -279,7 +280,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -296,21 +297,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (id != null)
+            if ( id != null )
             {
-                if (_httpRequest.Headers.Contains("id"))
+                if ( _httpRequest.Headers.Contains("id") )
                 {
                     _httpRequest.Headers.Remove("id");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("id", id);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -321,36 +321,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -361,24 +363,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<Reservation>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -404,7 +406,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -422,12 +424,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -437,43 +438,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(reservation != null)
+            if ( reservation != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(reservation, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -483,7 +486,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -514,14 +517,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiReservationsByIdPutWithHttpMessagesAsync(string id, Reservation reservation = default(Reservation), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -541,12 +544,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -556,43 +558,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(reservation != null)
+            if ( reservation != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(reservation, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -602,7 +606,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -631,14 +635,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiReservationsByIdDeleteWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -657,12 +661,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -673,36 +676,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -712,7 +717,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -741,7 +746,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -758,21 +763,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (venueId != null)
+            if ( venueId != null )
             {
-                if (_httpRequest.Headers.Contains("venueId"))
+                if ( _httpRequest.Headers.Contains("venueId") )
                 {
                     _httpRequest.Headers.Remove("venueId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("venueId", venueId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -783,36 +787,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -823,24 +829,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Reservation>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -869,7 +875,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -886,21 +892,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (resourceId != null)
+            if ( resourceId != null )
             {
-                if (_httpRequest.Headers.Contains("resourceId"))
+                if ( _httpRequest.Headers.Contains("resourceId") )
                 {
                     _httpRequest.Headers.Remove("resourceId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("resourceId", resourceId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -911,36 +916,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -951,24 +958,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Reservation>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -998,7 +1005,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1017,21 +1024,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("POST");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (resourceId != null)
+            if ( resourceId != null )
             {
-                if (_httpRequest.Headers.Contains("resourceId"))
+                if ( _httpRequest.Headers.Contains("resourceId") )
                 {
                     _httpRequest.Headers.Remove("resourceId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("resourceId", resourceId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1041,43 +1047,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(fromParameter != null)
+            if ( fromParameter != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(fromParameter, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1087,7 +1095,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1117,7 +1125,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1136,21 +1144,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("DELETE");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (resourceId != null)
+            if ( resourceId != null )
             {
-                if (_httpRequest.Headers.Contains("resourceId"))
+                if ( _httpRequest.Headers.Contains("resourceId") )
                 {
                     _httpRequest.Headers.Remove("resourceId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("resourceId", resourceId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1160,43 +1167,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(fromParameter != null)
+            if ( fromParameter != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(fromParameter, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1206,7 +1215,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1235,7 +1244,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1252,21 +1261,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (secretCode != null)
+            if ( secretCode != null )
             {
-                if (_httpRequest.Headers.Contains("secretCode"))
+                if ( _httpRequest.Headers.Contains("secretCode") )
                 {
                     _httpRequest.Headers.Remove("secretCode");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("secretCode", secretCode);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1277,36 +1285,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1317,24 +1327,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<Reservation>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1361,7 +1371,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1378,12 +1388,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1394,36 +1403,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1434,24 +1445,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Resource>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1477,7 +1488,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1495,12 +1506,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1510,43 +1520,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(resource != null)
+            if ( resource != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(resource, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1556,7 +1568,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1585,14 +1597,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiResourcesByIdGetWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1611,12 +1623,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1627,36 +1638,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1666,7 +1679,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1697,14 +1710,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiResourcesByIdPutWithHttpMessagesAsync(string id, Resource resource = default(Resource), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1724,12 +1737,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1739,43 +1751,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(resource != null)
+            if ( resource != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(resource, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1785,7 +1799,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1814,14 +1828,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiResourcesByIdDeleteWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1840,12 +1854,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1856,36 +1869,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -1895,7 +1910,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -1925,7 +1940,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -1944,37 +1959,36 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("POST");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (id != null)
+            if ( id != null )
             {
-                if (_httpRequest.Headers.Contains("id"))
+                if ( _httpRequest.Headers.Contains("id") )
                 {
                     _httpRequest.Headers.Remove("id");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("id", id);
             }
-            if (oQPYed != null)
+            if ( oQPYed != null )
             {
-                if (_httpRequest.Headers.Contains("OQPYed"))
+                if ( _httpRequest.Headers.Contains("OQPYed") )
                 {
                     _httpRequest.Headers.Remove("OQPYed");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("OQPYed", oQPYed);
             }
-            if (secretCode != null)
+            if ( secretCode != null )
             {
-                if (_httpRequest.Headers.Contains("secretCode"))
+                if ( _httpRequest.Headers.Contains("secretCode") )
                 {
                     _httpRequest.Headers.Remove("secretCode");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("secretCode", secretCode);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -1985,36 +1999,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2024,7 +2040,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2051,7 +2067,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2068,12 +2084,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2084,36 +2099,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2124,24 +2141,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Review>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2170,7 +2187,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2187,21 +2204,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (id != null)
+            if ( id != null )
             {
-                if (_httpRequest.Headers.Contains("id"))
+                if ( _httpRequest.Headers.Contains("id") )
                 {
                     _httpRequest.Headers.Remove("id");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("id", id);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2212,36 +2228,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2252,24 +2270,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<Review>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2295,7 +2313,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2313,12 +2331,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2328,43 +2345,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(review != null)
+            if ( review != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(review, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2374,7 +2393,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2405,14 +2424,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiReviewsByIdPutWithHttpMessagesAsync(string id, Review review = default(Review), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2432,12 +2451,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2447,43 +2465,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(review != null)
+            if ( review != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(review, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2493,7 +2513,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2522,14 +2542,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiReviewsByIdDeleteWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2548,12 +2568,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2564,36 +2583,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2603,7 +2624,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2632,7 +2653,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2649,21 +2670,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (venueId != null)
+            if ( venueId != null )
             {
-                if (_httpRequest.Headers.Contains("venueId"))
+                if ( _httpRequest.Headers.Contains("venueId") )
                 {
                     _httpRequest.Headers.Remove("venueId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("venueId", venueId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2674,36 +2694,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2714,24 +2736,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Review>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2761,7 +2783,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2780,29 +2802,28 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("POST");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (comment != null)
+            if ( comment != null )
             {
-                if (_httpRequest.Headers.Contains("comment"))
+                if ( _httpRequest.Headers.Contains("comment") )
                 {
                     _httpRequest.Headers.Remove("comment");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("comment", comment);
             }
-            if (venueId != null)
+            if ( venueId != null )
             {
-                if (_httpRequest.Headers.Contains("venueId"))
+                if ( _httpRequest.Headers.Contains("venueId") )
                 {
                     _httpRequest.Headers.Remove("venueId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("venueId", venueId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2812,43 +2833,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(rating != null)
+            if ( rating != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(rating, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2858,7 +2881,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -2886,7 +2909,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -2904,29 +2927,28 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("DELETE");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (reviewId != null)
+            if ( reviewId != null )
             {
-                if (_httpRequest.Headers.Contains("reviewId"))
+                if ( _httpRequest.Headers.Contains("reviewId") )
                 {
                     _httpRequest.Headers.Remove("reviewId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("reviewId", reviewId);
             }
-            if (venueId != null)
+            if ( venueId != null )
             {
-                if (_httpRequest.Headers.Contains("venueId"))
+                if ( _httpRequest.Headers.Contains("venueId") )
                 {
                     _httpRequest.Headers.Remove("venueId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("venueId", venueId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -2937,36 +2959,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -2976,7 +3000,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3003,7 +3027,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3020,12 +3044,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3036,36 +3059,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3076,24 +3101,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Tag>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3122,7 +3147,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3139,21 +3164,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (id != null)
+            if ( id != null )
             {
-                if (_httpRequest.Headers.Contains("id"))
+                if ( _httpRequest.Headers.Contains("id") )
                 {
                     _httpRequest.Headers.Remove("id");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("id", id);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3164,36 +3188,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3204,24 +3230,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<Tag>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3247,7 +3273,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3265,12 +3291,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3280,43 +3305,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(tag != null)
+            if ( tag != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(tag, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3326,7 +3353,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3357,14 +3384,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiTagsByIdPutWithHttpMessagesAsync(string id, Tag tag = default(Tag), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3384,12 +3411,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3399,43 +3425,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(tag != null)
+            if ( tag != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(tag, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3445,7 +3473,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3474,14 +3502,14 @@ namespace OQPYClient.APIv03
         /// </return>
         public async Task<HttpOperationResponse> ApiTagsByIdDeleteWithHttpMessagesAsync(string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
+            if ( id == null )
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "id");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3500,12 +3528,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3516,36 +3543,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3555,7 +3584,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3584,7 +3613,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3601,21 +3630,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (venueId != null)
+            if ( venueId != null )
             {
-                if (_httpRequest.Headers.Contains("venueId"))
+                if ( _httpRequest.Headers.Contains("venueId") )
                 {
                     _httpRequest.Headers.Remove("venueId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("venueId", venueId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3626,36 +3654,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3666,24 +3696,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Tag>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3711,7 +3741,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3729,29 +3759,28 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("POST");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (valueTag != null)
+            if ( valueTag != null )
             {
-                if (_httpRequest.Headers.Contains("valueTag"))
+                if ( _httpRequest.Headers.Contains("valueTag") )
                 {
                     _httpRequest.Headers.Remove("valueTag");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("valueTag", valueTag);
             }
-            if (venueId != null)
+            if ( venueId != null )
             {
-                if (_httpRequest.Headers.Contains("venueId"))
+                if ( _httpRequest.Headers.Contains("venueId") )
                 {
                     _httpRequest.Headers.Remove("venueId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("venueId", venueId);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3762,36 +3791,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3801,7 +3832,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3829,7 +3860,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3847,29 +3878,28 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("DELETE");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (venueId != null)
+            if ( venueId != null )
             {
-                if (_httpRequest.Headers.Contains("venueId"))
+                if ( _httpRequest.Headers.Contains("venueId") )
                 {
                     _httpRequest.Headers.Remove("venueId");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("venueId", venueId);
             }
-            if (tagValue != null)
+            if ( tagValue != null )
             {
-                if (_httpRequest.Headers.Contains("tagValue"))
+                if ( _httpRequest.Headers.Contains("tagValue") )
                 {
                     _httpRequest.Headers.Remove("tagValue");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("tagValue", tagValue);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3880,36 +3910,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -3919,7 +3951,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -3946,7 +3978,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -3963,12 +3995,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -3979,36 +4010,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4019,24 +4052,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Venue>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4062,7 +4095,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4080,12 +4113,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4095,43 +4127,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(venue != null)
+            if ( venue != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(venue, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4141,7 +4175,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4167,7 +4201,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4184,21 +4218,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("DELETE");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (id != null)
+            if ( id != null )
             {
-                if (_httpRequest.Headers.Contains("id"))
+                if ( _httpRequest.Headers.Contains("id") )
                 {
                     _httpRequest.Headers.Remove("id");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("id", id);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4209,36 +4242,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4248,7 +4283,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4277,7 +4312,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4295,12 +4330,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4310,43 +4344,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(ids != null)
+            if ( ids != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(ids, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4357,24 +4393,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Venue>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4400,7 +4436,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4418,12 +4454,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4433,43 +4468,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(names != null)
+            if ( names != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(names, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4479,7 +4516,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4505,7 +4542,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4523,12 +4560,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4538,43 +4574,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(venues != null)
+            if ( venues != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(venues, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4584,7 +4622,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4613,7 +4651,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4630,21 +4668,20 @@ namespace OQPYClient.APIv03
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
-            if (id != null)
+            if ( id != null )
             {
-                if (_httpRequest.Headers.Contains("id"))
+                if ( _httpRequest.Headers.Contains("id") )
                 {
                     _httpRequest.Headers.Remove("id");
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("id", id);
             }
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4655,36 +4692,38 @@ namespace OQPYClient.APIv03
             // Serialize Request
             string _requestContent = null;
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4695,24 +4734,24 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<Venue>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4738,7 +4777,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4756,12 +4795,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4771,43 +4809,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(venue != null)
+            if ( venue != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(venue, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4817,7 +4857,7 @@ namespace OQPYClient.APIv03
             var _result = new HttpOperationResponse();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
@@ -4846,7 +4886,7 @@ namespace OQPYClient.APIv03
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
@@ -4864,12 +4904,11 @@ namespace OQPYClient.APIv03
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
-
-            if (customHeaders != null)
+            if ( customHeaders != null )
             {
-                foreach(var _header in customHeaders)
+                foreach ( var _header in customHeaders )
                 {
-                    if (_httpRequest.Headers.Contains(_header.Key))
+                    if ( _httpRequest.Headers.Contains(_header.Key) )
                     {
                         _httpRequest.Headers.Remove(_header.Key);
                     }
@@ -4879,43 +4918,45 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(venueLike != null)
+            if ( venueLike != null )
             {
                 _requestContent = SafeJsonConvert.SerializeObject(venueLike, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
             _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
             }
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ( (int)_statusCode != 200 )
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                if ( _httpResponse.Content != null )
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
-                else {
+                else
+                {
                     _responseContent = string.Empty;
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
+                if ( _shouldTrace )
                 {
                     ServiceClientTracing.Error(_invocationId, ex);
                 }
                 _httpRequest.Dispose();
-                if (_httpResponse != null)
+                if ( _httpResponse != null )
                 {
                     _httpResponse.Dispose();
                 }
@@ -4926,29 +4967,28 @@ namespace OQPYClient.APIv03
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
-            if ((int)_statusCode == 200)
+            if ( (int)_statusCode == 200 )
             {
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
                     _result.Body = SafeJsonConvert.DeserializeObject<IList<Venue>>(_responseContent, DeserializationSettings);
                 }
-                catch (JsonException ex)
+                catch ( JsonException ex )
                 {
                     _httpRequest.Dispose();
-                    if (_httpResponse != null)
+                    if ( _httpResponse != null )
                     {
                         _httpResponse.Dispose();
                     }
                     throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
-            if (_shouldTrace)
+            if ( _shouldTrace )
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
             }
             return _result;
         }
-
     }
 }
