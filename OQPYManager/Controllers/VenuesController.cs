@@ -108,15 +108,24 @@ namespace OQPYManager.Controllers
                 BadRequest(ModelState);
                 return null;
             }
+            if (ids == null )
+            {
+                BadRequest();
+                return null;
+            }
 
-            var venues = _venuesDbRepository.Get(i => ids.Contains(i.Id));
-            foreach ( var _ in venues )
-                _.UnFixLoops();
+            var venues = _venuesDbRepository.Get(null, i => ids.Contains(i.Id));
+
 
             if ( venues == null )
+            {
                 base.NotFound();
+                return null;
+            }
             else
                 base.Ok();
+            foreach ( var _ in venues )
+                _.UnFixLoops();
             return venues;
         }
 
@@ -131,19 +140,26 @@ namespace OQPYManager.Controllers
             }
 
             var venue = await _venuesDbRepository.FindAsync(id);
-            venue.UnFixLoops();
 
             if ( venue == null )
+            {
                 base.NotFound();
+                return null;
+            }
             else
                 base.Ok();
-            return venue;
+            return venue.UnFixLoops();
         }
 
         [HttpPost]
         [Route("Filter")]
         public async Task<IEnumerable<Venue>> PostVenueFilter([FromBody] Venue venueLike)
         {
+            if (venueLike == null )
+            {
+                BadRequest();
+                return null;
+            }
             var venues = (await _venuesDbRepository.Filter(venueLike)).Take(10).ToList();
             if ( venues == null )
             {

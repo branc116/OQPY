@@ -106,7 +106,12 @@ namespace OQPYManager.Data.Repositories.Base
         /// <returns></returns>
         public virtual IEnumerable<T> Get(DbSet<T> dbSet = null, params Func<T, bool>[] filters)
         {
-            return Get(string.Empty, dbSet, filters);
+            var items = dbSet.AsQueryable();
+            foreach ( var filter in filters )
+            {
+                items = items.Where(filter).AsQueryable();
+            }
+            return items;
         }
 
         /// <summary>
