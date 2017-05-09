@@ -6,10 +6,11 @@ namespace OQPYModels.Helper
     public static class Helper
     {
         private static Random rand = new Random();
+
         public static int StringLikenes(this string _, string evalString)
         {
             int score = 0;
-            string temp1 = evalString.Substring(0, 10<= evalString.Length ? 10 : evalString.Length).ToLower();
+            string temp1 = evalString.Substring(0, 10 <= evalString.Length ? 10 : evalString.Length).ToLower();
             string temp2 = _.ToLower();
             for ( int i = 1 ; i <= temp1.Length ; i++ )
             {
@@ -18,7 +19,8 @@ namespace OQPYModels.Helper
                     try
                     {
                         score += (temp2.Contains(temp1.Substring(j, i))) ? i * (int)Math.Pow(2, 10 - temp1.Length + i) : 0;
-                    }catch(Exception ex )
+                    }
+                    catch ( Exception ex )
                     {
                         throw new Exception($"i = {i} j = {j} tempstr(j - 1, i - 1) = {temp1.Substring(j - 1, i - 1)}\n");
                     }
@@ -26,6 +28,7 @@ namespace OQPYModels.Helper
             }
             return score / _.Length;
         }
+
         public static string RandomName()
         {
             return RandomText(5, 9);

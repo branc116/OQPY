@@ -87,6 +87,18 @@ namespace OQPYModels.Models.CoreModels
         [Filterable(Filter = true)]
         public decimal AverageReview => Math.Round(((Reviews?.Select(i => i?.Rating)?.Sum() ?? -1) / (decimal)((Reviews?.Count ?? 1) + 0.1)), 1);
 
+        public IEnumerable<Reservation> Reservations
+        {
+            get
+            {
+                return Resources == null ? null :
+                    from _ in Resources
+                    where _.Reservations != null
+                    from __ in _.Reservations
+                    select __;
+            }
+        }
+
         public Venue()
         {
         }
@@ -188,6 +200,7 @@ namespace OQPYModels.Models.CoreModels
                    (one.Description == null || two.Description == null || one.Description.ToLower().Contains(two.Description.ToLower()) || two.Description.ToLower().Contains(one.Description.ToLower())) &&
                    ((one.Location == null && two.Location == null) || (one != null && one.Location.Filter(one.Location, two.Location)) || (one != null && one.Location.Filter(one.Location, two.Location)));
         }
+
         public override string ToString()
         {
             string s = $"Venue.Name = {this.Name}\nVenue.Location = {this?.Location?.Adress ?? ""}, ({this?.Location?.Longditude ?? 0}, {this?.Location?.Latitude ?? 0})\n";

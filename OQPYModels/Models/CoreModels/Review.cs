@@ -10,9 +10,9 @@ namespace OQPYModels.Models.CoreModels
         /// <summary>
         /// Text of a review
         /// </summary>
-        public virtual string Comment { get; set; }
+        public string Comment { get; set; }
 
-        public virtual string Id { get; set; }
+        public string Id { get; set; }
 
         private int _rating;
 
@@ -25,7 +25,7 @@ namespace OQPYModels.Models.CoreModels
         /// Somewhat a numerical representation of a review, a summary
         /// Ensuring the rating wont go below minimum or exceed maximum.
         /// </summary>
-        public virtual int Rating
+        public int Rating
         {
             get { return _rating; }
             set
@@ -38,6 +38,11 @@ namespace OQPYModels.Models.CoreModels
                     _rating = value;
             }
         }
+
+        /// <summary>
+        /// Keep track of likes and dislikes on this Review
+        /// </summary>
+        public int Helpfulness { get; set; }
 
         public Review()
         {
