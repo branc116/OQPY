@@ -10,7 +10,6 @@ using OQPYManager.Data.Repositories;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Models;
 using OQPYManager.Services;
-using OQPYModels.Models.CoreModels;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace OQPYManager

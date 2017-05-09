@@ -14,6 +14,8 @@
     <ApplicationInsightsAnnotationResourceId>/subscriptions/10d0b3c1-e03d-4fad-8b55-61f337c9bc22/resourceGroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/BackendOQPY</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugOnlyBot|AnyCPU'" />
+
   <ItemGroup>
     <Compile Remove="Models\CoreModels\**" />
     <Content Remove="Models\CoreModels\**" />

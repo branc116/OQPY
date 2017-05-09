@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OQPYManager.Data;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
@@ -7,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static OQPYManager.Helper.Log;
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OQPYManager.Controllers
@@ -31,7 +30,7 @@ namespace OQPYManager.Controllers
         }
 
         [HttpPost]
-        public async Task <IActionResult> CreateVenue([FromBody] Venue venue)
+        public async Task<IActionResult> CreateVenue([FromBody] Venue venue)
         {
             if ( venue == null )
             {
@@ -51,7 +50,8 @@ namespace OQPYManager.Controllers
             {
                 await _venuesDbRepository.RemoveAsync(id);
                 Ok("Deleted");
-            }catch(Exception ex )
+            }
+            catch ( Exception ex )
             {
                 BadRequest(ex.ToString());
             }

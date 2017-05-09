@@ -144,20 +144,17 @@ namespace OQPYManager.Controllers
 
         [HttpPost]
         [Route("VenueReview")]
-        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromBody] int rating, [FromHeader] string venueId)
+        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromBody] int rating)
         {
             if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
-            Venue venue = await GetVenueAsync(_context, venueId);
-            if ( venue == null )
-                return NotFound(venueId);
-            var review = new Review(rating, comment, venue);
+            var review = new Review(rating, comment);
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReview", new { id = review.Id });
+            return Ok();
         }
 
         [HttpDelete]
@@ -180,6 +177,23 @@ namespace OQPYManager.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { n = n, venueId = venueId, reviewId = reviewId });
+        }
+
+        /// <summary>
+        /// One can like or dislike a review, true = like, false = dislike
+        /// </summary>
+        /// <param name="like"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("like")]
+        public async Task<IActionResult> LikeReview(string reviewId, bool like)
+        {
+            var review = await _context.Reviews.FindAsync(reviewId);
+            if ( review == null )
+                return NotFound();
+            review.Rating += like ? 1 : -1;
+            await _context.SaveChangesAsync();
+            return Ok();
         }
     }
 }

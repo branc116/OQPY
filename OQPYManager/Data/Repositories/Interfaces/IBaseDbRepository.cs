@@ -1,7 +1,6 @@
 ﻿using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories.Interfaces
@@ -9,6 +8,7 @@ namespace OQPYManager.Data.Repositories.Interfaces
     public interface IBaseDbRepository<T>: IBaseContext where T : ICoreModel<T>
     {
         Task OnCreate();
+
         Task AddAsync(T item);
 
         Task AddAsync(params T[] items);
@@ -65,6 +65,6 @@ namespace OQPYManager.Data.Repositories.Interfaces
         /// <param name="venue">Venue which holds new values.</param>
         Task UpdateAsync(T venue);
 
-        Task<IQueryable<T>> Filter(T like);
+        Task<IEnumerable<T>> Filter(T like);
     }
 }

@@ -1,8 +1,5 @@
 ﻿using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories.Base
 {
