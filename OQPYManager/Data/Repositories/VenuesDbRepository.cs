@@ -1,28 +1,26 @@
-﻿using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OQPYManager.Data.Repositories.Base;
+using OQPYModels.Extensions;
 using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using static OQPYManager.Helper.Log;
 using static OQPYModels.Helper.Helper;
+using static OQPYManager.Helper.Log;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace OQPYManager.Data.Repositories
 {
     public class VenuesDbRepository: BaseVenueDbRepository
     {
         private const string TAG = "VenueDb";
-
         public VenuesDbRepository(ApplicationDbContext context) : base(context)
         {
         }
 
-        public async override Task OnCreate()
-        {
-            await Task.WhenAll(AddAsync(new Venue("Josip", "WWWW", "None", "This ONe")));
-        }
+        
 
         public override async Task AddAsync(Venue venue)
         {
@@ -30,8 +28,7 @@ namespace OQPYManager.Data.Repositories
             {
                 _context.Venues.Add(venue);
                 await _context.SaveChangesAsync();
-            }
-            catch ( Exception ex )
+            }catch(Exception ex )
             {
                 BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
             }
@@ -49,44 +46,36 @@ namespace OQPYManager.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override IEnumerable<Venue> GetAll()
+        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null)
         {
-            return _context.Venues.AsQueryable();
+            return base.GetAll(_context.Venues);
         }
 
-        public override IEnumerable<Venue> GetAll(params string[] includedParams)
+        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null, params string[] includedParams)
         {
-            var venues = _context.Venues.AsQueryable();
-            foreach ( var param in includedParams )
-                venues.Include(param);
-            return venues;
+            return base.GetAll(_context.Venues, includedParams);
         }
 
-        public override IEnumerable<Venue> GetAll(string includedParams)
+        public override IEnumerable<Venue> GetAll(string includedParams, DbSet<Venue> dbSet = null)
         {
-            return GetAll(includedParams.Split(new char[1] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+            return base.GetAll(includedParams, _context.Venues);
         }
 
-        public override IEnumerable<Venue> Get(params Func<Venue, bool>[] filters)
+        public override IEnumerable<Venue> Get(DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
         {
-            return Get(string.Empty, filters);
+            return base.Get(_context.Venues, filters);
         }
 
-        public override IEnumerable<Venue> Get(string includedParams, params Func<Venue, bool>[] filters)
+        public override IEnumerable<Venue> Get(string includedParams, DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
         {
-            var venues = GetAll(includedParams);
-            foreach ( var filter in filters )
-            {
-                venues = venues.Where(filter);
-            }
-
-            return venues;
+            return base.Get(includedParams, _context.Venues, filters);
         }
+
+        
 
         //I may change implementation a bit beacuse we may need to
         //load some other info(like owner and such)
-        public override async Task<Venue> FindAsync(string key)
-        {
+        public override async Task<Venue> FindAsync(string key) {
             var venue = await _context.Venues
                 .Include(i => i.VenueTags)
                     .Include(i => i.Tags)
@@ -133,14 +122,18 @@ namespace OQPYManager.Data.Repositories
             {
                 _context.Venues.Update(venue);
                 await _context.SaveChangesAsync();
-            }
-            catch ( Exception ex )
+            }catch(Exception ex )
             {
                 BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
             }
         }
 
-        public async override Task<IEnumerable<Venue>> Filter(Venue like)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="like"></param>
+        /// <returns></returns>
+        public override async Task<IQueryable<Venue>> Filter(Venue like)
         {
             try
             {
@@ -154,6 +147,7 @@ namespace OQPYManager.Data.Repositories
                         .Where(i => i.Location != null)
                         .Where(i => i.Location
                             .Filter(i.Location, like.Location));
+
 
                 if ( like.Name != null )
                     venues = venues
@@ -190,13 +184,13 @@ namespace OQPYManager.Data.Repositories
                         BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
                     }
                 }
-                return venues.Take(10).ToList();
-            }
-            catch ( Exception ex )
+                return venues;
+            }catch(Exception ex )
             {
                 BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
                 throw;
             }
+            
         }
     }
 }
