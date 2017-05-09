@@ -1,5 +1,4 @@
 using OQPYEsp.Models;
-using System;
 using System.Collections.Generic;
 
 namespace OQPYEsp.DataStore
@@ -32,6 +31,7 @@ namespace OQPYEsp.DataStore
             }
             return null;
         }
+
         public IEnumerable<ESPData> GetData()
         {
             return _oldData;

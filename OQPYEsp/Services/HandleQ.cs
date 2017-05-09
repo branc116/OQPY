@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.ApplicationInsights.DataContracts;
 using OQPYClient.APIv03;
 using OQPYEsp.DataStore;
 using OQPYEsp.Models;
+using System;
+using System.Threading.Tasks;
 using static OQPYEsp.Helper.Log;
-using Microsoft.ApplicationInsights.DataContracts;
 
 namespace OQPYEsp.Services
 {
@@ -15,9 +13,10 @@ namespace OQPYEsp.Services
         private static EspDataStore _context = new EspDataStore();
         private static MyAPI _api = new MyAPI(new Uri(Environment.GetEnvironmentVariable("OQPYManagerUri") ?? "https://localhost/"));
         private const string TAG = "HandleQ";
+
         public static async Task PushQ()
         {
-            ESPData curData; 
+            ESPData curData;
             while ( true )
             {
                 try
@@ -43,11 +42,11 @@ namespace OQPYEsp.Services
                     {
                         await Task.Delay(1000);
                     }
-                }catch(Exception ex )
+                }
+                catch ( Exception ex )
                 {
                     BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
                 }
-                
             }
         }
     }
