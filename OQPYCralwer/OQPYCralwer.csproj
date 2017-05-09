@@ -12,7 +12,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugOnlyBot|AnyCPU'" />
 
   <ItemGroup>
-    <PackageReference Include="GoogleApi" Version="2.5.0" />
+    <PackageReference Include="GoogleApi" Version="2.5.1" />
   </ItemGroup>
 
   <ItemGroup>

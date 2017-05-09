@@ -136,24 +136,30 @@ namespace OQPYManager.Controllers
                 .FirstOrDefaultAsync();
 
             if ( reviews == null )
+            {
                 NotFound(venueId);
+                return null;
+            }
             else
                 Ok();
-            return reviews.Reviews;
+            return reviews.UnFixLoops().Reviews;
         }
 
         [HttpPost]
         [Route("VenueReview")]
-        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromBody] int rating)
+        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromHeader] string venueId, [FromBody] int rating)
         {
             if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
-            var review = new Review(rating, comment);
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
+            var venue = await _context.Venues
+                .FirstOrDefaultAsync(i => i.Id == venueId);
+            if ( venue == null )
+                return NotFound(venueId);
+            var review = new Review(rating, comment, venue);
+            await _context.AddAsync(review);
+            //await _context.SaveChangesAsync();
             return Ok();
         }
 
@@ -186,12 +192,12 @@ namespace OQPYManager.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("like")]
-        public async Task<IActionResult> LikeReview(string reviewId, bool like)
+        public async Task<IActionResult> LikeReview([FromHeader]string reviewId,[FromBody]string like)
         {
             var review = await _context.Reviews.FindAsync(reviewId);
             if ( review == null )
                 return NotFound();
-            review.Rating += like ? 1 : -1;
+            review.Helpfulness += like == "0" ? -1 : 1;
             await _context.SaveChangesAsync();
             return Ok();
         }

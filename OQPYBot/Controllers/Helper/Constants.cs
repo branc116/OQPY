@@ -91,12 +91,18 @@ namespace OQPYBot.Controllers.Helper
 
         internal static readonly Dictionary<string, Func<IDialogContext, string, Task<IEnumerable<Attachment>>>> _processCommands = new Dictionary<string, Func<IDialogContext, string, Task<IEnumerable<Attachment>>>>()
         {
+            { _commandBaseHelp, ProcessCommands.BaseHelp },
+            { _commandBaseNearby, ProcessCommands.BaseSearchNearby },
+
             { _commandVenueInfo, ProcessCommands.VenueInfo },
             { _commandVenueComments, ProcessCommands.VenueComments  },
             { _commandVenueReservations, ProcessCommands.VenueReservations },
             { _commandVenueResources, ProcessCommands.VenueResources },
-            { _commandBaseHelp, ProcessCommands.BaseHelp },
-            { _commandBaseNearby, ProcessCommands.BaseSearchNearby }
+            
+            { _commandCommentsRead, ProcessCommands.CommentsRead },
+            { _commandCommentsLike, ProcessCommands.CommensLike },
+            { _commandCommentsDislike, ProcessCommands.CommensDislike },
+            { _commandCommentsAdd, ProcessCommands.CommensAdd }
             //{ _commandResourcesInfo, ProcessCommands.ResourceInfo },
         };
 

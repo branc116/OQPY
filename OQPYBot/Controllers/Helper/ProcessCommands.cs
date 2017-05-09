@@ -7,11 +7,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using static OQPYBot.Controllers.Helper.Constants;
 using static OQPYBot.Controllers.Helper.Helper;
+using System;
 
 namespace OQPYBot.Controllers.Helper
 {
     public class ProcessCommands
     {
+        internal async static Task<IEnumerable<Attachment>> BaseHelp(IDialogContext context, string arg2)
+        {
+            var attachemts = new List<Attachment>
+            {
+                new HeroCard("OQPY", "OQPY is a bot that helps you with your venue chices").ToAttachment(),
+                new HeroCard("Search venues", "Search venues by just typing the name of the venue you wanna search", null, null, MakeCardActions("arg2", _baseObj, _actionNeatby).ToList()).ToAttachment(),
+                new HeroCard("Share you location", "Make your searches more precise and select where you wanna search", null, null, MakeCardActions("arg2", _baseObj, _actionShareLocation).ToList()).ToAttachment(),
+                new HeroCard("Sign in", "Sign in so that you can make reservations", null, null, MakeCardActions("arg2", _baseObj, _actionSignIn).ToList()).ToAttachment(),
+            };
+            return attachemts;
+        }
+        internal async static Task<IEnumerable<Attachment>> BaseSearchNearby(IDialogContext context, string arg2)
+        {
+            await ProcessVenues(context, new SearchVenues());
+            return null;
+        }
+
         public async static Task<IEnumerable<Attachment>> VenueInfo(IDialogContext context, string venueId)
         {
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
@@ -27,7 +45,6 @@ namespace OQPYBot.Controllers.Helper
             };
             return cards;
         }
-
         internal async static Task<IEnumerable<Attachment>> VenueReservations(IDialogContext context, string venueId)
         {
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
@@ -56,7 +73,6 @@ namespace OQPYBot.Controllers.Helper
             }
             return cards;
         }
-
         internal async static Task<IEnumerable<Attachment>> VenueResources(IDialogContext context, string venueId)
         {
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
@@ -76,7 +92,6 @@ namespace OQPYBot.Controllers.Helper
             }
             return cards;
         }
-
         internal async static Task<IEnumerable<Attachment>> VenueComments(IDialogContext context, string venueId)
         {
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
@@ -91,7 +106,7 @@ namespace OQPYBot.Controllers.Helper
             {
                 cards.AddRange(from _ in venue.Reviews.Take(9)
                                select
-                               new ThumbnailCard(
+                               new HeroCard(
                                    _commentsObj,
                                    $"{_.Rating}/10",
                                    _.Comment,
@@ -107,22 +122,15 @@ namespace OQPYBot.Controllers.Helper
             return cards;
         }
 
-        internal async static Task<IEnumerable<Attachment>> BaseHelp(IDialogContext context, string arg2)
+        internal async static Task<IEnumerable<Attachment>> CommensAdd(IDialogContext arg1, string CommentId)
         {
-            var attachemts = new List<Attachment>
-            {
-                new HeroCard("OQPY", "OQPY is a bot that helps you with your venue chices").ToAttachment(),
-                new HeroCard("Search venues", "Search venues by just typing the name of the venue you wanna search", null, null, MakeCardActions("arg2", _baseObj, _actionNeatby).ToList()).ToAttachment(),
-                new HeroCard("Share you location", "Make your searches more precise and select where you wanna search", null, null, MakeCardActions("arg2", _baseObj, _actionShareLocation).ToList()).ToAttachment(),
-                new HeroCard("Sign in", "Sign in so that you can make reservations", null, null, MakeCardActions("arg2", _baseObj, _actionSignIn).ToList()).ToAttachment(),
-            };
-            return attachemts;
+            throw new NotImplementedException();
         }
-
-        internal async static Task<IEnumerable<Attachment>> BaseSearchNearby(IDialogContext context, string arg2)
+        internal static Task<IEnumerable<Attachment>> CommensDislike(IDialogContext arg1, string arg2) => throw new NotImplementedException();
+        internal static Task<IEnumerable<Attachment>> CommensLike(IDialogContext arg1, string arg2) => throw new NotImplementedException();
+        internal static Task<IEnumerable<Attachment>> CommentsRead(IDialogContext context, string CommentId)
         {
-            await ProcessVenues(context, new SearchVenues());
-            return null;
+            throw new NotImplementedException();
         }
     }
 }
