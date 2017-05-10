@@ -28,20 +28,20 @@ namespace OQPYModels.Models.CoreModels
             return one != null && two != null && (one.ToKilometers(two) < 10);
         }
 
-        public async Task<bool> FilterAsync(Location one, string address)
-        {
-            var req = new GoogleApi.Entities.Maps.Geocode.Request.GeocodingRequest()
-            {
-                Address = address,
-                Key = _apiKey,
-            };
-            var res = GoogleApi.GoogleMaps.Geocode.Query(req);
-            return (from _ in res.Results
-                    where _.Geometry != null
-                    where _.Geometry.Location != null
-                    select _.Geometry.Location)
-                   .Any(i => one.Filter(one, new Location() { Longditude = i.Longitude, Latitude = i.Latitude }));
-        }
+        //public async Task<bool> FilterAsync(Location one, string address)
+        //{
+        //    var req = new GoogleApi.Entities.Maps.Geocode.Request.GeocodingRequest()
+        //    {
+        //        Address = address,
+        //        Key = _apiKey,
+        //    };
+        //    var res = GoogleApi.GoogleMaps.Geocode.Query(req);
+        //    return (from _ in res.Results
+        //            where _.Geometry != null
+        //            where _.Geometry.Location != null
+        //            select _.Geometry.Location)
+        //           .Any(i => one.Filter(one, new Location() { Longditude = i.Longitude, Latitude = i.Latitude }));
+        //}
 
         public double DistanceInDegrees(Location to)
         {
