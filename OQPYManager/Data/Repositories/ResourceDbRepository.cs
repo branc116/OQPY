@@ -4,23 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.EntityFrameworkCore;
-using OQPYManager.Data.Repositories.Interfaces;
+using OQPYManager.Data.Repositories.Base;
 using OQPYManager.Helper;
+using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories
 {
-    using Base;
-    using OQPYModels.Models.CoreModels;
-
-    public class ResourceDbRepository : BaseDbRepository<Resource>, IResourceDbRepository
+    public class ResourceDbRepository : BaseDbRepository<Resource>
     {
         private const string TAG = "ResourceDb";
 
         public ResourceDbRepository(ApplicationDbContext context) : base(context)
         {
+            _defaultDbSet = _context.Resources;
         }
 
-       
+
         public async Task ChangeState(string id, bool newState, string secretCode)
         {
             var resource = await _context.Resources.FindAsync(id);
@@ -33,6 +32,7 @@ namespace OQPYManager.Data.Repositories
             _context.Update(resource);
             await _context.SaveChangesAsync();
         }
+
         public async Task<IEnumerable<Resource>> GetAllInVenue(string venueId)
         {
             var venue = await _context.Venues
@@ -51,29 +51,5 @@ namespace OQPYManager.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public override IEnumerable<Resource> GetAll(DbSet<Resource> dbSet = null)
-        {
-            return base.GetAll(_context.Resources);
-        }
-
-        public override IEnumerable<Resource> GetAll(DbSet<Resource> dbSet = null, params string[] includedParams)
-        {
-            return base.GetAll(_context.Resources, includedParams);
-        }
-
-        public override IEnumerable<Resource> GetAll(string includedParams, DbSet<Resource> dbSet = null)
-        {
-            return base.GetAll(includedParams, _context.Resources);
-        }
-
-        public override IEnumerable<Resource> Get(DbSet<Resource> dbSet = null, params Func<Resource, bool>[] filters)
-        {
-            return base.Get(_context.Resources, filters);
-        }
-
-        public override IEnumerable<Resource> Get(string includedParams, DbSet<Resource> dbSet = null, params Func<Resource, bool>[] filters)
-        {
-            return base.Get(includedParams, _context.Resources, filters);
-        }
     }
 }

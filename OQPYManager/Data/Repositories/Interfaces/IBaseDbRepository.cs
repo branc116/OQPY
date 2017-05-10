@@ -16,40 +16,36 @@ namespace OQPYManager.Data.Repositories.Interfaces
 
         Task AddAsync(IEnumerable<T> items);
 
-        IEnumerable<T> GetAll(DbSet<T> dbSet);
+        IEnumerable<T> GetAll();
 
         /// <summary>
         /// Get all objects with included parameters
         /// </summary>
-        /// <param name="dbSet"></param>
         /// <param name="includedParams">list of included parameters e.g. "Resources"</param>
         /// <returns>list of objects of type T with included parameters</returns>
-        IEnumerable<T> GetAll(DbSet<T> dbSet = null, params string[] includedParams);
+        IEnumerable<T> GetAll(params string[] includedParams);
 
         /// <summary>
         /// Get all objects with included parameters
         /// </summary>
         /// <param name="includedParams">list of included parameters seperated with ';' e.g. "Resources;Resources.Reservations"</param>
-        /// <param name="dbSet"></param>
         /// <returns>list of objects of type T with included parameters</returns>
-        IEnumerable<T> GetAll(string includedParams, DbSet<T> dbSet = null);
+        IEnumerable<T> GetAll(string includedParams);
 
         /// <summary>
         /// Gets objects based on passed filters.
         /// </summary>
-        /// <param name="dbSet"></param>
         /// <param name="filters">Filters an object must pass.</param>
         /// <returns>Objects that passed all filters.</returns>
-        IEnumerable<T> Get(DbSet<T> dbSet = null, params Func<T, bool>[] filters);
+        IEnumerable<T> Get(params Func<T, bool>[] filters);
 
         /// <summary>
         /// Gets objects based on passed filters.
         /// </summary>
         /// <param name="includedParams"></param>
-        /// <param name="dbSet"></param>
         /// <param name="filters">Filters a object must pass.</param>
         /// <returns>objects that passed all filters.</returns>
-        IEnumerable<T> Get(string includedParams, DbSet<T> dbSet = null, params Func<T, bool>[] filters);
+        IEnumerable<T> Get(string includedParams, params Func<T, bool>[] filters);
 
         /// <summary>
         /// Finds object based on key.

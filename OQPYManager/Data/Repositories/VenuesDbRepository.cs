@@ -13,11 +13,12 @@ using Microsoft.ApplicationInsights.DataContracts;
 
 namespace OQPYManager.Data.Repositories
 {
-    public class VenuesDbRepository: BaseVenueDbRepository
+    public class VenuesDbRepository: BaseDbRepository<Venue>
     {
         private const string TAG = "VenueDb";
         public VenuesDbRepository(ApplicationDbContext context) : base(context)
         {
+            _defaultDbSet = _context.Venues;
         }
 
         
@@ -46,30 +47,7 @@ namespace OQPYManager.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null)
-        {
-            return base.GetAll(_context.Venues);
-        }
-
-        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null, params string[] includedParams)
-        {
-            return base.GetAll(_context.Venues, includedParams);
-        }
-
-        public override IEnumerable<Venue> GetAll(string includedParams, DbSet<Venue> dbSet = null)
-        {
-            return base.GetAll(includedParams, _context.Venues);
-        }
-
-        public override IEnumerable<Venue> Get(DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
-        {
-            return base.Get(_context.Venues, filters);
-        }
-
-        public override IEnumerable<Venue> Get(string includedParams, DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
-        {
-            return base.Get(includedParams, _context.Venues, filters);
-        }
+        
 
         
 

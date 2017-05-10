@@ -14,6 +14,7 @@ namespace OQPYManager.Data.Repositories.Base
     {
         private const string TAG = "BaseDb";
         protected readonly ApplicationDbContext _context;
+        protected DbSet<T> _defaultDbSet;
 
         public BaseDbRepository(ApplicationDbContext context)
         {
@@ -60,14 +61,11 @@ namespace OQPYManager.Data.Repositories.Base
 
         /// <summary>
         ///     Gets all items from a dbSet.
-        ///     To use it, simply pass e.g. _context.Venues...
-        ///     DbSet parameter is optional because we want as less retyping as possible of same algorithm.
         /// </summary>
-        /// <param name="dbSet">DbSet to get items from</param>
         /// <returns>Queryable items retreieved from dbSet.</returns>
-        public virtual IEnumerable<T> GetAll(DbSet<T> dbSet = null)
+        public virtual IEnumerable<T> GetAll()
         {
-            return dbSet.AsQueryable();
+            return _defaultDbSet.AsQueryable();
         }
 
         /// <summary>
@@ -77,9 +75,9 @@ namespace OQPYManager.Data.Repositories.Base
         /// <param name="dbSet"></param>
         /// <param name="includedParams"></param>
         /// <returns>Items from dbSet that pass parameter.</returns>
-        public virtual IEnumerable<T> GetAll(DbSet<T> dbSet = null, params string[] includedParams)
+        public virtual IEnumerable<T> GetAll(params string[] includedParams)
         {
-            var items = GetAll(dbSet).AsQueryable();
+            var items = GetAll().AsQueryable();
             foreach (var param in includedParams)
                 items.Include(param);
             return items;
@@ -87,26 +85,22 @@ namespace OQPYManager.Data.Repositories.Base
 
         /// <summary>
         ///     Gets all items from dbSet based on parameters.
-        ///     DbSet parameter is optional because we want as less retyping as possible of same algorithm.
         /// </summary>
         /// <param name="includedParams">Singular string that contains semicolons.</param>
-        /// <param name="dbSet"></param>
         /// <returns></returns>
-        public virtual IEnumerable<T> GetAll(string includedParams, DbSet<T> dbSet = null)
+        public virtual IEnumerable<T> GetAll(string includedParams)
         {
-            return GetAll(dbSet, includedParams.Split(new char[1] {';'}, StringSplitOptions.RemoveEmptyEntries));
+            return GetAll(includedParams.Split(new char[1] {';'}, StringSplitOptions.RemoveEmptyEntries));
         }
 
         /// <summary>
         ///     Get items based on certain filters.
-        ///     DbSet parameter is optional because we want as less retyping as possible of same algorithm.
         /// </summary>
-        /// <param name="dbSet"></param>
         /// <param name="filters"></param>
         /// <returns></returns>
-        public virtual IEnumerable<T> Get(DbSet<T> dbSet = null, params Func<T, bool>[] filters)
+        public virtual IEnumerable<T> Get(params Func<T, bool>[] filters)
         {
-            var items = dbSet.AsQueryable();
+            var items = _defaultDbSet.AsQueryable();
             foreach ( var filter in filters )
             {
                 items = items.Where(filter).AsQueryable();
@@ -116,16 +110,13 @@ namespace OQPYManager.Data.Repositories.Base
 
         /// <summary>
         ///     Get items based on certain filters.
-        ///     DbSet parameter is optional because we want as less retyping as possible of same algorithm.
-        ///     See inherited classes to see what I mean.
         /// </summary>
         /// <param name="includedParams"></param>
-        /// <param name="dbSet"></param>
         /// <param name="filters"></param>
         /// <returns></returns>
-        public virtual IEnumerable<T> Get(string includedParams, DbSet<T> dbSet = null, params Func<T, bool>[] filters)
+        public virtual IEnumerable<T> Get(string includedParams, params Func<T, bool>[] filters)
         {
-            var items = GetAll(includedParams, dbSet).AsQueryable();
+            var items = GetAll(includedParams).AsQueryable();
             foreach (var filter in filters)
             {
                 items = items.Where(filter).AsQueryable();
