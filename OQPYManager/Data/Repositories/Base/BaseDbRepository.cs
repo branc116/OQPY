@@ -10,7 +10,7 @@ using static OQPYManager.Helper.Log;
 
 namespace OQPYManager.Data.Repositories.Base
 {
-    public abstract class BaseDbRepository<T> : IBaseDbRepository<T> where T : class, ICoreModel<T>
+    public abstract class BaseDbRepository<T> : IBaseDbRepository<T> where T : class
     {
         private const string TAG = "BaseDb";
         protected readonly ApplicationDbContext _context;

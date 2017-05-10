@@ -18,7 +18,7 @@ namespace OQPYModels.Models.CoreModels
         public List<WorkTime> WorkTimes { get; set; }
 
         public bool IsWorking { get; set; }
-        public WorkTime Mondy => WorkTimes != null && WorkTimes.Count >= 1 ? WorkTimes[0] : null;
+        public WorkTime Monday => WorkTimes != null && WorkTimes.Count >= 1 ? WorkTimes[0] : null;
         public WorkTime Tuesday => WorkTimes != null && WorkTimes.Count >= 2 ? WorkTimes[1] : null;
         public WorkTime Wednesday => WorkTimes != null && WorkTimes.Count >= 3 ? WorkTimes[2] : null;
         public WorkTime Thursday => WorkTimes != null && WorkTimes.Count >= 4 ? WorkTimes[3] : null;
@@ -28,7 +28,7 @@ namespace OQPYModels.Models.CoreModels
 
         public Dictionary<DayOfWeek, WorkTime> WholeWeek => new Dictionary<DayOfWeek, WorkTime>()
         {
-            {DayOfWeek.Monday, Mondy },
+            {DayOfWeek.Monday, Monday },
             {DayOfWeek.Tuesday, Tuesday },
             {DayOfWeek.Wednesday, Wednesday },
             {DayOfWeek.Thursday, Thursday },

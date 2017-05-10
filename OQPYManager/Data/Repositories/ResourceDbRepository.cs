@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.EntityFrameworkCore;
 using OQPYManager.Data.Repositories.Base;
+using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Helper;
 using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories
 {
-    public class ResourceDbRepository : BaseDbRepository<Resource>
+    public class ResourceDbRepository : BaseDbRepository<Resource>, IResourceDbRepository
     {
         private const string TAG = "ResourceDb";
 
@@ -37,13 +38,10 @@ namespace OQPYManager.Data.Repositories
         {
             var venue = await _context.Venues
                 .Include(i => i.Resources)
-                .FirstOrDefaultAsync();
-            if (venue == null)
-            {
-                Log.BasicLog(TAG, $"Get all venues id not found = {venueId}", SeverityLevel.Error);
-                throw new KeyNotFoundException(venueId);
-            }
-            return venue.Resources;
+                .FirstOrDefaultAsync(v => v.Id.Equals(venueId));
+            if (venue != null) return venue.Resources;
+            Log.BasicLog(TAG, $"Get all venues id not found = {venueId}", SeverityLevel.Error);
+            throw new KeyNotFoundException(venueId);
         }
 
         public override Task<IQueryable<Resource>> Filter(Resource like)

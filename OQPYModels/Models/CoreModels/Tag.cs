@@ -26,11 +26,7 @@ namespace OQPYModels.Models.CoreModels
             this.TagName = tagName;
         }
 
-        public Tag(string tagName, Venue venue)
-        {
-            Id = Guid.NewGuid().ToString();
-            this.TagName = tagName;
-        }
+        
 
         public int Compare(Tag x, Tag y)
         {
