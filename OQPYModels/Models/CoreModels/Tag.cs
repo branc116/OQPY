@@ -38,7 +38,7 @@ namespace OQPYModels.Models.CoreModels
             return from _ in new string(' ', n)
                    let tagName = RandomName()
                    let tag = new Tag(tagName)
-                   let venuetag = tag.VenueTags = new List<VenueTag>() { new VenueTag(tag, venue) }
+                   let venuetag = tag.VenueTags = new List<VenueTag>() { new VenueTag(TODO, TODO, venue) }
                    select tag;
         }
 

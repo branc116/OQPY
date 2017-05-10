@@ -17,7 +17,7 @@
         {
         }
 
-        public VenueTag(Tag tag, Venue venue)
+        public VenueTag(Venue venue, Tag tag)
         {
             this.Tag = tag;
             this.Venue = venue;
