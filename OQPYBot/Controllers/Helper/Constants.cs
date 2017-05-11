@@ -32,6 +32,7 @@ namespace OQPYBot.Controllers.Helper
 
         internal const string _insideDialogKey = "insideProperty";
 
+        internal const string _tempVenueId = "tempVenueId";
         internal const string _channelId = "chId";
         internal const string _layoutCarousel = "carousel";
 
@@ -98,9 +99,9 @@ namespace OQPYBot.Controllers.Helper
             { _commandVenueComments, ProcessCommands.VenueComments  },
             { _commandVenueReservations, ProcessCommands.VenueReservations },
             { _commandVenueResources, ProcessCommands.VenueResources },
-            
+
             { _commandCommentsRead, ProcessCommands.CommentsRead },
-            { _commandCommentsLike, ProcessCommands.CommensLike },
+            { _commandCommentsLike, ProcessCommands.CommentsLike },
             { _commandCommentsDislike, ProcessCommands.CommensDislike },
             { _commandCommentsAdd, ProcessCommands.CommensAdd }
             //{ _commandResourcesInfo, ProcessCommands.ResourceInfo },

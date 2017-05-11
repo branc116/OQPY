@@ -406,12 +406,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\DialogAddReview.cs" />
+    <Compile Include="Controllers\Extensions\AttachmentExtension.cs" />
     <Compile Include="Controllers\Helper\Constants.cs" />
     <Compile Include="Controllers\Helper\Helper.cs" />
     <Compile Include="Controllers\Helper\ProcessCommands.cs" />
     <Compile Include="Controllers\LuisDialogOQPY.cs" />
     <Compile Include="Controllers\LuisDialogSearchVenues.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Controllers\ProcessDialogs\ProcessDialogs.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
