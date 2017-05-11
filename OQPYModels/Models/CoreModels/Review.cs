@@ -63,6 +63,10 @@ namespace OQPYModels.Models.CoreModels
             this.Venue = venue;
         }
 
+        public string GetHelpfunessAndScore()
+        {   
+            return $"Score: {Rating}/10    Helpfulness: {(string)((Helpfulness > 0) ? "+" : string.Empty)} {Helpfulness}";
+        }
         public static IEnumerable<Review> RandomReviews(int n, Venue venue)
         {
             return from _ in new string('a', n)

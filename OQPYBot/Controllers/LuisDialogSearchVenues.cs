@@ -1,6 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
-using Microsoft.Bot.Builder.Luis;
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
 using System;
@@ -10,8 +9,6 @@ using static OQPYBot.Controllers.Helper.Constants;
 
 namespace OQPYBot.Controllers
 {
-    [LuisModel("2f4d5a10-e2cf-4238-ab65-51ab4b4dd0ea", "b36329fcaa154546ba25f10bc5740770")]
-    [Serializable]
     public class LuisDialogSearchVenues
     {
         public static IDialog<SearchVenues> Create(IDialogContext context)

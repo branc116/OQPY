@@ -154,12 +154,14 @@ namespace OQPYManager.Controllers
                 return BadRequest(ModelState);
             }
             var venue = await _context.Venues
+                .Include(i => i.Reviews)
                 .FirstOrDefaultAsync(i => i.Id == venueId);
             if ( venue == null )
                 return NotFound(venueId);
             var review = new Review(rating, comment, venue);
-            await _context.AddAsync(review);
-            //await _context.SaveChangesAsync();
+
+            venue.Reviews.Add(review);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
@@ -192,7 +194,7 @@ namespace OQPYManager.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("like")]
-        public async Task<IActionResult> LikeReview([FromHeader]string reviewId,[FromBody]string like)
+        public async Task<IActionResult> LikeReview([FromHeader]string reviewId, [FromHeader]string like)
         {
             var review = await _context.Reviews.FindAsync(reviewId);
             if ( review == null )

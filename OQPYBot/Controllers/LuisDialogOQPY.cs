@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Configuration;
 using static OQPYBot.Controllers.Helper.Constants;
 using static OQPYBot.Controllers.Helper.Helper;
 
@@ -89,14 +88,6 @@ namespace OQPYBot.Controllers
         {
             await DebugOut(context, "SelfInfoGet");
             var search = LuisDialogSearchVenues.Create(context);
-            var apiKey = WebConfigurationManager.AppSettings["BingMapsKey"];
-            //var prompt = "Can I get your location?";
-            //var message = await item;
-            //var locationDialog = new LocationDialog(apiKey, message.ChannelId, prompt, LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode);
-            //context.Call(locationDialog, GotLocaion);
-            //if ( context.ConversationData.TryGetValue(_channelId, out string chid) && chid == "facebook" )
-            //    await context.PostAsync("It'd be nice if you'd send the location of where you wanna search :)");
-            //context.Call(search, ProcessVenues);
             var messagee = context.MakeMessage();
             await context.Forward(search, ProcessVenues, messagee, default(System.Threading.CancellationToken));
         }

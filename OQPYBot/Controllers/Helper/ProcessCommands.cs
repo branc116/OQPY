@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using OQPYBot.Controllers.Extensions;
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using static OQPYBot.Controllers.Helper.Constants;
 using static OQPYBot.Controllers.Helper.Helper;
-using System;
 
 namespace OQPYBot.Controllers.Helper
 {
@@ -24,6 +24,7 @@ namespace OQPYBot.Controllers.Helper
             };
             return attachemts;
         }
+
         internal async static Task<IEnumerable<Attachment>> BaseSearchNearby(IDialogContext context, string arg2)
         {
             await ProcessVenues(context, new SearchVenues());
@@ -33,18 +34,17 @@ namespace OQPYBot.Controllers.Helper
         public async static Task<IEnumerable<Attachment>> VenueInfo(IDialogContext context, string venueId)
         {
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
-            var totalResources = venue.Resources == null ? 0 : venue.Resources.Count;
-            var freeResources = venue.Resources == null ? 0 : venue.Resources.Where(i => i.OQPYed == false).Count();
             var gotGeo = context.UserData.TryGetValue(_facebooklocation, out Geo geo);
-            var distanceString = gotGeo && venue.Location != null ? $"{venue.Location.ToKilometers(new Location(geo.longitude, geo.latitude))} km" : "Can't get distane";
+
             var cards = new List<Attachment> {
-                new ThumbnailCard(_locationObj, distanceString, venue?.Location?.Adress ?? venue?.Location?.ToString() ?? "Can't get location").ToAttachment(),
-                new ThumbnailCard(_resourcesObj, null, $"{freeResources} free out of {totalResources}", null, MakeCardActions(venueId, _venueObj, _actionResources ).ToList()).ToAttachment(),
-                new ThumbnailCard(_reservationsObj, $"There are {venue?.Reservations.Count() ?? 0} reservations", null, null, MakeCardActions(venueId, _venueObj, _actionReservations).ToList()).ToAttachment(),
+                venue.ToLocationAttachment(geo),
+                venue.ToResourcesAttachment(),
+                venue.ToReservationsAttachment(_actionReservations),
                 new ThumbnailCard(_commentsObj, $"There are {venue?.Reviews.Count() ?? 0} comments", null, null, MakeCardActions(venueId, _venueObj, _actionComments).ToList()).ToAttachment(),
             };
             return cards;
         }
+
         internal async static Task<IEnumerable<Attachment>> VenueReservations(IDialogContext context, string venueId)
         {
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
@@ -57,22 +57,11 @@ namespace OQPYBot.Controllers.Helper
             };
             if ( venue.Reservations != null )
             {
-                cards.AddRange(from _ in venue.Reservations.Take(9)
-                               select
-                               new ThumbnailCard(
-                                   _reservationsObj,
-                                   _.Resource.StuffName,
-                                   $"From ${_.StartReservationTime} to ${_.EndReservationTime}",
-                                   null,
-                                   MakeCardActions(
-                                      _.Id,
-                                      _reservationsObj,
-                                      _reservationsCardActions)
-                                      .ToList())
-                                .ToAttachment());
+                cards.AddRange(venue.Reservations.ToAttachments());
             }
             return cards;
         }
+
         internal async static Task<IEnumerable<Attachment>> VenueResources(IDialogContext context, string venueId)
         {
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
@@ -85,52 +74,60 @@ namespace OQPYBot.Controllers.Helper
             };
             if ( venue.Resources != null )
             {
-                cards.AddRange(
-                    from _ in venue.Resources.Take(9)
-                    select new ThumbnailCard(_.StuffName, _.OQPYed ? "Taken :/" : "Free :)", _.GetInfo(), null, MakeCardActions(_.Id, _resourcesObj, _actionReservations).ToList()).ToAttachment()
-                    );
-            }
-            return cards;
-        }
-        internal async static Task<IEnumerable<Attachment>> VenueComments(IDialogContext context, string venueId)
-        {
-            var venue = await _api.ApiVenuesSingleGetAsync(venueId);
-            List<Attachment> cards = new List<Attachment>() {
-            new ThumbnailCard(_commentsObj,
-                venue.Reviews == null ? $"There aren't any comments for {venue.Name}" : $"There are {venue.Reviews.Count} Comments",
-                $"You can add a review by clicking {_actionAdd} button",
-                null,
-                MakeCardActions(venueId, _commentsObj, _actionAdd).ToList()).ToAttachment()
-            };
-            if ( venue.Reviews != null )
-            {
-                cards.AddRange(from _ in venue.Reviews.Take(9)
-                               select
-                               new HeroCard(
-                                   _commentsObj,
-                                   $"{_.Rating}/10",
-                                   _.Comment,
-                                   null,
-                                   MakeCardActions(
-                                      _.Id,
-                                      _commentsObj,
-                                      _likeDislikeActions
-                                      )
-                                      .ToList())
-                                .ToAttachment());
+                cards.AddRange(venue.Resources.ToAttachments());
             }
             return cards;
         }
 
-        internal async static Task<IEnumerable<Attachment>> CommensAdd(IDialogContext arg1, string CommentId)
+        internal async static Task<IEnumerable<Attachment>> VenueComments(IDialogContext context, string venueId)
         {
-            throw new NotImplementedException();
+            var venue = await _api.ApiVenuesSingleGetAsync(venueId);
+            List<Attachment> cards = new List<Attachment>() {
+                ReviewAttachmentExtension.AddNew(venue)
+            };
+            if ( venue.Reviews != null )
+            {
+                cards.AddRange(venue.Reviews.ToAttachments());
+            }
+            return cards;
         }
-        internal static Task<IEnumerable<Attachment>> CommensDislike(IDialogContext arg1, string arg2) => throw new NotImplementedException();
-        internal static Task<IEnumerable<Attachment>> CommensLike(IDialogContext arg1, string arg2) => throw new NotImplementedException();
-        internal static Task<IEnumerable<Attachment>> CommentsRead(IDialogContext context, string CommentId)
+
+        internal async static Task<IEnumerable<Attachment>> CommensAdd(IDialogContext context, string venueId)
         {
-            throw new NotImplementedException();
+            var dialog = DialogAddReview.Create(context);
+            context.ConversationData.SetValue(_tempVenueId, venueId);
+            var message = context.MakeMessage();
+            await context.Forward(dialog, ProcessDialogs.ProcessDialogs.ProcessAddReview, message, default(System.Threading.CancellationToken));
+            return null;
+        }
+
+        internal async static Task<IEnumerable<Attachment>> CommensDislike(IDialogContext context, string commentId)
+        {
+            await _api.ApiReviewsLikeGetAsync(commentId, "0");
+            return await CommentsRead(context, commentId);
+        }
+
+        internal async static Task<IEnumerable<Attachment>> CommentsLike(IDialogContext context, string commentId)
+        {
+            await _api.ApiReviewsLikeGetAsync(commentId, "1");
+            return await CommentsRead(context, commentId);
+        }
+
+        internal async static Task<IEnumerable<Attachment>> CommentsRead(IDialogContext context, string commentId)
+        {
+            var comment = await _api.ApiReviewsGetAsync(commentId);
+            //await context.PostAsync(comment.Comment);
+            var att = comment.ToAttachment();
+            if ( comment.Comment.Length > 80 )
+            {
+                await context.PostAsync(comment.Comment);
+            }
+            var attachments = new List<Attachment>
+            {
+                comment.ToAttachment()
+            };
+
+            return attachments;
         }
     }
 }
