@@ -1,26 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OQPYManager.Data.Repositories.Base;
-using OQPYModels.Extensions;
-using OQPYModels.Models.CoreModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.EntityFrameworkCore;
+using OQPYCralwer;
+using OQPYManager.Data.Repositories.Base;
+using OQPYManager.Data.Repositories.Interfaces;
+using OQPYModels.Models.CoreModels;
 using static OQPYModels.Helper.Helper;
 using static OQPYManager.Helper.Log;
-using Microsoft.ApplicationInsights.DataContracts;
+using Location = GoogleApi.Entities.Common.Location;
 
 namespace OQPYManager.Data.Repositories
 {
-    public class VenuesDbRepository: BaseVenueDbRepository
+    public class VenuesDbRepository : BaseDbRepository<Venue>, IVenuesDbRepository
     {
         private const string TAG = "VenueDb";
+
         public VenuesDbRepository(ApplicationDbContext context) : base(context)
         {
+            _defaultDbSet = _context.Venues;
         }
 
-        
 
         public override async Task AddAsync(Venue venue)
         {
@@ -28,7 +30,8 @@ namespace OQPYManager.Data.Repositories
             {
                 _context.Venues.Add(venue);
                 await _context.SaveChangesAsync();
-            }catch(Exception ex )
+            }
+            catch (Exception ex)
             {
                 BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
             }
@@ -46,44 +49,19 @@ namespace OQPYManager.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null)
-        {
-            return base.GetAll(_context.Venues);
-        }
-
-        public override IEnumerable<Venue> GetAll(DbSet<Venue> dbSet = null, params string[] includedParams)
-        {
-            return base.GetAll(_context.Venues, includedParams);
-        }
-
-        public override IEnumerable<Venue> GetAll(string includedParams, DbSet<Venue> dbSet = null)
-        {
-            return base.GetAll(includedParams, _context.Venues);
-        }
-
-        public override IEnumerable<Venue> Get(DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
-        {
-            return base.Get(_context.Venues, filters);
-        }
-
-        public override IEnumerable<Venue> Get(string includedParams, DbSet<Venue> dbSet = null, params Func<Venue, bool>[] filters)
-        {
-            return base.Get(includedParams, _context.Venues, filters);
-        }
-
-        
 
         //I may change implementation a bit beacuse we may need to
         //load some other info(like owner and such)
-        public override async Task<Venue> FindAsync(string key) {
+        public override async Task<Venue> FindAsync(string key)
+        {
             var venue = await _context.Venues
                 .Include(i => i.VenueTags)
-                    .Include(i => i.Tags)
-                    .Include(i => i.Reviews)
-                    .Include(i => i.Resources)
-                    .Include(i => i.PriceTags)
-                    .Include(i => i.Location)
-                    .FirstOrDefaultAsync(i => i.Id == key);
+                .Include(i => i.Tags)
+                .Include(i => i.Reviews)
+                .Include(i => i.Resources)
+                .Include(i => i.PriceTags)
+                .Include(i => i.Location)
+                .FirstOrDefaultAsync(i => i.Id == key);
             return venue;
         }
 
@@ -92,24 +70,24 @@ namespace OQPYManager.Data.Repositories
             try
             {
                 var entity = await FindAsync(key);
-                if ( entity != null )
+                if (entity != null)
                 {
-                    if ( entity.VenueTags != null )
+                    if (entity.VenueTags != null)
                         _context.RemoveRange(entity.VenueTags);
-                    if ( entity.Tags != null )
+                    if (entity.Tags != null)
                         _context.RemoveRange(entity.Tags);
                     _context.RemoveRange(entity.Reviews);
-                    if ( entity.Resources != null )
+                    if (entity.Resources != null)
                         _context.RemoveRange(entity.Resources);
-                    if ( entity.PriceTags != null )
+                    if (entity.PriceTags != null)
                         _context.RemoveRange(entity.PriceTags);
-                    if ( entity.Location != null )
+                    if (entity.Location != null)
                         _context.RemoveRange(entity.Location);
                     _context.Remove(entity);
                     await _context.SaveChangesAsync();
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
                 throw;
@@ -122,14 +100,14 @@ namespace OQPYManager.Data.Repositories
             {
                 _context.Venues.Update(venue);
                 await _context.SaveChangesAsync();
-            }catch(Exception ex )
+            }
+            catch (Exception ex)
             {
                 BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="like"></param>
         /// <returns></returns>
@@ -142,55 +120,54 @@ namespace OQPYManager.Data.Repositories
                     .Include(i => i.Location)
                     .AsQueryable();
 
-                if ( like.Location != null )
+                if (like.Location != null)
                     venues = venues
                         .Where(i => i.Location != null)
                         .Where(i => i.Location
                             .Filter(i.Location, like.Location));
 
 
-                if ( like.Name != null )
+                if (like.Name != null)
                     venues = venues
                         .Where(i => i.Name.StringLikenes(like.Name) > 100);
-                if ( like.Location != null )
+                if (like.Location != null)
                     venues = venues
                         .OrderBy(i => i.Location
                             .DistanceInDegrees(like.Location));
                 else
                     venues = venues
                         .OrderByDescending(i => i.Name.StringLikenes(like.Name));
-                if ( venues.Count() < 10 )
-                {
+                if (venues.Count() < 10)
                     try
                     {
-                        var crawl = new OQPYCralwer.Cralw();
+                        var crawl = new Cralw();
                         IEnumerable<Venue> newVenues;
-                        if ( like.Location == null && like.Name != null )
+                        if (like.Location == null && like.Name != null)
                             newVenues = await crawl.CrawlByText(like.Name);
-                        else if ( like.Name == null && like.Location != null )
-                            newVenues = await crawl.CrawlByLocation(new GoogleApi.Entities.Common.Location(like.Location.Latitude, like.Location.Longditude));
-                        else if ( like.Name != null && like.Location != null )
-                            newVenues = await crawl.CrawlByLocation(new GoogleApi.Entities.Common.Location(like.Location.Latitude, like.Location.Longditude));
+                        else if (like.Name == null && like.Location != null)
+                            newVenues =
+                                await crawl.CrawlByLocation(
+                                    new Location(like.Location.Latitude, like.Location.Longditude));
+                        else if (like.Name != null && like.Location != null)
+                            newVenues =
+                                await crawl.CrawlByLocation(
+                                    new Location(like.Location.Latitude, like.Location.Longditude));
                         else
                             return null;
-                        newVenues = newVenues.Where((i) =>
-                        {
-                            return _context.Venues.All(j => j.Id != i.Id);
-                        });
+                        newVenues = newVenues.Where(i => { return _context.Venues.All(j => j.Id != i.Id); });
                         await AddAsync(newVenues);
                     }
-                    catch ( Exception ex )
+                    catch (Exception ex)
                     {
                         BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
                     }
-                }
                 return venues;
-            }catch(Exception ex )
+            }
+            catch (Exception ex)
             {
                 BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
                 throw;
             }
-            
         }
     }
 }

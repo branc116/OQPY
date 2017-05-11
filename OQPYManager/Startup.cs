@@ -40,7 +40,7 @@ namespace OQPYManager
             var connString = System.Environment.GetEnvironmentVariable("SQLAZURECONNSTR_OQPYDb") ?? "Server=(localdb)\\\\mssqllocaldb;Database=aspnet-OQPYManager-5537dc07-7ebc-4e5b-9c8b-8dd5eba4b2f1;Trusted_Connection=True;MultipleActiveResultSets=true";
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connString));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
