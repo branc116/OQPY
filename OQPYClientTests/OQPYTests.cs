@@ -1,4 +1,4 @@
-﻿#define prod
+﻿//#define prod
 #define console
 
 using Microsoft.Bot.Builder.Dialogs;
@@ -47,8 +47,8 @@ namespace OQPYClientTests
 
             venues = await api.ApiVenuesFilterPostAsync((new Venue()
             {
-                Location = new Location(15.9468622, 45.7849274),
-                Name = "Stijepan Radić"
+                Location = new Location(45.7849274, 15.9468622),
+                Name = "Studentski dom"
             }));
             Log(venues.Count.ToString());
             Log(venues.First().ToString());
