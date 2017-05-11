@@ -3030,6 +3030,14 @@ namespace OQPYClient.APIv03
                 }
                 _httpRequest.Headers.TryAddWithoutValidation("reviewId", reviewId);
             }
+            if (like != null)
+            {
+                if (_httpRequest.Headers.Contains("like"))
+                {
+                    _httpRequest.Headers.Remove("like");
+                }
+                _httpRequest.Headers.TryAddWithoutValidation("like", like);
+            }
 
 
             if (customHeaders != null)
@@ -3046,12 +3054,6 @@ namespace OQPYClient.APIv03
 
             // Serialize Request
             string _requestContent = null;
-            if(like != null)
-            {
-                _requestContent = SafeJsonConvert.SerializeObject(like, SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
             // Send Request
             if (_shouldTrace)
             {
