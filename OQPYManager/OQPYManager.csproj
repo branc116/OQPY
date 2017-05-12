@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="Repositories\Data\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System">
