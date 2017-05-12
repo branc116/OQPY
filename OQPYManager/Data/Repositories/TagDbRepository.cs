@@ -7,9 +7,9 @@ using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories
 {
-    public class TagDbRepository : BaseDbRepository<Tag>
+    public class TagDbRepository : BaseDbRepository<Tag>, ITagDbRepository
     {
-        private VenuesDbRepository _venuesDbRepository;
+        private readonly VenuesDbRepository _venuesDbRepository;
 
         public TagDbRepository(ApplicationDbContext context) : base(context)
         {
