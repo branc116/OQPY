@@ -114,7 +114,7 @@ namespace OQPYManager.Controllers
                 return null;
             }
 
-            var venues = _venuesDbRepository.Get(null, i => ids.Contains(i.Id));
+            var venues = _venuesDbRepository.Get(i => ids.Contains(i.Id));
 
 
             if ( venues == null )

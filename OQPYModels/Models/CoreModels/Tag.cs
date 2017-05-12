@@ -26,7 +26,13 @@ namespace OQPYModels.Models.CoreModels
             this.TagName = tagName;
         }
 
-        
+        public Tag(string tagName, Venue venue)
+        {
+            Id = Guid.NewGuid().ToString();
+            this.TagName = tagName;
+            VenueTags = new List<VenueTag>();
+            VenueTags.Add(new VenueTag(venue, this));
+        }
 
         public int Compare(Tag x, Tag y)
         {
@@ -38,7 +44,7 @@ namespace OQPYModels.Models.CoreModels
             return from _ in new string(' ', n)
                    let tagName = RandomName()
                    let tag = new Tag(tagName)
-                   let venuetag = tag.VenueTags = new List<VenueTag>() { new VenueTag(TODO, TODO, venue) }
+                   let venuetag = tag.VenueTags = new List<VenueTag>() { new VenueTag(venue, tag) }
                    select tag;
         }
 

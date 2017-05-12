@@ -26,6 +26,7 @@ namespace OQPYManager.Data.Repositories
             var venueTag = new VenueTag(venue, tag);
 
             venue.VenueTags.Add(venueTag);
+            tag.VenueTags.Add(venueTag);
             _defaultDbSet.Add(tag);
             await _venuesDbRepository.UpdateAsync(venue);
         }
