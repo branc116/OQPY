@@ -11,6 +11,7 @@ using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Models;
 using OQPYManager.Services;
 using Swashbuckle.AspNetCore.Swagger;
+using Tag = OQPYModels.Models.CoreModels.Tag;
 
 namespace OQPYManager
 {
@@ -57,6 +58,9 @@ namespace OQPYManager
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddScoped<IResourceDbRepository, ResourceDbRepository>();
             services.AddScoped<IVenuesDbRepository, VenuesDbRepository>();
+            services.AddScoped<IPriceTagDbRepository, PriceTagDbRepository>();
+            services.AddScoped<IReviewDbRepository, ReviewDbRepository>();
+            services.AddScoped<ITagDbRepository, TagDbRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

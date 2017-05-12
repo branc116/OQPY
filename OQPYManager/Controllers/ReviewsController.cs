@@ -5,6 +5,8 @@ using OQPYModels.Models.CoreModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OQPYManager.Data.Repositories;
+using OQPYManager.Data.Repositories.Interfaces;
 using static OQPYManager.Helper.Helper;
 
 namespace OQPYManager.Controllers
@@ -14,10 +16,12 @@ namespace OQPYManager.Controllers
     public class ReviewsController: Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IReviewDbRepository _reviewDbRepository;
 
-        public ReviewsController(ApplicationDbContext context)
+        public ReviewsController(ApplicationDbContext context, IReviewDbRepository reviewDbRepository)
         {
             _context = context;
+            _reviewDbRepository = reviewDbRepository;
         }
 
         // GET: api/Reviews
@@ -30,7 +34,7 @@ namespace OQPYManager.Controllers
 
         // GET: api/Reviews/5
         [HttpGet]
-        public async Task<Review> GetReview([FromHeader] string id)
+        public async Task<Review> GetReview([FromHeader] string reviewId)
         {
             if ( !ModelState.IsValid )
             {
@@ -38,10 +42,10 @@ namespace OQPYManager.Controllers
                 return null;
             }
 
-            var review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
+            var review = await _reviewDbRepository.FindAsync(reviewId);
 
             if ( review == null )
-                NotFound(id);
+                NotFound(reviewId);
             else
                 Ok();
             return review;

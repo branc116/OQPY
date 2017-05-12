@@ -14,12 +14,12 @@ namespace OQPYManager.Controllers
     public class ResourcesController: Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IResourceDbRepository _dbContext;
+        private readonly IResourceDbRepository _resourceDbRepository;
 
         public ResourcesController(ApplicationDbContext context,
                                    IResourceDbRepository dbContext)
         {
-            _dbContext = dbContext;
+            _resourceDbRepository = dbContext;
             _context = context;
         }
 
@@ -27,7 +27,7 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public IEnumerable<Resource> GetResources()
         {
-            return _context.Resources;
+            return _resourceDbRepository.GetAll();
         }
 
         // GET: api/Resources/5
@@ -39,7 +39,7 @@ namespace OQPYManager.Controllers
                 return BadRequest(ModelState);
             }
 
-            var resource = await _dbContext.FindAsync(id);
+            var resource = await _resourceDbRepository.FindAsync(id);
             return Ok(resource);
         }
 
@@ -102,16 +102,13 @@ namespace OQPYManager.Controllers
                 return BadRequest(ModelState);
             }
 
-            var resource = await _context.Resources.SingleOrDefaultAsync(m => m.Id == id);
-            if ( resource == null )
-            {
-                return NotFound();
-            }
+            
 
-            _context.Resources.Remove(resource);
-            await _context.SaveChangesAsync();
+            //_context.Resources.Remove(resource);
+            await _resourceDbRepository.RemoveAsync(id);
+            
 
-            return Ok(resource);
+            return Ok(id);
         }
 
         private bool ResourceExists(string id)
@@ -123,7 +120,7 @@ namespace OQPYManager.Controllers
         [Route("IOT")]
         public async Task UpdateStatus([FromHeader] string id, [FromHeader] string OQPYed, [FromHeader] string secretCode)
         {
-            await _dbContext.ChangeState(id, OQPYed != "0", secretCode);
+            await _resourceDbRepository.ChangeState(id, OQPYed != "0", secretCode);
         }
     }
 }

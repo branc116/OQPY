@@ -11,7 +11,7 @@ namespace OQPYManager.Data.Repositories
 {
     public class ReviewDbRepository : BaseDbRepository<Review>, IReviewDbRepository
     {
-        private VenuesDbRepository _venuesDbRepository;
+        private readonly VenuesDbRepository _venuesDbRepository;
         public ReviewDbRepository(ApplicationDbContext context) : base(context)
         {
             _defaultDbSet = _context.Reviews;
@@ -24,9 +24,11 @@ namespace OQPYManager.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Review> GetAllReviews(string venueId)
+        public async Task<IEnumerable<Review>> GetAllReviews(string venueId)
         {
-           throw new NotImplementedException();
+            var venue = await _venuesDbRepository.FindAsync(venueId);
+
+            return venue.Reviews;
         }
 
         public async Task RateReview(string reviewId, string like)
