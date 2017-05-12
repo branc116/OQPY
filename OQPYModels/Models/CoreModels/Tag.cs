@@ -5,6 +5,10 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// This class is used to describe a venue and enabling searching by specific filters.
+    /// For example if a venue has pinball machine, the owner who creates venue will add tag "pinball".
+    /// </summary>
     public class Tag: IComparer<Tag>
     {
         public virtual string Id { get; set; }

@@ -4,6 +4,10 @@ using System.Threading.Tasks;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// This class is used as a model for a venue to describe its location.
+    /// It should be compactible with google or facebook so we can use their services.
+    /// </summary>
     public class Location: ICoreModel<Location>
     {
         private const string _apiKey = "AIzaSyDILEdR5gAKYwZKyocx1nsKOhQev5QQ68Q";

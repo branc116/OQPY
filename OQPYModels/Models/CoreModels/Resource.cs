@@ -5,6 +5,10 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// Resource represents an object in a venue that can be OQPYed for certain amount of time.
+    /// For example a table in a coffee shop or a bowling lane in a bowling alley.
+    /// </summary>
     public class Resource: ICoreModel<Resource>
     {
         public string Id { get; set; }

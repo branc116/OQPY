@@ -11,15 +11,16 @@ namespace OQPYManager.Data.Repositories.Interfaces
         /// <summary>
         /// Checks if a venue is working at current moment
         /// </summary>
-        /// <param name="venue"></param>
+        /// <param name="venueId"></param>
         /// <returns>True if venue is working in open, false otherwise</returns>
-        bool IsOpen(Venue venue);
+        Task<bool> IsOpenAsync(string venueId);
 
         /// <summary>
         /// Change working status in case of some unpredictable events.
         /// E.g. death, holidays...
         /// </summary>
-        void ChangeWorkingStatus();
+        /// <param name="venueId"></param>
+        Task ChangeWorkingStatusAsync(string venueId);
 
 
     }

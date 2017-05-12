@@ -23,15 +23,39 @@ namespace OQPYManager.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public bool IsOpen(string venueId)
+        public async Task<bool> IsOpenAsync(string venueId)
         {
-            var venue = _venuesDbRepository.FindAsync(venueId);
-            DateTime.Now.DayOfWeek.;
+            var now = DateTime.Now;
+            var venue = await _venuesDbRepository.FindAsync(venueId);
+
+            if (venue.WorkHours.IsWorking == false)
+            {
+                return false;
+            }
+
+            var workTime = venue.WorkHours.WholeWeek.FirstOrDefault(ww => ww.Key.Equals(now.DayOfWeek)).Value;
+
+            return IsTimeInBetweenWorkingTime(now, workTime);
+
         }
 
-        public void ChangeWorkingStatus()
+        public async Task ChangeWorkingStatusAsync(string venueId)
         {
-            throw new NotImplementedException();
+            var venue = await _venuesDbRepository.FindAsync(venueId);
+            venue.WorkHours.IsWorking = !venue.WorkHours.IsWorking;
+            await _venuesDbRepository.UpdateAsync(venue);
         }
+
+        private bool IsTimeInBetweenWorkingTime(DateTime time, WorkTime worktime)
+        {
+            //I've done this to avoid any influence of calendar date into calculation
+            return time.Hour.CompareTo(worktime.StartTime.Hour) < 0
+                   && time.Minute.CompareTo(worktime.StartTime.Minute) < 0
+                   && time.Hour.CompareTo(worktime.EndTime.Hour) > 0
+                   && time.Minute.CompareTo(worktime.EndTime.Minute) > 0;
+        }
+
+
+        
     }
 }
