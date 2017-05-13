@@ -5,6 +5,10 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// This class is used to describe a venue and enabling searching by specific filters.
+    /// For example if a venue has pinball machine, the owner who creates venue will add tag "pinball".
+    /// </summary>
     public class Tag: IComparer<Tag>
     {
         public virtual string Id { get; set; }
@@ -26,7 +30,13 @@ namespace OQPYModels.Models.CoreModels
             this.TagName = tagName;
         }
 
-        
+        public Tag(string tagName, Venue venue)
+        {
+            Id = Guid.NewGuid().ToString();
+            this.TagName = tagName;
+            VenueTags = new List<VenueTag>();
+            VenueTags.Add(new VenueTag(venue, this));
+        }
 
         public int Compare(Tag x, Tag y)
         {
@@ -38,7 +48,7 @@ namespace OQPYModels.Models.CoreModels
             return from _ in new string(' ', n)
                    let tagName = RandomName()
                    let tag = new Tag(tagName)
-                   let venuetag = tag.VenueTags = new List<VenueTag>() { new VenueTag(tag, venue) }
+                   let venuetag = tag.VenueTags = new List<VenueTag>() { new VenueTag(venue, tag) }
                    select tag;
         }
 

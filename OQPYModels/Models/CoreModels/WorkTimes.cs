@@ -5,12 +5,15 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// This class describes more in detail about working time of a venue in one day.
+    /// </summary>
     public class WorkTime
     {
         public string Id { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public TimeSpan Diration => EndTime - StartTime;
+        public TimeSpan Duration => EndTime - StartTime;
         public WorkHours WorkHours { get; set; }
 
         public WorkTime()

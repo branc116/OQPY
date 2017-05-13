@@ -39,7 +39,7 @@ namespace OQPYManager.Controllers
 
             await _venuesDbRepository.AddAsync(venue);
 
-            return Ok();
+            return CreatedAtAction("CreateVenue", new { id = venue.Id }, venue);
         }
 
         // DELETE api/values/5
@@ -86,18 +86,6 @@ namespace OQPYManager.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("Single")]
-        public async Task<IActionResult> PostSingle([FromBody] Venue venue)
-        {
-            if ( !ModelState.IsValid )
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _venuesDbRepository.AddAsync(venue);
-            return CreatedAtAction("GetVenues", new { id = venue.Id }, venue);
-        }
 
         [HttpGet]
         [Route("Multi")]
@@ -114,7 +102,7 @@ namespace OQPYManager.Controllers
                 return null;
             }
 
-            var venues = _venuesDbRepository.Get(null, i => ids.Contains(i.Id));
+            var venues = _venuesDbRepository.Get(i => ids.Contains(i.Id));
 
 
             if ( venues == null )

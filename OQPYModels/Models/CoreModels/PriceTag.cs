@@ -5,6 +5,9 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// PriceTag describes an item or service in a venue and what its price is.
+    /// </summary>
     public class PriceTag
     {
         public virtual string Id { get; set; }
