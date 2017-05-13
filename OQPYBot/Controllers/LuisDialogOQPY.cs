@@ -135,6 +135,11 @@ namespace OQPYBot.Controllers
                 await context.PostAsync("3 free spots.");
                 return;
             }
+            if (a.Text.Substring(0,4).ToLower() == "oqpy")
+            {
+                await Help(context, item, null);
+                return;
+            }
             if ( context.UserData.TryGetValue(_timesUsed, out int times) )
             {
                 context.UserData.SetValue(_timesUsed, times++);
