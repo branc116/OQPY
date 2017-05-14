@@ -1,9 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using OQPYManager.Data;
+using System;
 
 namespace OQPYManager.Data.Migrations
 {
@@ -13,7 +11,7 @@ namespace OQPYManager.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.1")
+                .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -201,6 +199,64 @@ namespace OQPYManager.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("OQPYModels.Models.CoreModels.Employee", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("ConcurrencyStamp");
+
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("LockoutEnabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("NormalizedEmail");
+
+                    b.Property<string>("NormalizedUserName");
+
+                    b.Property<string>("PasswordHash");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("SecurityStamp");
+
+                    b.Property<string>("Surname");
+
+                    b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UserName");
+
+                    b.Property<string>("VenueId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VenueId");
+
+                    b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("OQPYModels.Models.CoreModels.FacebookUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FacebookUsers");
+                });
+
             modelBuilder.Entity("OQPYModels.Models.CoreModels.Location", b =>
                 {
                     b.Property<string>("Id")
@@ -215,6 +271,48 @@ namespace OQPYManager.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("OQPYModels.Models.CoreModels.Owner", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("ConcurrencyStamp");
+
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("LockoutEnabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("NormalizedEmail");
+
+                    b.Property<string>("NormalizedUserName");
+
+                    b.Property<string>("PasswordHash");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("SecurityStamp");
+
+                    b.Property<string>("Surname");
+
+                    b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UserName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Owners");
                 });
 
             modelBuilder.Entity("OQPYModels.Models.CoreModels.PriceTag", b =>
@@ -242,6 +340,8 @@ namespace OQPYManager.Data.Migrations
 
                     b.Property<DateTime>("EndReservationTime");
 
+                    b.Property<string>("FacebookUsersId");
+
                     b.Property<string>("ResourceId");
 
                     b.Property<string>("SecretCode");
@@ -251,6 +351,8 @@ namespace OQPYManager.Data.Migrations
                     b.Property<string>("VenueId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FacebookUsersId");
 
                     b.HasIndex("ResourceId");
 
@@ -393,94 +495,6 @@ namespace OQPYManager.Data.Migrations
                     b.ToTable("WorkTime");
                 });
 
-            modelBuilder.Entity("OQPYModels.Models.Employee", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp");
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("Surname");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName");
-
-                    b.Property<string>("VenueId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VenueId");
-
-                    b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("OQPYModels.Models.Owner", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp");
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("Surname");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Owners");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -491,11 +505,11 @@ namespace OQPYManager.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("OQPYModels.Models.Employee")
+                    b.HasOne("OQPYModels.Models.CoreModels.Employee")
                         .WithMany("Claims")
                         .HasForeignKey("EmployeeId");
 
-                    b.HasOne("OQPYModels.Models.Owner")
+                    b.HasOne("OQPYModels.Models.CoreModels.Owner")
                         .WithMany("Claims")
                         .HasForeignKey("OwnerId");
 
@@ -507,11 +521,11 @@ namespace OQPYManager.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("OQPYModels.Models.Employee")
+                    b.HasOne("OQPYModels.Models.CoreModels.Employee")
                         .WithMany("Logins")
                         .HasForeignKey("EmployeeId");
 
-                    b.HasOne("OQPYModels.Models.Owner")
+                    b.HasOne("OQPYModels.Models.CoreModels.Owner")
                         .WithMany("Logins")
                         .HasForeignKey("OwnerId");
 
@@ -523,11 +537,11 @@ namespace OQPYManager.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("OQPYModels.Models.Employee")
+                    b.HasOne("OQPYModels.Models.CoreModels.Employee")
                         .WithMany("Roles")
                         .HasForeignKey("EmployeeId");
 
-                    b.HasOne("OQPYModels.Models.Owner")
+                    b.HasOne("OQPYModels.Models.CoreModels.Owner")
                         .WithMany("Roles")
                         .HasForeignKey("OwnerId");
 
@@ -542,6 +556,13 @@ namespace OQPYManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("OQPYModels.Models.CoreModels.Employee", b =>
+                {
+                    b.HasOne("OQPYModels.Models.CoreModels.Venue", "Venue")
+                        .WithMany("Employees")
+                        .HasForeignKey("VenueId");
+                });
+
             modelBuilder.Entity("OQPYModels.Models.CoreModels.PriceTag", b =>
                 {
                     b.HasOne("OQPYModels.Models.CoreModels.Venue", "Venue")
@@ -551,6 +572,10 @@ namespace OQPYManager.Data.Migrations
 
             modelBuilder.Entity("OQPYModels.Models.CoreModels.Reservation", b =>
                 {
+                    b.HasOne("OQPYModels.Models.CoreModels.FacebookUser", "FacebookUsers")
+                        .WithMany("Reservations")
+                        .HasForeignKey("FacebookUsersId");
+
                     b.HasOne("OQPYModels.Models.CoreModels.Resource", "Resource")
                         .WithMany("Reservations")
                         .HasForeignKey("ResourceId");
@@ -587,7 +612,7 @@ namespace OQPYManager.Data.Migrations
                         .WithMany()
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("OQPYModels.Models.Owner", "Owner")
+                    b.HasOne("OQPYModels.Models.CoreModels.Owner", "Owner")
                         .WithMany("Venues")
                         .HasForeignKey("OwnerId");
                 });
@@ -617,13 +642,6 @@ namespace OQPYManager.Data.Migrations
                     b.HasOne("OQPYModels.Models.CoreModels.WorkHours", "WorkHours")
                         .WithMany("WorkTimes")
                         .HasForeignKey("WorkHoursId");
-                });
-
-            modelBuilder.Entity("OQPYModels.Models.Employee", b =>
-                {
-                    b.HasOne("OQPYModels.Models.CoreModels.Venue", "Venue")
-                        .WithMany("Employees")
-                        .HasForeignKey("VenueId");
                 });
         }
     }

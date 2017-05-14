@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OQPYManager.Models;
+using OQPYModels;
 using OQPYModels.Models;
 using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data
 {
+
     public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         public DbSet<Venue> Venues { get; set; }
@@ -18,6 +20,7 @@ namespace OQPYManager.Data
         public DbSet<WorkHours> VenueWorkHours { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<FacebookUser> FacebookUsers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -51,11 +54,13 @@ namespace OQPYManager.Data
 
             builder.Entity<Tag>().HasKey(t => t.Id);
 
+            builder.Entity<Owner>().HasKey(i => i.Id);
+            builder.Entity<Employee>().HasKey(i => i.Id);
+            builder.Entity<FacebookUser>().HasKey(i => i.Id);
+            builder.Entity<FacebookUser>().HasMany(i => i.Reservations).WithOne(i => i.FacebookUsers);
+
             builder.Entity<WorkHours>().HasKey(wh => wh.Id);
 
-            builder.Entity<Employee>().HasKey(be => be.Id);
-
-            builder.Entity<Owner>().HasKey(bo => bo.Id);
             builder.Entity<WorkHours>().HasMany(wh => wh.WorkTimes).WithOne(wt => wt.WorkHours);
 
             //Many-to-many relationship between venues and tags
@@ -66,8 +71,6 @@ namespace OQPYManager.Data
             builder.Entity<VenueTag>().HasOne(vt => vt.Tag)
                 .WithMany(t => t.VenueTags)
                 .HasForeignKey(vt => vt.TagId);
-        }
-
-        
+        }        
     }
 }

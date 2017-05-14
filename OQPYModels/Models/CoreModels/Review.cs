@@ -5,6 +5,12 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// This class is used to describe reviewing a venue.
+    /// It holds comment and numerical rating as core feautures.
+    /// I think it should hold some userdata about reviewer so we can prevent false
+    /// reviews and comments.
+    /// </summary>
     public class Review
     {
         /// <summary>

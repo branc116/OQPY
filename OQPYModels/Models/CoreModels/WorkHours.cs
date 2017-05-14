@@ -5,6 +5,10 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// This class will describe when a venue works. Also includes if venue
+    /// has to unexpectedly stop its work.
+    /// </summary>
     public class WorkHours
     {
         public string Id { get; set; }

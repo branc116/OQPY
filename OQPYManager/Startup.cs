@@ -10,7 +10,9 @@ using OQPYManager.Data.Repositories;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Models;
 using OQPYManager.Services;
+using OQPYModels.Models.CoreModels;
 using Swashbuckle.AspNetCore.Swagger;
+using Tag = OQPYModels.Models.CoreModels.Tag;
 
 namespace OQPYManager
 {
@@ -37,10 +39,10 @@ namespace OQPYManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connString = System.Environment.GetEnvironmentVariable("SQLAZURECONNSTR_OQPYDb") ?? "Server=(localdb)\\\\mssqllocaldb;Database=aspnet-OQPYManager-5537dc07-7ebc-4e5b-9c8b-8dd5eba4b2f1;Trusted_Connection=True;MultipleActiveResultSets=true";
+            var connString = System.Environment.GetEnvironmentVariable("SQLAZURECONNSTR_OQPYDb") ?? Configuration.GetConnectionString("DefaultConnection") ?? "Server=(localdb)\\\\mssqllocaldb;Database=aspnet-OQPYManager-5537dc07-7ebc-4e5b-9c8b-8dd5eba4b2f1;Trusted_Connection=True;MultipleActiveResultSets=true";
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connString));
             
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -57,6 +59,9 @@ namespace OQPYManager
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddScoped<IResourceDbRepository, ResourceDbRepository>();
             services.AddScoped<IVenuesDbRepository, VenuesDbRepository>();
+            services.AddScoped<IPriceTagDbRepository, PriceTagDbRepository>();
+            services.AddScoped<IReviewDbRepository, ReviewDbRepository>();
+            services.AddScoped<ITagDbRepository, TagDbRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

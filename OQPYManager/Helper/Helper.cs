@@ -23,7 +23,7 @@ namespace OQPYManager.Helper
         public async static Task<Venue> GetVenueAsync(ApplicationDbContext context, string venueId, params string[] includes)
         {
             var venue = context.Venues.Where(i => i.Id == venueId);
-            foreach ( var include in includes )
+            foreach (var include in includes)
             {
                 venue.Include(include);
             }

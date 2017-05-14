@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.EntityFrameworkCore;
+using OQPYManager.Data.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.EntityFrameworkCore;
-using OQPYManager.Data.Repositories.Interfaces;
-using OQPYModels.Models.CoreModels;
 using static OQPYManager.Helper.Log;
 
 namespace OQPYManager.Data.Repositories.Base
@@ -22,7 +21,7 @@ namespace OQPYManager.Data.Repositories.Base
         }
 
         /// <summary>
-        ///     This filter is used when searching trough database to search for similar items to 
+        ///     This filter is used when searching trough database to search for similar items to
         ///     like item(the parameter).
         /// </summary>
         /// <param name="like">Items to be compared to.</param>
@@ -90,7 +89,7 @@ namespace OQPYManager.Data.Repositories.Base
         /// <returns></returns>
         public virtual IEnumerable<T> GetAll(string includedParams)
         {
-            return GetAll(includedParams.Split(new char[1] {';'}, StringSplitOptions.RemoveEmptyEntries));
+            return GetAll(includedParams.Split(new char[1] { ';' }, StringSplitOptions.RemoveEmptyEntries));
         }
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace OQPYManager.Data.Repositories.Base
         public virtual IEnumerable<T> Get(params Func<T, bool>[] filters)
         {
             var items = _defaultDbSet.AsQueryable();
-            foreach ( var filter in filters )
+            foreach (var filter in filters)
             {
                 items = items.Where(filter).AsQueryable();
             }

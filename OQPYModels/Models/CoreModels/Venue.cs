@@ -6,6 +6,10 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// This is core model of our appliction.
+    /// This class in its whole represents everything about venue and its important data.
+    /// </summary>
     public class Venue : ICoreModel<Venue>
     {
         public Venue()

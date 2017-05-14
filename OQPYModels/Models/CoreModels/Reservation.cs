@@ -5,6 +5,9 @@ using static OQPYModels.Helper.Helper;
 
 namespace OQPYModels.Models.CoreModels
 {
+    /// <summary>
+    /// Reservation of an object.
+    /// </summary>
     public class Reservation
     {
         public virtual string Id { get; set; }
@@ -13,6 +16,7 @@ namespace OQPYModels.Models.CoreModels
 
         public virtual DateTime EndReservationTime { get; set; }
         public virtual Resource Resource { get; set; }
+        public FacebookUser FacebookUsers { get; set; }
 
         /// <summary>
         /// Could be just a name and/or surname
@@ -54,6 +58,7 @@ namespace OQPYModels.Models.CoreModels
                    let start = DateTime.Now + RandomDays(5, 10)
                    let end = start + RandomHours(2, 5)
                    select new Reservation(start, end, resource);
+        
         }
     }
 }

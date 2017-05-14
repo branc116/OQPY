@@ -1,15 +1,17 @@
-﻿using OQPYModels.Models.CoreModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
+    /// <summary>
+    /// This interface was created to describe a generic repository which has generic functions such as adding new items,
+    /// finding items in databse etc.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IBaseDbRepository<T> where T : class
     {
-        
         Task AddAsync(T item);
 
         Task AddAsync(params T[] items);

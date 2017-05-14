@@ -3,22 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OQPYManager.Data.Repositories.Base;
+using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories
 {
-    public class VenueTagDbRepository : BaseDbRepository<Tag>
+    public class TagDbRepository : BaseDbRepository<Tag>, ITagDbRepository
     {
-        public VenueTagDbRepository(ApplicationDbContext context) : base(context)
+        private readonly VenuesDbRepository _venuesDbRepository;
+
+        public TagDbRepository(ApplicationDbContext context) : base(context)
         {
-            _defaultDbSet = _context.VenueTags;
+            _defaultDbSet = _context.Tags;
+            _venuesDbRepository = new VenuesDbRepository(context);
         }
 
-        public override async Task AddAsync(Tag tag, Venue venue)
-        {
-            var venueTag = new VenueTag(tag, venue);
 
-            
+
+        public async Task AddAsync(Tag tag, string venueId)
+        {
+            var venue = await _venuesDbRepository.FindAsync(venueId);
+
+            var venueTag = new VenueTag(venue, tag);
+
+            venue.VenueTags.Add(venueTag);
+            tag.VenueTags.Add(venueTag);
+            _defaultDbSet.Add(tag);
+            await _venuesDbRepository.UpdateAsync(venue);
         }
 
         public override Task<IQueryable<Tag>> Filter(Tag like)

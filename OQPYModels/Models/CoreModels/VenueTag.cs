@@ -1,7 +1,7 @@
 ﻿namespace OQPYModels.Models.CoreModels
 {
     /// <summary>
-    /// Class used to realise many-to-many relationship.
+    /// Class used to realise many-to-many relationship between Venue and Tag.
     /// Check here:
     /// https://docs.microsoft.com/en-us/ef/core/modeling/relationships
     /// </summary>
@@ -17,7 +17,7 @@
         {
         }
 
-        public VenueTag(Tag tag, Venue venue)
+        public VenueTag(Venue venue, Tag tag)
         {
             this.Tag = tag;
             this.Venue = venue;
