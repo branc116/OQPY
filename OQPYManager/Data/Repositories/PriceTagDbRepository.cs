@@ -1,16 +1,17 @@
-﻿using System;
+﻿using OQPYManager.Data.Repositories.Base;
+using OQPYManager.Data.Repositories.Interfaces;
+using OQPYModels.Models.CoreModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OQPYManager.Data.Repositories.Base;
-using OQPYManager.Data.Repositories.Interfaces;
-using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories
 {
     public class PriceTagDbRepository : BaseDbRepository<PriceTag>, IPriceTagDbRepository
     {
         private readonly VenuesDbRepository _venuesDbRepository;
+        
         public PriceTagDbRepository(ApplicationDbContext context) : base(context)
         {
             _defaultDbSet = _context.PriceTags;

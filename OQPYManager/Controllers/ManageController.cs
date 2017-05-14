@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace OQPYManager.Controllers
 {
     [Authorize]
-    public class ManageController: Controller
+    public class ManageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -52,7 +52,7 @@ namespace OQPYManager.Controllers
                 : "";
 
             var user = await GetCurrentUserAsync();
-            if ( user == null )
+            if (user == null)
             {
                 return View("Error");
             }
@@ -75,10 +75,10 @@ namespace OQPYManager.Controllers
         {
             ManageMessageId? message = ManageMessageId.Error;
             var user = await GetCurrentUserAsync();
-            if ( user != null )
+            if (user != null)
             {
                 var result = await _userManager.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey);
-                if ( result.Succeeded )
+                if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     message = ManageMessageId.RemoveLoginSuccess;
@@ -100,13 +100,13 @@ namespace OQPYManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
             // Generate the token and send it
             var user = await GetCurrentUserAsync();
-            if ( user == null )
+            if (user == null)
             {
                 return View("Error");
             }
@@ -122,7 +122,7 @@ namespace OQPYManager.Controllers
         public async Task<IActionResult> EnableTwoFactorAuthentication()
         {
             var user = await GetCurrentUserAsync();
-            if ( user != null )
+            if (user != null)
             {
                 await _userManager.SetTwoFactorEnabledAsync(user, true);
                 await _signInManager.SignInAsync(user, isPersistent: false);
@@ -138,7 +138,7 @@ namespace OQPYManager.Controllers
         public async Task<IActionResult> DisableTwoFactorAuthentication()
         {
             var user = await GetCurrentUserAsync();
-            if ( user != null )
+            if (user != null)
             {
                 await _userManager.SetTwoFactorEnabledAsync(user, false);
                 await _signInManager.SignInAsync(user, isPersistent: false);
@@ -153,7 +153,7 @@ namespace OQPYManager.Controllers
         public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var user = await GetCurrentUserAsync();
-            if ( user == null )
+            if (user == null)
             {
                 return View("Error");
             }
@@ -168,15 +168,15 @@ namespace OQPYManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
             var user = await GetCurrentUserAsync();
-            if ( user != null )
+            if (user != null)
             {
                 var result = await _userManager.ChangePhoneNumberAsync(user, model.PhoneNumber, model.Code);
-                if ( result.Succeeded )
+                if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.AddPhoneSuccess });
@@ -194,10 +194,10 @@ namespace OQPYManager.Controllers
         public async Task<IActionResult> RemovePhoneNumber()
         {
             var user = await GetCurrentUserAsync();
-            if ( user != null )
+            if (user != null)
             {
                 var result = await _userManager.SetPhoneNumberAsync(user, null);
-                if ( result.Succeeded )
+                if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.RemovePhoneSuccess });
@@ -220,15 +220,15 @@ namespace OQPYManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
             var user = await GetCurrentUserAsync();
-            if ( user != null )
+            if (user != null)
             {
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-                if ( result.Succeeded )
+                if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User changed their password successfully.");
@@ -254,16 +254,16 @@ namespace OQPYManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
             var user = await GetCurrentUserAsync();
-            if ( user != null )
+            if (user != null)
             {
                 var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
-                if ( result.Succeeded )
+                if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.SetPasswordSuccess });
@@ -284,7 +284,7 @@ namespace OQPYManager.Controllers
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
             var user = await GetCurrentUserAsync();
-            if ( user == null )
+            if (user == null)
             {
                 return View("Error");
             }
@@ -319,18 +319,18 @@ namespace OQPYManager.Controllers
         public async Task<ActionResult> LinkLoginCallback()
         {
             var user = await GetCurrentUserAsync();
-            if ( user == null )
+            if (user == null)
             {
                 return View("Error");
             }
             var info = await _signInManager.GetExternalLoginInfoAsync(await _userManager.GetUserIdAsync(user));
-            if ( info == null )
+            if (info == null)
             {
                 return RedirectToAction(nameof(ManageLogins), new { Message = ManageMessageId.Error });
             }
             var result = await _userManager.AddLoginAsync(user, info);
             var message = ManageMessageId.Error;
-            if ( result.Succeeded )
+            if (result.Succeeded)
             {
                 message = ManageMessageId.AddLoginSuccess;
                 // Clear the existing external cookie to ensure a clean login process
@@ -343,7 +343,7 @@ namespace OQPYManager.Controllers
 
         private void AddErrors(IdentityResult result)
         {
-            foreach ( var error in result.Errors )
+            foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }

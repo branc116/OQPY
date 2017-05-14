@@ -3,7 +3,7 @@ using System;
 
 namespace OQPYManager.Data.Migrations
 {
-    public partial class BaseOut: Migration
+    public partial class BaseOut : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

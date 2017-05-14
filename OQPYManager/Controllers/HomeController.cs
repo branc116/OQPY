@@ -5,7 +5,7 @@ using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Controllers
 {
-    public class HomeController: Controller
+    public class HomeController : Controller
     {
         private IVenuesDbRepository _venuesDbRepository;
         public HomeController(IVenuesDbRepository venuesDbRepository)

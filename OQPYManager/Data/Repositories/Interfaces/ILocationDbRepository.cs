@@ -4,6 +4,5 @@ namespace OQPYManager.Data.Repositories.Interfaces
 {
     public interface ILocationDbRepository : IBaseDbRepository<Location>
     {
-        
     }
 }

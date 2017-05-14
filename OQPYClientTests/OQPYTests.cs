@@ -1,4 +1,4 @@
-﻿#define prod
+﻿//#define prod
 #define console
 
 using Microsoft.Bot.Builder.Dialogs;
@@ -47,8 +47,8 @@ namespace OQPYClientTests
 
             venues = await api.ApiVenuesFilterPostAsync((new Venue()
             {
-                Location = new Location(15.9468622, 45.7849274),
-                Name = "Stijepan Radić"
+                Location = new Location(45.7849274, 15.9468622),
+                Name = "Studentski dom"
             }));
             Log(venues.Count.ToString());
             Log(venues.First().ToString());
@@ -105,12 +105,12 @@ namespace OQPYClientTests
         {
             var placesToVisit = new List<string>() { "zagreb", "istandbul", "knežija", "fer", "transy", "budapeste", "Konjščina" };
             var str = string.Empty;
-            foreach ( var place in placesToVisit )
+            foreach (var place in placesToVisit)
             {
                 var crawler = new OQPYCralwer.Cralw();
                 var locs = await crawler.AddressToLocation(place);
                 str += place + "\n";
-                foreach ( var loc in locs )
+                foreach (var loc in locs)
                 {
                     str += loc.ToString() + "\n";
                     Assert.AreNotEqual(loc.Latitude, 0);
@@ -129,7 +129,7 @@ namespace OQPYClientTests
             temp2.StringLikenes(temp1);
             Random rand = new Random();
 
-            for ( int i = 0 ; i < 10 ; i++ )
+            for (int i = 0; i < 10; i++)
             {
                 temp1 = new string((from _ in new string('a', rand.Next(10, 100))
                                     select (char)(_ + rand.Next(0, 25))).ToArray());
@@ -149,7 +149,7 @@ namespace OQPYClientTests
         public static void AssertVenues(IEnumerable<Venue> venues)
         {
             Assert.IsNotNull(venues);
-            foreach ( var venue in venues )
+            foreach (var venue in venues)
             {
                 Assert.IsNotNull(venue.ImageUrl);
                 Assert.IsNotNull(venue.Location);
@@ -166,7 +166,7 @@ namespace OQPYClientTests
             Assert.AreNotEqual(venues.Any(), false);
             //Logger.LogMessage($"{venues.Count}");
             var str = string.Empty;
-            for ( int i = 0 ; i < (venues.Count - 1) ; i++ )
+            for (int i = 0; i < (venues.Count - 1); i++)
             {
                 str += $"{i}: {venues[i].ToString()}Distance to original: \n\n";
                 Assert.AreNotEqual(venues[i].Id, venues[i + 1].Id);
@@ -181,16 +181,16 @@ namespace OQPYClientTests
             var delimiter = "^^ˇˇ\n";
             var jsons = File.ReadAllText(path).Split(new string[1] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
             return from _ in jsons
-                   select SafeJsonConvert.DeserializeObject<Activity>(_, OQPYBot.Controllers.Helper.Constants._safeDeserializationSettings);
+                   select SafeJsonConvert.DeserializeObject<Activity>(_, OQPYBot.Helper.Constants._safeDeserializationSettings);
         }
 
         public static Queue<string> DebugOut = new Queue<string>();
 
         public static void BumpLog()
         {
-            lock ( DebugOut )
+            lock (DebugOut)
             {
-                if ( !File.Exists(filename) )
+                if (!File.Exists(filename))
                     File.Create(filename);
                 File.AppendAllText(filename, DebugOut.Dequeue() + "\n");
             }
@@ -204,7 +204,7 @@ namespace OQPYClientTests
 
         public static void DropLog()
         {
-            lock ( DebugOut )
+            lock (DebugOut)
             {
                 File.Move(filename, filename.Split(new string[1] { ".log" }, StringSplitOptions.RemoveEmptyEntries)[0] + DateTime.Now.ToString("ssmmhhddMMyyyy") + ".log");
                 File.Create(filename);
@@ -213,10 +213,10 @@ namespace OQPYClientTests
 
         public static void AssertBotHelpers(IEnumerable<Venue> venues)
         {
-            var cards = OQPYBot.Controllers.Helper.Helper.MakeACard(venues);
+            var cards = OQPYBot.Helper.Helper.MakeACard(venues);
             Assert.IsNotNull(cards);
             Assert.AreNotEqual(cards.Count(), 0);
-            foreach ( var card in cards )
+            foreach (var card in cards)
             {
                 Log(card.Content + " " + card.ContentType + " " + card.Name + " ");
                 Assert.IsNotNull(card.Content);
@@ -249,5 +249,19 @@ namespace OQPYClientTests
             var distance = locationOne.ToKilometers(locationTwo);
             Assert.AreEqual(distance, 0);
         }
+
     }
+    //[TestClass]
+    //public class OQPYHelpe
+    //{
+    //    [TestMethod]
+    //    public void TestingUri()
+    //    {
+    //        var a = OQPYHelper.AuthHelper.FacebookHelpers.GetUri("localhost", new (string, string)[] {
+    //            ("2", "22")
+    //        });
+    //        Assert.IsNotNull(a);
+    //        Assert.IsNotNull(a.ToString());
+    //    }
+    //}
 }

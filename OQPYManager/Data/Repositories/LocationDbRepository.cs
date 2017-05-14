@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using OQPYManager.Data.Repositories.Base;
+using OQPYModels.Models.CoreModels;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using OQPYManager.Data.Repositories.Base;
-using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories
 {

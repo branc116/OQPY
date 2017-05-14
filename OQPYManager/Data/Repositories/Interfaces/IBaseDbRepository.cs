@@ -1,9 +1,7 @@
-﻿using OQPYModels.Models.CoreModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
@@ -14,7 +12,6 @@ namespace OQPYManager.Data.Repositories.Interfaces
     /// <typeparam name="T"></typeparam>
     public interface IBaseDbRepository<T> where T : class
     {
-        
         Task AddAsync(T item);
 
         Task AddAsync(params T[] items);

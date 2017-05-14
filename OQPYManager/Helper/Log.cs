@@ -10,7 +10,7 @@ namespace OQPYManager.Helper
 
         public static void BasicLog(string about, string logData, SeverityLevel Sl)
         {
-            if ( Sl == SeverityLevel.Information )
+            if (Sl == SeverityLevel.Information)
             {
 #if DEBUG
                 return;

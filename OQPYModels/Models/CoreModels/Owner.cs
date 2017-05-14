@@ -1,7 +1,6 @@
-﻿using OQPYModels.Models.CoreModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace OQPYModels.Models
+namespace OQPYModels.Models.CoreModels
 {
     /// <summary>
     /// I created this class in order to simplify data creation.

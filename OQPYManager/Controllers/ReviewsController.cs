@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using OQPYManager.Data.Repositories;
 using OQPYManager.Data.Repositories.Interfaces;
 using static OQPYManager.Helper.Helper;
-
+using static OQPYHelper.AuthHelper.Auth;
 namespace OQPYManager.Controllers
 {
     [Produces("application/json")]
@@ -27,9 +27,15 @@ namespace OQPYManager.Controllers
         // GET: api/Reviews
         [HttpGet]
         [Route("All")]
-        public IEnumerable<Review> GetReviews()
+        public IEnumerable<Review> GetReviews([FromHeader] string masterAdminKey)
         {
-            return _context.Reviews;
+            if (ValidateMasterAdminKey(masterAdminKey))
+            {
+                Ok();
+                return _context.Reviews;
+            }
+            Unauthorized();
+            return null;
         }
 
         // GET: api/Reviews/5
@@ -50,80 +56,6 @@ namespace OQPYManager.Controllers
                 Ok();
             return review;
         }
-
-        // PUT: api/Reviews/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReview([FromRoute] string id, [FromBody] Review Review)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != Review.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(Review).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReviewExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Reviews
-        [HttpPost]
-        public async Task<IActionResult> PostReview([FromBody] Review Review)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Reviews.Add(Review);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetReview", new {id = Review.Id}, Review);
-        }
-
-        // DELETE: api/Reviews/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReview([FromRoute] string id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
-            if (Review == null)
-            {
-                return NotFound();
-            }
-
-            _context.Reviews.Remove(Review);
-            await _context.SaveChangesAsync();
-
-            return Ok(Review);
-        }
-
-        private bool ReviewExists(string id) => _context.Reviews.Any(e => e.Id == id);
-
         [HttpGet]
         [Route("VenueReview")]
         public async Task<IEnumerable<Review>> GetReviewFromVenue([FromHeader] string venueId)
@@ -159,36 +91,34 @@ namespace OQPYManager.Controllers
                 return BadRequest(ModelState);
             }
             var venue = await _context.Venues
+                .Include(i => i.Reviews)
                 .FirstOrDefaultAsync(i => i.Id == venueId);
             if (venue == null)
                 return NotFound(venueId);
             var review = new Review(rating, comment, venue);
-            await _context.AddAsync(review);
-            //await _context.SaveChangesAsync();
+
+            venue.Reviews.Add(review);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
         [HttpDelete]
         [Route("VenueReview")]
-        public async Task<IActionResult> DeleteReviewFromVenue([FromHeader] string reviewId,
-            [FromHeader] string venueId)
+        public async Task<IActionResult> DeleteReviewFromVenue([FromHeader] string reviewId, [FromHeader] string masterAdminKey)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (ValidateMasterAdminKey(masterAdminKey))
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == reviewId);
-            if (Review == null)
-                return NotFound(reviewId);
-
-            var venue = await GetVenueAsync(_context, venueId, "Reviews");
-            if (venue == null)
-                return NotFound(venueId);
-
-            int n = venue.Reviews.RemoveAll(i => i.Id == reviewId);
-            _context.Reviews.Remove(Review);
-            await _context.SaveChangesAsync();
-
-            return Ok(new {n = n, venueId = venueId, reviewId = reviewId});
+                var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == reviewId);
+                if (Review == null)
+                    return NotFound(reviewId);
+                _context.Reviews.Remove(Review);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return Unauthorized();
         }
 
         /// <summary>
@@ -198,7 +128,7 @@ namespace OQPYManager.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("like")]
-        public async Task<IActionResult> LikeReview([FromHeader] string reviewId, [FromBody] string like)
+        public async Task<IActionResult> LikeReview([FromHeader]string reviewId, [FromHeader]string like)
         {
             var review = await _context.Reviews.FindAsync(reviewId);
             if (review == null)

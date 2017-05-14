@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using OQPYModels.Models.CoreModels;
 using System.Threading.Tasks;
-using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
-    interface IWorkHoursDbRepository : IBaseDbRepository<WorkHours>
+    internal interface IWorkHoursDbRepository : IBaseDbRepository<WorkHours>
     {
         /// <summary>
         /// Checks if a venue is working at current moment
@@ -21,7 +18,5 @@ namespace OQPYManager.Data.Repositories.Interfaces
         /// </summary>
         /// <param name="venueId"></param>
         Task ChangeWorkingStatusAsync(string venueId);
-
-
     }
 }

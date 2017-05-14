@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using OQPYModels.Models.CoreModels;
+﻿using OQPYModels.Models.CoreModels;
+using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
@@ -11,6 +11,5 @@ namespace OQPYManager.Data.Repositories.Interfaces
         /// <param name="tag">Tag to be made</param>
         /// <param name="venueId">Id of the venue with which a tag will be joined</param>
         Task AddAsync(Tag tag, string venueId);
-
     }
 }

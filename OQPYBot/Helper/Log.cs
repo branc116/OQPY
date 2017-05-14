@@ -9,7 +9,7 @@ namespace OQPYBot.Helper
     {
         public static void BasicLog(string about, object logData, SeverityLevel Sl)
         {
-            if ( Sl == SeverityLevel.Information )
+            if (Sl == SeverityLevel.Information)
             {
 #if DEBUG
                 return;

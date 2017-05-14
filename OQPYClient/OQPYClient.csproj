@@ -7,8 +7,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugOnlyBot|AnyCPU'" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.6" />
-    <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure" Version="3.3.5" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.7" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure" Version="3.3.6" />
   </ItemGroup>
 
   <ItemGroup>

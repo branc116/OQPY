@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OQPYBot.Controllers.Helper
+namespace OQPYBot.Helper
 {
     public static class Constants
     {
@@ -20,6 +20,8 @@ namespace OQPYBot.Controllers.Helper
                 "https://oqpymanager.azurewebsites.net/";
 
 #endif
+        internal const string _imageError = "https://materialdesignicons.com/api/download/icon/svg/9BC1A338-CD03-4D39-BE46-E9DE5EE51A2F";
+
         internal const string _propNames = "propertyNames";
         internal const string _name = "name";
         internal const string _email = "email";
@@ -27,11 +29,14 @@ namespace OQPYBot.Controllers.Helper
         internal const string _timesUsed = "timesUsed";
         internal const string _facebooklocation = "Facebook Location";
         internal const string _subsublocation = "SubSubLocation";
+        internal const string _facebookToken = "facebookToken";
 
         internal const string _currentActiveVenues = "currentActiveVenues";
 
         internal const string _insideDialogKey = "insideProperty";
 
+        internal const string _tempVenueId = "tempVenueId";
+        internal const string _tempResourceId = "tempResourceId";
         internal const string _channelId = "chId";
         internal const string _layoutCarousel = "carousel";
 
@@ -49,6 +54,7 @@ namespace OQPYBot.Controllers.Helper
         internal const string _actionHelp = "Help";
         internal const string _actionShareLocation = "Share location";
         internal const string _actionSignIn = "Sign in";
+        internal const string _actionDelete = "delete";
 
         internal const string _baseObj = "Base";
         internal const string _venueObj = "Venue";
@@ -60,7 +66,8 @@ namespace OQPYBot.Controllers.Helper
         internal const string _commandBaseHelp = _actionHelp + _baseObj;
         internal const string _commandBaseNearby = _actionNeatby + _baseObj;
         internal const string _commandBaseShareLocation = _actionShareLocation + _baseObj;
-        internal const string _commandSignIn = _actionSignIn + _baseObj;
+        internal const string _commandBaseSignIn = _actionSignIn + _baseObj;
+        internal const string _commandBaseReservations = _actionReservations + _baseObj;
 
         internal const string _commandVenueInfo = _actionInfo + _venueObj;
         internal const string _commandVenueComments = _actionComments + _venueObj;
@@ -79,6 +86,8 @@ namespace OQPYBot.Controllers.Helper
 
         internal const string _commandReservateAfter = _actionReservateAfter + _reservationsObj;
         internal const string _commandReservateBefore = _actionReservateBefore + _reservationsObj;
+        internal const string _commandReservateAdd = _actionAdd + _reservationsObj;
+        internal const string _commandReservateDelete = _actionAdd + _actionDelete;
 
         internal static readonly List<string> _propertyKeys = new List<string> { _name, _email, _location, _facebooklocation, _currentActiveVenues };
 
@@ -93,16 +102,23 @@ namespace OQPYBot.Controllers.Helper
         {
             { _commandBaseHelp, ProcessCommands.BaseHelp },
             { _commandBaseNearby, ProcessCommands.BaseSearchNearby },
+            { _commandBaseSignIn, ProcessCommands.BaseSignIn },
+            { _commandBaseShareLocation, ProcessCommands.BaseShareLocation },
+            { _commandBaseReservations, ProcessCommands.BaseReservation },
 
             { _commandVenueInfo, ProcessCommands.VenueInfo },
             { _commandVenueComments, ProcessCommands.VenueComments  },
             { _commandVenueReservations, ProcessCommands.VenueReservations },
             { _commandVenueResources, ProcessCommands.VenueResources },
-            
+
             { _commandCommentsRead, ProcessCommands.CommentsRead },
-            { _commandCommentsLike, ProcessCommands.CommensLike },
+            { _commandCommentsLike, ProcessCommands.CommentsLike },
             { _commandCommentsDislike, ProcessCommands.CommensDislike },
-            { _commandCommentsAdd, ProcessCommands.CommensAdd }
+            { _commandCommentsAdd, ProcessCommands.CommensAdd },
+
+            { _commandReservateAdd, ProcessCommands.ReservationAdd },
+            { _commandReservateDelete, ProcessCommands.ReservationDelete }
+
             //{ _commandResourcesInfo, ProcessCommands.ResourceInfo },
         };
 
@@ -122,5 +138,15 @@ namespace OQPYBot.Controllers.Helper
         };
 
         internal static readonly MyAPI _api = new MyAPI(new Uri(_managerUri));
+
+        public const string AuthTokenKey = "AuthToken";
+
+        public const string facebookCallback =
+#if DEBUG
+            "https://193.198.16.210:44378/api/OAuthCallback";
+
+#else
+            "https://oqybot.azurewebsites.net/api/OAuthCallback";
+#endif
     }
 }

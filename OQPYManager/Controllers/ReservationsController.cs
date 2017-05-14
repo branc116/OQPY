@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static OQPYModels.Models.CoreModels.ErrorMessages;
+using static OQPYHelper.AuthHelper.Auth;
 
 namespace OQPYManager.Controllers
 {
@@ -25,14 +26,20 @@ namespace OQPYManager.Controllers
         // GET: api/Reservations
         [HttpGet]
         [Route("All")]
-        public IEnumerable<Reservation> GetReservations()
+        public IEnumerable<Reservation> GetReservations([FromHeader] string masterAdminKey)
         {
-            return _context.Reservations;
+            if (ValidateMasterAdminKey(masterAdminKey))
+            {
+                Ok();
+                return _context.Reservations;
+            }
+            Unauthorized();
+            return null;
         }
 
         // GET: api/Reservations/5
         [HttpGet]
-        public async Task<Reservation> GetReservation([FromHeader] string id)
+        public async Task<Reservation> GetReservation([FromHeader] string id, [FromHeader] string facebookAuth)
         {
             if ( !ModelState.IsValid )
             {
@@ -40,89 +47,70 @@ namespace OQPYManager.Controllers
                 return null;
             }
 
-            var reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
-
-            if ( reservation == null )
+            var reservation = await _context.Reservations
+                .Include(i => i.FacebookUsers)
+                .FirstOrDefaultAsync(i => i.Id == id);
+            if (reservation == null)
                 NotFound(id);
+
+            if (await OQPYHelper.AuthHelper.FacebookHelpers.ValidateAccessToken(facebookAuth))
+            {
+                var user = await OQPYHelper.AuthHelper.FacebookHelpers.GetFacebookProfile(facebookAuth);
+                if (reservation.FacebookUsers.Id != user.Id)
+                {
+                    reservation.SecretCode = string.Empty;
+                }
+            }
             else
-                Ok();
+            {
+                reservation.SecretCode = string.Empty;
+            }
+            ;
+            reservation.FacebookUsers= null;
+            await _context.SaveChangesAsync();
+            Ok();
             return reservation;
         }
-
-        // PUT: api/Reservations/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservation([FromRoute] string id, [FromBody] Reservation reservation)
-        {
-            if ( !ModelState.IsValid )
-            {
-                return BadRequest(ModelState);
-            }
-
-            if ( id != reservation.Id )
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(reservation).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch ( DbUpdateConcurrencyException )
-            {
-                if ( !ReservationExists(id) )
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Reservations
-        [HttpPost]
-        public async Task<IActionResult> PostReservation([FromBody] Reservation reservation)
-        {
-            if ( !ModelState.IsValid )
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Reservations.Add(reservation);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetReservation", new { id = reservation.Id }, reservation);
-        }
-
+        
         // DELETE: api/Reservations/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReservation([FromRoute] string id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteReservation([FromHeader] string id, [FromHeader] string facebookAuth, [FromHeader] string masterAdminKey )
         {
             if ( !ModelState.IsValid )
             {
                 return BadRequest(ModelState);
             }
-
-            var Reservation = await _context.Reservations.SingleOrDefaultAsync(m => m.Id == id);
-            if ( Reservation == null )
-            {
+            if (!_context.Reservations.Any(i => id == i.Id))
                 return NotFound();
+            if (ValidateMasterAdminKey(masterAdminKey))
+            {
+                await removeForReal();
+                return Ok();
             }
+            if (await OQPYHelper.AuthHelper.FacebookHelpers.ValidateAccessToken(facebookAuth))
+            {
 
-            _context.Reservations.Remove(Reservation);
-            await _context.SaveChangesAsync();
-
-            return Ok(Reservation);
-        }
-
-        private bool ReservationExists(string id)
-        {
-            return _context.Reservations.Any(e => e.Id == id);
+                var userDb = await _context.Reservations
+                    .Include(i => i.FacebookUsers)
+                    .Where(i => i.Id == id)
+                    .Select(i => i.FacebookUsers.Id)
+                    .FirstOrDefaultAsync();
+                var fbUser = await OQPYHelper.AuthHelper.FacebookHelpers.GetFacebookProfile(facebookAuth);
+                if (userDb == fbUser.Id)
+                {
+                    await removeForReal();
+                    return Ok();
+                }
+            }
+            return Unauthorized();
+            
+            async Task removeForReal()
+            {
+                var res = await _context.Reservations.FirstOrDefaultAsync(i => i.Id == id);
+                _context.Reservations.Remove(res);
+                await _context.SaveChangesAsync();
+                
+            }
         }
 
         [Route("VenueReservation")]
@@ -190,8 +178,18 @@ namespace OQPYManager.Controllers
 
         [HttpPost]
         [Route("ResourceReservation")]
-        public async Task<IActionResult> PostReservationToResource([FromHeader] string resourceId, [FromBody] DateTime from, [FromBody] DateTime to)
+        public async Task<IActionResult> PostReservationToResource([FromHeader] string resourceId, [FromHeader] string facebookAuth, [FromBody] DateTime from, [FromBody] DateTime to)
         {
+            if (!await OQPYHelper.AuthHelper.FacebookHelpers.ValidateAccessToken(facebookAuth))
+                return Unauthorized();
+            var user = await OQPYHelper.AuthHelper.FacebookHelpers.GetFacebookProfile(facebookAuth);
+            var userDb = await _context.FacebookUsers
+                .Include(i => i.Reservations)
+                .FirstOrDefaultAsync(i => i.Id != user.Id);
+            if (userDb == null)
+            {
+                return Unauthorized();
+            }
             if ( (to - from).TotalDays < 1 )
                 return BadRequest(new { error = Reservation2Long });
 
@@ -219,31 +217,56 @@ namespace OQPYManager.Controllers
             if ( !working )
                 return BadRequest(new { error = ClosedInThisTime });
 
-            var reservation = new Reservation(from, to, resource);
-            _context.Reservations.Add(reservation);
+            
+            var reservation = new Reservation(from, to, resource)
+            {
+                FacebookUsers = userDb
+            };
+            await _context.AddAsync(reservation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReservation", new { id = reservation.Id });
+            return Ok();
         }
 
         [HttpDelete]
         [Route("ResourceReservation")]
-        public async Task<IActionResult> DeleteReservation([FromHeader] string resourceId, [FromBody] DateTime from, [FromBody] DateTime to)
+        public async Task<IActionResult> DeleteReservation([FromHeader] string resourceId, [FromHeader] string masterAdminKey, [FromBody] DateTime from, [FromBody] DateTime to)
         {
-            if ( !ModelState.IsValid )
+            if (ValidateMasterAdminKey(masterAdminKey))
             {
-                return BadRequest(ModelState);
-            }
-            var resource = await _context.Resources
-                .Where(i => i.Id == resourceId)
-                .Include(i => i.Reservations)
-                .FirstOrDefaultAsync();
-            if ( resource == null )
-                return NotFound(new { Resourceid = resourceId });
-            var n = resource.Reservations.RemoveAll(i => i.StartReservationTime > from && i.StartReservationTime < to);
-            await _context.SaveChangesAsync();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var resource = await _context.Resources
+                    .Where(i => i.Id == resourceId)
+                    .Include(i => i.Reservations)
+                    .FirstOrDefaultAsync();
+                if (resource == null)
+                    return NotFound(new { Resourceid = resourceId });
+                var n = resource.Reservations.RemoveAll(i => i.StartReservationTime > from && i.StartReservationTime < to);
+                await _context.SaveChangesAsync();
 
-            return Ok(new { n = n });
+                return Ok();
+            }
+            return Unauthorized();
+        }
+
+        [HttpGet]
+        [Route("My")]
+        public async Task<IEnumerable<Reservation>> GetMyReservations([FromHeader] string facebookAuth)
+        {
+            if (!await OQPYHelper.AuthHelper.FacebookHelpers.ValidateAccessToken(facebookAuth))
+            {
+                Unauthorized();
+                return null;
+            }
+            var user = await OQPYHelper.AuthHelper.FacebookHelpers.GetFacebookProfile(facebookAuth);
+            return _context.Reservations
+                .Include(i => i.FacebookUsers)
+                .Include(i => i.Resource)
+                .OrderBy(i => i.StartReservationTime)
+                .Where(i => i.FacebookUsers.Id == user.Id);
         }
     }
 }
