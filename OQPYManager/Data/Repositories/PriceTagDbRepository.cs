@@ -10,7 +10,7 @@ namespace OQPYManager.Data.Repositories
 {
     public class PriceTagDbRepository : BaseDbRepository<PriceTag>, IPriceTagDbRepository
     {
-        private VenuesDbRepository _venuesDbRepository;
+        private readonly VenuesDbRepository _venuesDbRepository;
         public PriceTagDbRepository(ApplicationDbContext context) : base(context)
         {
             _defaultDbSet = _context.PriceTags;

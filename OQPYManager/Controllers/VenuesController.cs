@@ -15,7 +15,7 @@ namespace OQPYManager.Controllers
     public class VenuesController: Controller
     {
         private readonly IVenuesDbRepository _venuesDbRepository;
-        private readonly ApplicationDbContext _context;
+        
 
         public VenuesController(IVenuesDbRepository venuesDbRepository)
         {

@@ -13,7 +13,7 @@ namespace OQPYManager.Controllers
 {
     [Produces("application/json")]
     [Route("api/Reviews")]
-    public class ReviewsController: Controller
+    public class ReviewsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IReviewDbRepository _reviewDbRepository;
@@ -36,7 +36,7 @@ namespace OQPYManager.Controllers
         [HttpGet]
         public async Task<Review> GetReview([FromHeader] string reviewId)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 BadRequest(ModelState);
                 return null;
@@ -44,7 +44,7 @@ namespace OQPYManager.Controllers
 
             var review = await _reviewDbRepository.FindAsync(reviewId);
 
-            if ( review == null )
+            if (review == null)
                 NotFound(reviewId);
             else
                 Ok();
@@ -55,12 +55,12 @@ namespace OQPYManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReview([FromRoute] string id, [FromBody] Review Review)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if ( id != Review.Id )
+            if (id != Review.Id)
             {
                 return BadRequest();
             }
@@ -71,9 +71,9 @@ namespace OQPYManager.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch ( DbUpdateConcurrencyException )
+            catch (DbUpdateConcurrencyException)
             {
-                if ( !ReviewExists(id) )
+                if (!ReviewExists(id))
                 {
                     return NotFound();
                 }
@@ -90,7 +90,7 @@ namespace OQPYManager.Controllers
         [HttpPost]
         public async Task<IActionResult> PostReview([FromBody] Review Review)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -98,20 +98,20 @@ namespace OQPYManager.Controllers
             _context.Reviews.Add(Review);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReview", new { id = Review.Id }, Review);
+            return CreatedAtAction("GetReview", new {id = Review.Id}, Review);
         }
 
         // DELETE: api/Reviews/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] string id)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == id);
-            if ( Review == null )
+            if (Review == null)
             {
                 return NotFound();
             }
@@ -128,7 +128,7 @@ namespace OQPYManager.Controllers
         [Route("VenueReview")]
         public async Task<IEnumerable<Review>> GetReviewFromVenue([FromHeader] string venueId)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 BadRequest(ModelState);
                 return null;
@@ -139,7 +139,7 @@ namespace OQPYManager.Controllers
                 .Include(i => i.Reviews)
                 .FirstOrDefaultAsync();
 
-            if ( reviews == null )
+            if (reviews == null)
             {
                 NotFound(venueId);
                 return null;
@@ -151,15 +151,16 @@ namespace OQPYManager.Controllers
 
         [HttpPost]
         [Route("VenueReview")]
-        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromHeader] string venueId, [FromBody] int rating)
+        public async Task<IActionResult> PostReviewToVenue([FromHeader] string comment, [FromHeader] string venueId,
+            [FromBody] int rating)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var venue = await _context.Venues
                 .FirstOrDefaultAsync(i => i.Id == venueId);
-            if ( venue == null )
+            if (venue == null)
                 return NotFound(venueId);
             var review = new Review(rating, comment, venue);
             await _context.AddAsync(review);
@@ -169,24 +170,25 @@ namespace OQPYManager.Controllers
 
         [HttpDelete]
         [Route("VenueReview")]
-        public async Task<IActionResult> DeleteReviewFromVenue([FromHeader] string reviewId, [FromHeader] string venueId)
+        public async Task<IActionResult> DeleteReviewFromVenue([FromHeader] string reviewId,
+            [FromHeader] string venueId)
         {
-            if ( !ModelState.IsValid )
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var Review = await _context.Reviews.SingleOrDefaultAsync(m => m.Id == reviewId);
-            if ( Review == null )
+            if (Review == null)
                 return NotFound(reviewId);
 
             var venue = await GetVenueAsync(_context, venueId, "Reviews");
-            if ( venue == null )
+            if (venue == null)
                 return NotFound(venueId);
 
             int n = venue.Reviews.RemoveAll(i => i.Id == reviewId);
             _context.Reviews.Remove(Review);
             await _context.SaveChangesAsync();
 
-            return Ok(new { n = n, venueId = venueId, reviewId = reviewId });
+            return Ok(new {n = n, venueId = venueId, reviewId = reviewId});
         }
 
         /// <summary>
@@ -196,10 +198,10 @@ namespace OQPYManager.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("like")]
-        public async Task<IActionResult> LikeReview([FromHeader]string reviewId,[FromBody]string like)
+        public async Task<IActionResult> LikeReview([FromHeader] string reviewId, [FromBody] string like)
         {
             var review = await _context.Reviews.FindAsync(reviewId);
-            if ( review == null )
+            if (review == null)
                 return NotFound();
             review.Helpfulness += like == "0" ? -1 : 1;
             await _context.SaveChangesAsync();
@@ -207,3 +209,4 @@ namespace OQPYManager.Controllers
         }
     }
 }
+ 
