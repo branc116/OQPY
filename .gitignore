@@ -268,3 +268,10 @@ api*.json
 #bower_components
 #Client Api
 **/APIv03
+
+#migrations
+
+**/Migrations
+
+#videos
+*.mp4
