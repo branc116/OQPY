@@ -55,6 +55,8 @@
                 <li>
                     <a class="page-scroll" asp-controller="Home" asp-action="Contact">Contact</a>
                 </li>
+                
+                @Html.Partial("_LoginPartial");
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -67,65 +69,6 @@
 </header>
 
 
-<section id="features" class="features">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <div class="section-heading">
-                    <h2>Why do we think our service is awesome:</h2>
-                    <hr>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            
-            <div class="col-md-12">
-                <div class="container-fluid">
-                    
-                    <h2 style="margin: 5px">For guests:</h2>
-
-                    <div class="row">
-
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-globe text-primary"></i>
-                                <h3>Search venues!</h3>
-                                <p class="text-muted">No limitations at all! :)</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-hourglass text-primary"></i>
-                                <h3>Time</h3>
-                                <p class="text-muted">In a fraction of time find out whether there are avaiable spots in your favorite place!</p>
-                            </div>
-                        </div>
-                    </div>
-                    <h2 style="margin: 5px">For venues:</h2>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-map text-primary"></i>
-                                <h3>You can be easily found!</h3>
-                                <p class="text-muted">Your new advert place and much more than that.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-anchor text-primary"></i>
-                                <h3>Easy and lazy</h3>
-                                <p class="text-muted">Nothing to anchor you down, because our IoT devices do most of the stuff for you! :)</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <h2>And a lot of cool, new features to come soon...</h2>
-            </div>
-        </div>
-    </div>
-</section>
 
 
 <section id="contact" class="contact bg-primary">
@@ -147,6 +90,7 @@
 
 <footer>
     <div class="container">
+        <p> This is still early version of website. </p> 
         <p>&copy; 2017 OQPY. Coding sans MS.</p>
     </div>
 </footer>

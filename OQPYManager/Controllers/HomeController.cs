@@ -40,7 +40,7 @@ namespace OQPYManager.Controllers
             return View();
         }
 
-        public IActionResult Venue(Venue venue = null)
+        public IActionResult Venue()
         {
             return View();
         }
