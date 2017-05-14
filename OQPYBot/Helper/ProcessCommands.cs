@@ -1,19 +1,17 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.Bot.Builder.Dialogs;
+﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using System.Collections.Generic;
-
+using OQPYBot.Dialogs;
+using OQPYBot.Extensions;
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
-using OQPYBot.Extensions;
-using OQPYBot.Dialogs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using static OQPYBot.Dialogs.ProcessDialogs.ProcessDialogs;
 using static OQPYBot.Helper.Constants;
 using static OQPYBot.Helper.Helper;
-using static OQPYBot.Dialogs.ProcessDialogs.ProcessDialogs;
-using System.Threading;
-using System;
 
 namespace OQPYBot.Helper
 {
@@ -30,22 +28,26 @@ namespace OQPYBot.Helper
             };
             return attachemts;
         }
+
         internal async static Task<IEnumerable<Attachment>> BaseSearchNearby(IDialogContext context, string arg2)
         {
             await ProcessVenues(context, new SearchVenues());
             return null;
         }
+
         internal async static Task<IEnumerable<Attachment>> BaseShareLocation(IDialogContext arg1, string arg2)
         {
             return ErrorAttachment("Ups", "Not supported on your platform");
         }
+
         internal async static Task<IEnumerable<Attachment>> BaseSignIn(IDialogContext context, string arg2)
         {
             var mess = context.MakeMessage();
             mess.Text = "login";
-            await context.Forward(SimpleFacebookAuthDialog.dialog, ProcessSignIn, mess, default(CancellationToken)); 
+            await context.Forward(SimpleFacebookAuthDialog.dialog, ProcessSignIn, mess, default(CancellationToken));
             return null;
         }
+
         internal async static Task<IEnumerable<Attachment>> BaseReservation(IDialogContext context, string arg2)
         {
             if (context.UserData.TryGetValue(_facebookToken, out string token))
@@ -58,7 +60,7 @@ namespace OQPYBot.Helper
                     subTitle: i => $"{i.Duration.Hours}h",
                     text: i => i.Resource.StuffName,
                     Obj: _reservationsObj,
-                    ObjId: i => i.Id, 
+                    ObjId: i => i.Id,
                     actions: new string[] { _actionInfo, _actionDelete });
             }
             else
@@ -91,7 +93,7 @@ namespace OQPYBot.Helper
                 null,
                 MakeCardActions(venueId, _reservationsObj, _actionAdd).ToList()).ToAttachment()
             };
-            if ( venue.Reservations != null )
+            if (venue.Reservations != null)
             {
                 cards.AddRange(venue.Reservations.ToAttachments());
             }
@@ -108,7 +110,7 @@ namespace OQPYBot.Helper
             {
                 new ThumbnailCard(_resourcesObj, null, $"{freeResources} free out of {totalResources}").ToAttachment()
             };
-            if ( venue.Resources != null )
+            if (venue.Resources != null)
             {
                 cards.AddRange(venue.Resources.ToAttachments());
             }
@@ -121,7 +123,7 @@ namespace OQPYBot.Helper
             List<Attachment> cards = new List<Attachment>() {
                 ReviewAttachmentExtension.AddNew(venue)
             };
-            if ( venue.Reviews != null )
+            if (venue.Reviews != null)
             {
                 cards.AddRange(venue.Reviews.ToAttachments());
             }
@@ -150,14 +152,13 @@ namespace OQPYBot.Helper
             await _api.ApiReviewsLikeGetAsync(commentId, "1");
             return await CommentsRead(context, commentId);
         }
-        
 
         internal async static Task<IEnumerable<Attachment>> CommentsRead(IDialogContext context, string commentId)
         {
             var comment = await _api.ApiReviewsGetAsync(commentId);
             //await context.PostAsync(comment.Comment);
             var att = comment.ToAttachment();
-            if ( comment.Comment.Length > 80 )
+            if (comment.Comment.Length > 80)
             {
                 await context.PostAsync(comment.Comment);
             }

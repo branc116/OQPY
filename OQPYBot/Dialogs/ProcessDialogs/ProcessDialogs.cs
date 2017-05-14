@@ -1,28 +1,28 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using OQPYBot.Dialogs;
 using OQPYBot.Helper;
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static OQPYBot.Helper.Constants;
 using static OQPYBot.Helper.Helper;
-using System;
 
 namespace OQPYBot.Dialogs.ProcessDialogs
 {
     public static class ProcessDialogs
     {
         private const string TAG = nameof(ProcessDialogs);
+
         internal async static Task ProcessAddReview(IDialogContext context, IAwaitable<AddReview> result)
         {
             var review = await result;
             var gotVenue = context.ConversationData.TryGetValue(_tempVenueId, out string venueId);
 
-            if ( !gotVenue )
+            if (!gotVenue)
             {
                 await context.PostAsync("There was an error, please try again.");
                 return;
@@ -40,6 +40,7 @@ namespace OQPYBot.Dialogs.ProcessDialogs
             await context.PostAsync(message);
             return;
         }
+
         internal static async Task ProcessVenues(IDialogContext context, SearchVenues result)
         {
             var like = result;
@@ -78,12 +79,14 @@ namespace OQPYBot.Dialogs.ProcessDialogs
         {
             var res = await result;
         }
+
         internal async static Task ProcessReservation(IDialogContext context, IAwaitable<DateTimePicker> result)
         {
             var a = await result;
             if (a == null)
                 throw new ArgumentNullException(nameof(a));
-            if (context.PrivateConversationData.TryGetValue(_tempResourceId, out string tempResource)) {
+            if (context.PrivateConversationData.TryGetValue(_tempResourceId, out string tempResource))
+            {
                 if (context.UserData.TryGetValue(_facebookToken, out string token))
                 {
                     if (await FacebookHelper.FacebookHelpers.ValidateAccessToken(token))

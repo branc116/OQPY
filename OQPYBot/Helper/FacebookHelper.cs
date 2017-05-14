@@ -1,8 +1,6 @@
 ﻿using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +26,7 @@ namespace OQPYBot.Helper
             public long ExpiresIn { get; set; }
         }
 
-        class FacebookProfile
+        private class FacebookProfile
         {
             public FacebookProfile()
             {
@@ -36,6 +34,7 @@ namespace OQPYBot.Helper
 
             [JsonProperty(PropertyName = "id")]
             public string Id { get; set; }
+
             [JsonProperty(PropertyName = "name")]
             public string Name { get; set; }
         }

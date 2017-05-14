@@ -144,6 +144,7 @@ namespace OQPYBot.Helper
         public const string facebookCallback =
 #if DEBUG
             "https://193.198.16.210:44378/api/OAuthCallback";
+
 #else
             "https://oqybot.azurewebsites.net/api/OAuthCallback";
 #endif

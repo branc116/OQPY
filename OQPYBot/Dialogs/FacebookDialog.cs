@@ -2,19 +2,16 @@
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
-using static OQPYBot.Helper.FacebookHelper;
 using static OQPYBot.Helper.Constants;
+using static OQPYBot.Helper.FacebookHelper;
+
 namespace OQPYBot.Dialogs
 {
     [Serializable]
     public class SimpleFacebookAuthDialog : IDialog<string>
     {
-
         /// <summary>
         /// OAuth callback registered for Facebook app.
         /// <see cref="Controllers.OAuthCallbackController"/> implementats the callback.
@@ -23,7 +20,6 @@ namespace OQPYBot.Dialogs
         /// Make sure to replace this with the appropriate website url registered for your Facebook app.
         /// </remarks>
         public static readonly Uri FacebookOauthCallback = new Uri(facebookCallback);
-        
 
         /// <summary>
         /// The chain of dialogs that implements the login/logout process for the bot
@@ -64,7 +60,7 @@ namespace OQPYBot.Dialogs
                     return Chain.Return($"Your are logged out!");
                 }),
                 new DefaultCase<IMessageActivity, IDialog<string>>((ctx, msg) =>
-                {   
+                {
                     string token;
                     string name = string.Empty;
                     if (ctx.PrivateConversationData.TryGetValue(AuthTokenKey, out token) && ctx.UserData.TryGetValue("name", out name))
@@ -86,7 +82,6 @@ namespace OQPYBot.Dialogs
                     }
                 })
             ).Unwrap().PostToUser();
-
 
         public async Task StartAsync(IDialogContext context)
         {

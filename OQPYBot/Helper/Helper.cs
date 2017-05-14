@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.Bot.Builder.ConnectorEx;
+﻿using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using OQPYModels.Models.CoreModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using static OQPYBot.Helper.Constants;
 using static OQPYModels.Extensions.Extensions;
 
@@ -35,6 +34,7 @@ namespace OQPYBot.Helper
                    let subtitle = (startLoc == null || _.Location == null) ? string.Empty : $"{startLoc.ToKilometers(_.Location)} km"
                    select new ThumbnailCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions(_.Id, _venueObj, _venueCardActions).ToList()).ToAttachment();
         }
+
         public static IList<Attachment> ErrorAttachment(string title, string error)
         {
             return new List<Attachment>(1) { new HeroCard("Ups", "Not supported on your platform", images: MakeImage(_imageError)).ToAttachment() };
@@ -98,7 +98,7 @@ namespace OQPYBot.Helper
         public static async Task ApplyProperty(IDialogContext context, LuisResult result, params string[] propertyName)
         {
             context.PrivateConversationData.SetValue<bool>(_insideDialogKey, true);
-            for ( int i = 0 ; i < result.Entities.Count ; i++ )
+            for (int i = 0; i < result.Entities.Count; i++)
             {
                 result.Entities[i].Type = result.Entities[i].Type.Replace("builtin.", string.Empty);
             }
@@ -107,12 +107,12 @@ namespace OQPYBot.Helper
                         where propertyName?.Contains(type) ?? false
                         select new { Key = type, Value = _.Entity };
 
-            if ( items.Any() )
+            if (items.Any())
             {
                 var question = (from _ in items
                                 select $"Is your {_.Key} {_.Value}?")
                                 .Aggregate((i, j) => $"{i.Replace('?', ' ')} and {j.ToLower()}");
-                foreach ( var prop in items )
+                foreach (var prop in items)
                     context.PrivateConversationData.SetValue(prop.Key, prop.Value);
                 context.PrivateConversationData.SetValue(_propNames, propertyName);
                 PromptDialog.Confirm(context, ConfirmPropertyAboutUser, question);
@@ -127,16 +127,16 @@ namespace OQPYBot.Helper
         public static async Task ConfirmPropertyAboutUser(IDialogContext conx, IAwaitable<bool> args)
         {
             var res = await args;
-            if ( !conx.PrivateConversationData.TryGetValue(_propNames, out string[] propertyName) )
+            if (!conx.PrivateConversationData.TryGetValue(_propNames, out string[] propertyName))
             {
                 WaitContextPrompt?.Invoke(conx, EventArgs.Empty);
                 return;
             }
-            foreach ( var pro in propertyName )
+            foreach (var pro in propertyName)
             {
-                if ( conx.PrivateConversationData.TryGetValue(pro, out string prop) )
+                if (conx.PrivateConversationData.TryGetValue(pro, out string prop))
                 {
-                    if ( res )
+                    if (res)
                     {
                         conx.UserData.SetValue(pro, prop);
                         await conx.PostAsync($"Ok, your {pro} is now {prop}");

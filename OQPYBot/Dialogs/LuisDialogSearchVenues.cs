@@ -27,14 +27,14 @@ namespace OQPYBot.Dialogs
     {
         [Prompt("What is the name of the venue? (n - nothing)")]
         public string Name { get; set; }
-        
+
         public Venue GetVenue() => new Venue() { Name = Name };
 
         public async Task<IEnumerable<Venue>> QAsync(Geo location)
         {
             var api = new MyAPI(new Uri(_managerUri));
             var venue = GetVenue();
-            if ( location != null )
+            if (location != null)
             {
                 venue.Location = new Location() { Latitude = location.latitude, Longditude = location.longitude };
                 venue.Name = venue.Name.ToLower() == "n" ? null : venue.Name;

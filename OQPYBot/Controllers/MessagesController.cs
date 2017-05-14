@@ -19,7 +19,7 @@ using System.Web.Http;
 namespace OQPYBot
 {
     [BotAuthentication]
-    public class MessagesController: ApiController
+    public class MessagesController : ApiController
     {
         private BingSpellCheckService BingSpelling = new BingSpellCheckService();
 
@@ -32,9 +32,8 @@ namespace OQPYBot
             try
             {
                 //Record(activity);
-                if ( activity.Type == ActivityTypes.Message )
+                if (activity.Type == ActivityTypes.Message)
                 {
-
                     activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text ?? "none";
                     await Conversation.SendAsync(activity, () => new LuisDialogOQPY());
                 }
@@ -43,7 +42,7 @@ namespace OQPYBot
                     await HandleSystemMessageAsync(activity);
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 var telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
                 telemetry.TrackTrace("ExceptionInPost", SeverityLevel.Critical, new Dictionary<string, string> { { "Exceptions", ex.ToString() } });
@@ -56,11 +55,11 @@ namespace OQPYBot
 
         private static void Record(Activity act)
         {
-            lock ( objectLock )
+            lock (objectLock)
             {
                 var delimiter = "^^ˇˇ\n";
                 var pathOut = @"C:\Users\Branimir\ActivityLog.log";
-                if ( !File.Exists(pathOut) )
+                if (!File.Exists(pathOut))
                     File.Create(pathOut);
                 var newJson = SafeJsonConvert.SerializeObject(act, Constants._safeDeserializationSettings);
                 newJson = delimiter + newJson + delimiter;
@@ -70,12 +69,12 @@ namespace OQPYBot
 
         private async Task<Activity> HandleSystemMessageAsync(Activity activity)
         {
-            if ( activity.Type == ActivityTypes.DeleteUserData )
+            if (activity.Type == ActivityTypes.DeleteUserData)
             {
                 // Implement user deletion here
                 // If we handle user deletion, return a real message
             }
-            else if ( activity.Type == ActivityTypes.ConversationUpdate )
+            else if (activity.Type == ActivityTypes.ConversationUpdate)
             {
                 //IConversationUpdateActivity update = activity;
                 //using ( var scope = DialogModule.BeginLifetimeScope(Conversation.Container, activity) )
@@ -99,16 +98,16 @@ namespace OQPYBot
                 //    }
                 //}
             }
-            else if ( activity.Type == ActivityTypes.ContactRelationUpdate )
+            else if (activity.Type == ActivityTypes.ContactRelationUpdate)
             {
                 // Handle add/remove from contact lists
                 // Activity.From + Activity.Action represent what happened
             }
-            else if ( activity.Type == ActivityTypes.Typing )
+            else if (activity.Type == ActivityTypes.Typing)
             {
                 // Handle knowing tha the user is typing
             }
-            else if ( activity.Type == ActivityTypes.Ping )
+            else if (activity.Type == ActivityTypes.Ping)
             {
             }
 

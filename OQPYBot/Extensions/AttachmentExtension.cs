@@ -36,7 +36,7 @@ namespace OQPYBot.Extensions
         public static IList<CardAction> ToCardActions(this Review comment, params string[] additionActions)
         {
             List<string> actions;
-            if ( additionActions != null && additionActions.Length > 0 )
+            if (additionActions != null && additionActions.Length > 0)
             {
                 actions = new List<string>(_commentsCardActions);
                 actions.AddRange(additionActions);

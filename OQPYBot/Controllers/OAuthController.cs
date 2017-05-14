@@ -5,13 +5,10 @@ using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 using OQPYBot.Dialogs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using static OQPYBot.Helper.FacebookHelper;
 
@@ -72,6 +69,5 @@ namespace OQPYBot.Controllers
                 }
             }
         }
-
     }
 }
