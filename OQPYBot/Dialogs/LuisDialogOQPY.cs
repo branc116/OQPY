@@ -12,13 +12,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static OQPYBot.Controllers.Helper.Constants;
-using static OQPYBot.Controllers.Helper.Helper;
+using static OQPYBot.Helper.Constants;
+using static OQPYBot.Helper.Helper;
 
-namespace OQPYBot.Controllers
+namespace OQPYBot.Dialogs
 {
     [Serializable]
-    public class LuisDialogOQPY: LuisDialog<object>
+    public class LuisDialogOQPY : LuisDialog<object>
     {
         private const String TAG = "DialogOQPY";
 
@@ -26,9 +26,9 @@ namespace OQPYBot.Controllers
         {
             WaitContextPrompt += (conx, args) =>
             {
-                if ( conx is IDialogContext context )
+                if (conx is IDialogContext context)
                 {
-                    if ( context.PrivateConversationData.TryGetValue(_insideDialogKey, out bool inside) && inside )
+                    if (context.PrivateConversationData.TryGetValue(_insideDialogKey, out bool inside) && inside)
                     {
                         context.Wait(MessageReceived);
                         context.PrivateConversationData.SetValue(_insideDialogKey, false);
@@ -43,9 +43,9 @@ namespace OQPYBot.Controllers
         {
             await DebugOut(context, "None");
             var times = context.UserData.TryGetValue(_timesUsed, out int n);
-            if ( n < 10 )
+            if (n < 10)
                 await context.PostAsync($"I see you are new to OQPY, what you just entered made me search for {result.Query}, if you didn't wanted to do that and are lost, just type help, and I'll help");
-            await Helper.Helper.ProcessVenues(context, new SearchVenues() { Name = result.Query });
+            await ProcessDialogs.ProcessDialogs.ProcessVenues(context, new SearchVenues() { Name = result.Query });
             context.Wait(MessageReceived);
         }
 
@@ -115,7 +115,7 @@ namespace OQPYBot.Controllers
         private async Task ProcessVenues(IDialogContext context, IAwaitable<SearchVenues> result)
         {
             var venue = await result;
-            await Helper.Helper.ProcessVenues(context, venue);
+            await ProcessDialogs.ProcessDialogs.ProcessVenues(context, venue);
         }
 
         public override async Task StartAsync(IDialogContext context)
@@ -127,20 +127,39 @@ namespace OQPYBot.Controllers
         protected override async Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
         {
             var a = await item;
-            await DebugOut(context, "MessageRecived");
-            context.ConversationData.SetValue(_channelId, a.ChannelId);
-            if ( a.Text == "How much available spots in caffe bar History?" || a.Text == "Available spots in caffe bar History?" ||
-                a.Text == "How much free spots in caffe bar History?" || a.Text == "Free spots in caffe bar History?" )
+            if (a == null)
+                throw new NullReferenceException(nameof(item));
+            if (a.ChannelId == "facebook")
             {
-                await context.PostAsync("3 free spots.");
-                return;
+                if (a.Entities != null && a.Entities.Count > 0)
+                {
+                    try
+                    {
+                        var loc = a.Entities[0].GetAs<FacebookLocation>();
+                        context.UserData.SetValue(_facebooklocation, loc.geo);
+                        await context.PostAsync("Got it! :)");
+                        context.Wait(MessageReceived);
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
+                        throw new MemberAccessException(nameof(a.ChannelId));
+                    }
+                }
             }
-            if (a.Text.Substring(0,4).ToLower() == "oqpy")
+            if (a.Text == null)
+                throw new NullReferenceException(nameof(a.Text));
+
+            await DebugOut(context, "MessageRecived");
+
+            context.ConversationData.SetValue(_channelId, a.ChannelId);
+            if (a.Text.Length > 3 && a.Text.Substring(0, 4).ToLower() == "oqpy")
             {
                 await Help(context, item, null);
                 return;
             }
-            if ( context.UserData.TryGetValue(_timesUsed, out int times) )
+            if (context.UserData.TryGetValue(_timesUsed, out int times))
             {
                 context.UserData.SetValue(_timesUsed, times++);
             }
@@ -148,31 +167,8 @@ namespace OQPYBot.Controllers
             {
                 context.UserData.SetValue(_timesUsed, 1);
             }
-            if ( a.ChannelId == "facebook" )
-            {
-                if ( a.Entities != null && a.Entities.Count > 0 )
-                {
-                    try
-                    {
-                        var loc = a.Entities[0].GetAs<FacebookLocation>();
-                        context.UserData.SetValue(_facebooklocation, loc.geo);
-                        await context.PostAsync("Got it! :)");
-                        context.Wait(this.MessageReceived);
-                        return;
-                    }
-                    catch ( Exception ex )
-                    {
-                    }
-                }
-                //var reply = context.MakeMessage();
-                //reply = GimmeLocationFacebook(reply);
-                //await context.PostAsync(reply);
-            }
-            else if ( a.Text == _commandBaseShareLocation )
-            {
-                await context.PostAsync("Sorry this isn't available on your platform :/");
-            }
-            if ( a.Text.StartsWith("||||") )
+
+            if (a.Text.StartsWith("||||"))
                 await ProcessPostback(context, a);
             else
                 await base.MessageReceived(context, item);
@@ -184,15 +180,7 @@ namespace OQPYBot.Controllers
             var intent = item.Text.Split(new string[2] { "||||", ":" }, StringSplitOptions.RemoveEmptyEntries);
             var message = context.MakeMessage();
             bool skip = false;
-            if ( _processCommands.ContainsKey(intent[0]) )
-            {
-                var attachments = await _processCommands[intent[0]](context, intent[1]);
-                message.AttachmentLayout = "carousel";
-                message.Attachments = attachments?.ToList();
-                if ( message.Attachments == null )
-                    skip = true;
-            }
-            else if ( intent[0] == _commandBaseShareLocation )
+            if (intent[0] == _commandBaseShareLocation && item.ChannelId == "facebook")
             {
                 message.ChannelData = new FacebookMessage
                 (
@@ -207,12 +195,20 @@ namespace OQPYBot.Controllers
                     }
                 );
             }
+            else if (_processCommands.ContainsKey(intent[0]))
+            {
+                var attachments = await _processCommands[intent[0]](context, intent[1]);
+                message.AttachmentLayout = "carousel";
+                message.Attachments = attachments?.ToList();
+                if (message.Attachments == null)
+                    skip = true;
+            }
             else
             {
                 Log.BasicLog(TAG, $"Command not found, command: {item}", SeverityLevel.Error);
                 message.Text = "Sorry that command isn't supported yet...";
             }
-            if ( !skip )
+            if (!skip)
                 await context.PostAsync(message);
         }
 

@@ -5,9 +5,9 @@ using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static OQPYBot.Controllers.Helper.Constants;
+using static OQPYBot.Helper.Constants;
 
-namespace OQPYBot.Controllers
+namespace OQPYBot.Dialogs
 {
     public class LuisDialogSearchVenues
     {
@@ -27,13 +27,7 @@ namespace OQPYBot.Controllers
     {
         [Prompt("What is the name of the venue? (n - nothing)")]
         public string Name { get; set; }
-
-        //[Optional]
-        //[Prompt("Were is this venue?")]
-        //public string Address { get; set; }
-
-        //[Optional]
-        //public Venue Like { get => like; set => like = value; }
+        
         public Venue GetVenue() => new Venue() { Name = Name };
 
         public async Task<IEnumerable<Venue>> QAsync(Geo location)

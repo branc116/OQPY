@@ -1,20 +1,19 @@
-﻿using Microsoft.ApplicationInsights.DataContracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
-using OQPYBot.Helper;
 using OQPYModels.Models.CoreModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static OQPYBot.Controllers.Helper.Constants;
+using static OQPYBot.Helper.Constants;
 using static OQPYModels.Extensions.Extensions;
 
-namespace OQPYBot.Controllers.Helper
+namespace OQPYBot.Helper
 {
-    public class Helper
+    public static class Helper
     {
         private const string TAG = "Helper";
 
@@ -35,6 +34,10 @@ namespace OQPYBot.Controllers.Helper
                    where _.Name != null
                    let subtitle = (startLoc == null || _.Location == null) ? string.Empty : $"{startLoc.ToKilometers(_.Location)} km"
                    select new ThumbnailCard(_.Name, subtitle, _.Tags.TagsToString((i) => $"{i.TagName} "), MakeImage(_), MakeCardActions(_.Id, _venueObj, _venueCardActions).ToList()).ToAttachment();
+        }
+        public static IList<Attachment> ErrorAttachment(string title, string error)
+        {
+            return new List<Attachment>(1) { new HeroCard("Ups", "Not supported on your platform", images: MakeImage(_imageError)).ToAttachment() };
         }
 
         internal static IEnumerable<CardAction> MakeCardActions(Venue venue)
@@ -67,6 +70,14 @@ namespace OQPYBot.Controllers.Helper
             return new List<CardImage>() { new CardImage(venue?.ImageUrl) } ?? null;
         }
 
+        public static List<CardImage> MakeImage(string url)
+        {
+            if (url == null)
+                throw new ArgumentNullException(nameof(url));
+
+            return new List<CardImage>() { new CardImage(url) };
+        }
+
         public static IMessageActivity GimmeLocationFacebook(IMessageActivity baseMessage)
         {
             baseMessage.ChannelData = new FacebookMessage
@@ -82,40 +93,6 @@ namespace OQPYBot.Controllers.Helper
                 }
             );
             return baseMessage;
-        }
-
-        internal static async Task ProcessVenues(IDialogContext context, SearchVenues result)
-        {
-            var like = result;
-            Venue likeVenue;
-            IEnumerable<Venue> venues;
-            var haveLoc = context.UserData.TryGetValue(_facebooklocation, out Geo geolocation);
-            if ( haveLoc )
-            {
-                venues = await like.QAsync(likeVenue = new Venue()
-                {
-                    Name = like.Name == "n" ? null : like.Name,
-                    Location = new Location(geolocation.longitude, geolocation.latitude)
-                });
-            }
-            else
-                venues = await like.QAsync(likeVenue = like.GetVenue());
-            if ( venues.Any() )
-            {
-                var message = context.MakeMessage();
-
-                context.ConversationData.SetValue(_currentActiveVenues, venues);
-                Log.BasicLog("venues", venues.Select(i => i.ToString()).Aggregate((i, j) => $"{i}\n{j}"), SeverityLevel.Verbose);
-
-                message.Attachments = MakeACard(venues, geolocation == null ? null : new Location(geolocation.longitude, geolocation.latitude)).ToList();
-                message.AttachmentLayout = _layoutCarousel;
-                await context.PostAsync(message);
-            }
-            else
-            {
-                Log.BasicLog(TAG, $"Venue not found, name: {likeVenue.Name}, locatio: {likeVenue?.Location.ToString() ?? null}", SeverityLevel.Error);
-                await context.PostAsync("Sorry, can't find anything... :(");
-            }
         }
 
         public static async Task ApplyProperty(IDialogContext context, LuisResult result, params string[] propertyName)

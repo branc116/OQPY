@@ -3,10 +3,10 @@ using OQPYModels.Models.CoreModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static OQPYBot.Controllers.Helper.Constants;
-using static OQPYBot.Controllers.Helper.Helper;
+using static OQPYBot.Helper.Constants;
+using static OQPYBot.Helper.Helper;
 
-namespace OQPYBot.Controllers.Extensions
+namespace OQPYBot.Extensions
 {
     public static class ReviewAttachmentExtension
     {
@@ -109,10 +109,10 @@ namespace OQPYBot.Controllers.Extensions
                    select new ThumbnailCard(_.StuffName, _.OQPYed ? "Taken :/" : "Free :)", _.GetInfo(), null, MakeCardActions(_.Id, _resourcesObj, _actionReservations).ToList()).ToAttachment();
         }
 
-        public static IEnumerable<Attachment> ToAttachments<T>(this IEnumerable<T> items, Func<T, string> title, Func<T, string> subTitle, Func<T, string> text, string Obj, string ObjId, params string[] actions) where T : class
+        public static IEnumerable<Attachment> ToAttachments<T>(this IEnumerable<T> items, Func<T, string> title, Func<T, string> subTitle, Func<T, string> text, string Obj, Func<T, string> ObjId, params string[] actions) where T : class
         {
             return from _ in items.Take(9)
-                   select new ThumbnailCard(title(_), subTitle(_), text(_), null, MakeCardActions(ObjId, Obj, actions).ToList()).ToAttachment();
+                   select new ThumbnailCard(title(_), subTitle(_), text(_), null, MakeCardActions(ObjId(_), Obj, actions).ToList()).ToAttachment();
         }
     }
 

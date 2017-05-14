@@ -28,13 +28,13 @@
         /// <returns>string with corrected text</returns>
         public async Task<string> GetCorrectedTextAsync(string text)
         {
-            if ( string.IsNullOrEmpty(text) )
+            if (string.IsNullOrEmpty(text))
             {
                 return text;
             }
             try
             {
-                using ( var client = new HttpClient() )
+                using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ApiKey);
 
@@ -53,7 +53,7 @@
                     StringBuilder sb = new StringBuilder();
                     int previousOffset = 0;
 
-                    foreach ( var flaggedToken in spellCheckResponse.FlaggedTokens )
+                    foreach (var flaggedToken in spellCheckResponse.FlaggedTokens)
                     {
                         // Append the text from the previous offset to the current misspelled word offset
                         sb.Append(text.Substring(previousOffset, flaggedToken.Offset - previousOffset));
@@ -66,7 +66,7 @@
                     }
 
                     // Append the text after the last misspelled word.
-                    if ( previousOffset < text.Length )
+                    if (previousOffset < text.Length)
                     {
                         sb.Append(text.Substring(previousOffset));
                     }
@@ -74,7 +74,7 @@
                     return sb.ToString();
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 OQPYBot.Helper.Log.BasicLog("BingExeption", ex, Microsoft.ApplicationInsights.DataContracts.SeverityLevel.Error);
                 return text;

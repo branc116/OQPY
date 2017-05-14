@@ -3,7 +3,7 @@ using Microsoft.Bot.Builder.FormFlow;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace OQPYBot.Controllers
+namespace OQPYBot.Dialogs
 {
     public class DialogAddReview
     {
@@ -13,7 +13,6 @@ namespace OQPYBot.Controllers
             {
                 return FormDialog.FromForm(AddReview.Builder);
             });
-            var message = context.MakeMessage();
             return form;
         }
     }

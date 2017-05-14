@@ -1,15 +1,21 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
+﻿using System.Linq;
+using System.Threading.Tasks;
+
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using OQPYBot.Controllers.Extensions;
+using System.Collections.Generic;
+
 using OQPYClient.APIv03;
 using OQPYModels.Models.CoreModels;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static OQPYBot.Controllers.Helper.Constants;
-using static OQPYBot.Controllers.Helper.Helper;
+using OQPYBot.Extensions;
+using OQPYBot.Dialogs;
+using static OQPYBot.Helper.Constants;
+using static OQPYBot.Helper.Helper;
+using static OQPYBot.Dialogs.ProcessDialogs.ProcessDialogs;
+using System.Threading;
+using System;
 
-namespace OQPYBot.Controllers.Helper
+namespace OQPYBot.Helper
 {
     public class ProcessCommands
     {
@@ -24,11 +30,41 @@ namespace OQPYBot.Controllers.Helper
             };
             return attachemts;
         }
-
         internal async static Task<IEnumerable<Attachment>> BaseSearchNearby(IDialogContext context, string arg2)
         {
             await ProcessVenues(context, new SearchVenues());
             return null;
+        }
+        internal async static Task<IEnumerable<Attachment>> BaseShareLocation(IDialogContext arg1, string arg2)
+        {
+            return ErrorAttachment("Ups", "Not supported on your platform");
+        }
+        internal async static Task<IEnumerable<Attachment>> BaseSignIn(IDialogContext context, string arg2)
+        {
+            var mess = context.MakeMessage();
+            mess.Text = "login";
+            await context.Forward(SimpleFacebookAuthDialog.dialog, ProcessSignIn, mess, default(CancellationToken)); 
+            return null;
+        }
+        internal async static Task<IEnumerable<Attachment>> BaseReservation(IDialogContext context, string arg2)
+        {
+            if (context.UserData.TryGetValue(_facebookToken, out string token))
+            {
+                var reservation = await _api.ApiReservationsMyGetAsync(token);
+                if (reservation == null)
+                    throw new ArgumentNullException(nameof(reservation));
+                return reservation.ToAttachments(
+                    title: i => i.StartReservationTime.ToShortTimeString(),
+                    subTitle: i => $"{i.Duration.Hours}h",
+                    text: i => i.Resource.StuffName,
+                    Obj: _reservationsObj,
+                    ObjId: i => i.Id, 
+                    actions: new string[] { _actionInfo, _actionDelete });
+            }
+            else
+            {
+                return ErrorAttachment("Not signed id", "Sign in pls");
+            }
         }
 
         public async static Task<IEnumerable<Attachment>> VenueInfo(IDialogContext context, string venueId)
@@ -50,7 +86,7 @@ namespace OQPYBot.Controllers.Helper
             var venue = await _api.ApiVenuesSingleGetAsync(venueId);
             List<Attachment> cards = new List<Attachment>() {
             new ThumbnailCard(_reservationsObj,
-                venue.Reservations == null ? $"There aren't any reservations in {venue.Name}" : $"There are {venue.Reviews.Count} Comments",
+                venue.Reservations == null ? $"There aren't any reservations in {venue.Name}" : $"There are {venue.Reservations.Count()} reservations",
                 $"You can add a reservaion by clicking {_actionAdd} button",
                 null,
                 MakeCardActions(venueId, _reservationsObj, _actionAdd).ToList()).ToAttachment()
@@ -97,7 +133,7 @@ namespace OQPYBot.Controllers.Helper
             var dialog = DialogAddReview.Create(context);
             context.ConversationData.SetValue(_tempVenueId, venueId);
             var message = context.MakeMessage();
-            await context.Forward(dialog, ProcessDialogs.ProcessDialogs.ProcessAddReview, message, default(System.Threading.CancellationToken));
+            await context.Forward(dialog, ProcessAddReview, message, default(System.Threading.CancellationToken));
             return null;
         }
 
@@ -107,11 +143,14 @@ namespace OQPYBot.Controllers.Helper
             return await CommentsRead(context, commentId);
         }
 
+        internal static Task<IEnumerable<Attachment>> ReservationDelete(IDialogContext arg1, string arg2) => throw new NotImplementedException();
+
         internal async static Task<IEnumerable<Attachment>> CommentsLike(IDialogContext context, string commentId)
         {
             await _api.ApiReviewsLikeGetAsync(commentId, "1");
             return await CommentsRead(context, commentId);
         }
+        
 
         internal async static Task<IEnumerable<Attachment>> CommentsRead(IDialogContext context, string commentId)
         {
@@ -128,6 +167,28 @@ namespace OQPYBot.Controllers.Helper
             };
 
             return attachments;
+        }
+
+        internal async static Task<IEnumerable<Attachment>> ReservationAdd(IDialogContext context, string resourceId)
+        {
+            if (context.UserData.TryGetValue(_facebookToken, out string token))
+            {
+                if (await FacebookHelper.FacebookHelpers.ValidateAccessToken(token))
+                {
+                    var message = context.MakeMessage();
+                    context.PrivateConversationData.SetValue(_tempResourceId, resourceId);
+                    await context.Forward(DateTimePickerDialog.Create(context), ProcessReservation, message, default(CancellationToken));
+                    return null;
+                }
+                else
+                {
+                    return ErrorAttachment("Sign in timed out", "It looks like you sign in timed out. Sign in again to continue.");
+                }
+            }
+            else
+            {
+                return ErrorAttachment("Not signed in", "Sign in to make a reservation.");
+            }
         }
     }
 }

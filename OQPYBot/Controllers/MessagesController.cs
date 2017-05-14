@@ -6,8 +6,8 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Rest.Serialization;
-using OQPYBot.Controllers;
-using OQPYBot.Controllers.Helper;
+using OQPYBot.Dialogs;
+using OQPYBot.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,9 +34,8 @@ namespace OQPYBot
                 //Record(activity);
                 if ( activity.Type == ActivityTypes.Message )
                 {
-                    //ConnectorClient connector = new ConnectorClient(new Uri(activity?.ServiceUrl ?? "http://localhost:6666"));
-                    activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text ?? "none";
 
+                    activity.Text = await BingSpelling.GetCorrectedTextAsync(activity.Text) ?? activity.Text ?? "none";
                     await Conversation.SendAsync(activity, () => new LuisDialogOQPY());
                 }
                 else
