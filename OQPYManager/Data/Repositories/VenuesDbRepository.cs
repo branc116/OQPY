@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define ENABLE_CRAWL
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -137,30 +138,24 @@ namespace OQPYManager.Data.Repositories
                 else
                     venues = venues
                         .OrderByDescending(i => i.Name.StringLikenes(like.Name));
-                if (venues.Count() < 10)
-                    try
-                    {
-                        var crawl = new Cralw();
-                        IEnumerable<Venue> newVenues;
-                        if (like.Location == null && like.Name != null)
-                            newVenues = await crawl.CrawlByText(like.Name);
-                        else if (like.Name == null && like.Location != null)
-                            newVenues =
-                                await crawl.CrawlByLocation(
-                                    new Location(like.Location.Latitude, like.Location.Longditude));
-                        else if (like.Name != null && like.Location != null)
-                            newVenues =
-                                await crawl.CrawlByLocation(
-                                    new Location(like.Location.Latitude, like.Location.Longditude));
-                        else
-                            return null;
-                        newVenues = newVenues.Where(i => { return _context.Venues.All(j => j.Id != i.Id); });
-                        await AddAsync(newVenues);
-                    }
-                    catch (Exception ex)
-                    {
-                        BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
-                    }
+#if ENABLE_CRAWL
+                try
+                {
+                    var crawl = new Cralw();
+                    List<Venue> newVenues = new List<Venue>();
+                    if (like.Name != null)
+                        newVenues.AddRange(await crawl.CrawlByText(like.Name));
+                    else if (like.Location != null)
+                        newVenues.AddRange(await crawl.CrawlByLocation(
+                                new Location(like.Location.Latitude, like.Location.Longditude)));
+                    newVenues = newVenues.Where(i => { return _context.Venues.All(j => j.Id != i.Id); }).ToList();
+                    await AddAsync(newVenues);
+                }
+                catch (Exception ex)
+                {
+                    BasicLog(TAG, ex.ToString(), SeverityLevel.Error);
+                }
+#endif
                 return venues;
             }
             catch (Exception ex)

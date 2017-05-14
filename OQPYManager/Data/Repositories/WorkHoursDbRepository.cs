@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using OQPYManager.Data.Repositories.Base;
+﻿using OQPYManager.Data.Repositories.Base;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories
 {
@@ -36,7 +35,6 @@ namespace OQPYManager.Data.Repositories
             var workTime = venue.WorkHours.WholeWeek.FirstOrDefault(ww => ww.Key.Equals(now.DayOfWeek)).Value;
 
             return IsTimeInBetweenWorkingTime(now, workTime);
-
         }
 
         public async Task ChangeWorkingStatusAsync(string venueId)
@@ -54,8 +52,5 @@ namespace OQPYManager.Data.Repositories
                    && time.Hour.CompareTo(worktime.EndTime.Hour) > 0
                    && time.Minute.CompareTo(worktime.EndTime.Minute) > 0;
         }
-
-
-        
     }
 }

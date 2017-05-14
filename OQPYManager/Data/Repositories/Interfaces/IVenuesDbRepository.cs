@@ -2,7 +2,7 @@
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
-    public interface IVenuesDbRepository: IBaseDbRepository<Venue>
+    public interface IVenuesDbRepository : IBaseDbRepository<Venue>
     {
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using OQPYModels.Models.CoreModels;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using OQPYModels.Models.CoreModels;
 
 namespace OQPYManager.Data.Repositories.Interfaces
 {
@@ -18,7 +18,5 @@ namespace OQPYManager.Data.Repositories.Interfaces
         /// <param name="venueId">Id of the venue</param>
         /// <returns></returns>
         Task<IEnumerable<PriceTag>> GetPriceTagsForVenue(string venueId);
-
-
     }
 }

@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OQPYManager.Data.Repositories.Base;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYModels.Models.CoreModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories
 {
     public class ReviewDbRepository : BaseDbRepository<Review>, IReviewDbRepository
     {
         private VenuesDbRepository _venuesDbRepository;
+
         public ReviewDbRepository(ApplicationDbContext context) : base(context)
         {
             _defaultDbSet = _context.Reviews;
             _venuesDbRepository = new VenuesDbRepository(context);
         }
-
 
         public override Task<IQueryable<Review>> Filter(Review like)
         {
@@ -26,7 +26,7 @@ namespace OQPYManager.Data.Repositories
 
         public IEnumerable<Review> GetAllReviews(string venueId)
         {
-           throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public async Task RateReview(string reviewId, string like)
@@ -36,7 +36,6 @@ namespace OQPYManager.Data.Repositories
 
             review.Helpfulness += like.Equals("0") ? -1 : 1;
             _context.SaveChanges();
-
         }
 
         public async Task AddNewReview(string venueId, Review review)

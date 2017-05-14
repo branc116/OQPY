@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.ApplicationInsights.DataContracts;
+﻿using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.EntityFrameworkCore;
 using OQPYManager.Data.Repositories.Base;
 using OQPYManager.Data.Repositories.Interfaces;
 using OQPYManager.Helper;
 using OQPYModels.Models.CoreModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OQPYManager.Data.Repositories
 {
@@ -19,7 +19,6 @@ namespace OQPYManager.Data.Repositories
         {
             _defaultDbSet = _context.Resources;
         }
-
 
         public async Task ChangeState(string id, bool newState, string secretCode)
         {
@@ -48,6 +47,5 @@ namespace OQPYManager.Data.Repositories
         {
             throw new NotImplementedException();
         }
-
     }
 }

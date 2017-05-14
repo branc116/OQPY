@@ -4,7 +4,7 @@ using System;
 
 namespace OQPYManager.Data.Migrations
 {
-    public partial class CreateIdentitySchema: Migration
+    public partial class CreateIdentitySchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
