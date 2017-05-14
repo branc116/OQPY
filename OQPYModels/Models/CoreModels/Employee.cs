@@ -1,9 +1,8 @@
-﻿using OQPYModels.Models.CoreModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using static OQPYModels.Helper.Helper;
 
-namespace OQPYModels.Models
+namespace OQPYModels.Models.CoreModels
 {
     public class Employee: BaseApplicationUser
     {

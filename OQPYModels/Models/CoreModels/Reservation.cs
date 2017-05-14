@@ -16,6 +16,7 @@ namespace OQPYModels.Models.CoreModels
 
         public virtual DateTime EndReservationTime { get; set; }
         public virtual Resource Resource { get; set; }
+        public FacebookUser FacebookUsers { get; set; }
 
         /// <summary>
         /// Could be just a name and/or surname
