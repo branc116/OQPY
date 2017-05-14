@@ -11,7 +11,7 @@ namespace OQPYManager.Data.Repositories.Interfaces
         /// </summary>
         /// <param name="venueId">Id of the venue for which we want reviews loaded.</param>
         /// <returns>Collection of reviews</returns>
-        IEnumerable<Review> GetAllReviews(string venueId);
+        Task<IEnumerable<Review>> GetAllReviews(string venueId);
 
         /// <summary>
         /// Rates review like on steam products review.
